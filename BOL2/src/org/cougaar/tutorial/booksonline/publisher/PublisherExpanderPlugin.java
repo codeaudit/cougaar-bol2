@@ -83,406 +83,438 @@ import java.util.Vector;
  * to try to process the task again.
  *
  * @author ttschampel
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class PublisherExpanderPlugin extends BOLComponentPlugin {
-    private static final String pluginName = "PublisherExpanderPlugin";
-    /** Predicate for Publisher Order Tasks */
-    private static UnaryPredicate allPublisherOrderTasksPredicate = new UnaryPredicate() {
-            public boolean execute(Object o) {
-                if (o instanceof Task) {
-                    Task t = (Task) o;
-                    return t.getVerb().equals(Verb.getVerb(
-                            PublisherConstants.ORDER_VERB));
-                }
+  private static final String pluginName = "PublisherExpanderPlugin";
+  /** Predicate for Publisher Order Tasks */
+  private static UnaryPredicate allPublisherOrderTasksPredicate = new UnaryPredicate() {
+      public boolean execute(Object o) {
+        if (o instanceof Task) {
+          Task t = (Task) o;
+          return t.getVerb().equals(Verb.getVerb(PublisherConstants.ORDER_VERB));
+        }
 
-                return false;
+        return false;
+      }
+    };
+
+  /** DatabaseService */
+  private DatabaseService dbService = null;
+  /** Subscription to all publisher order tasks */
+  private IncrementalSubscription allPublisherOrderTasksSubscription;
+  /** Subscription to complete print runs */
+  private IncrementalSubscription completePrintRunSubs = null;
+  /** Subscription to completed publsiher orders */
+  private IncrementalSubscription checkOrders = null;
+  /** Predicate to listen to completed publisher order tasks */
+  private UnaryPredicate checkOrderPredicate = new UnaryPredicate() {
+      public boolean execute(Object o) {
+        if (o instanceof PlanElement) {
+          PlanElement pe = (PlanElement) o;
+          Task t = pe.getTask();
+          if (t.getVerb().toString().equals(PublisherConstants.ORDER_VERB)
+            && (pe.getEstimatedResult() != null)
+            && (pe.getEstimatedResult().getConfidenceRating() == 1.0)
+            && (pe.getObservedResult() == null)) {
+            return true;
+
+          }
+        }
+
+        return false;
+      }
+    };
+
+  /** Predicate for completed print runs */
+  private UnaryPredicate completedPrintPredicate = new UnaryPredicate() {
+      public boolean execute(Object o) {
+        if (o instanceof PlanElement) {
+          PlanElement pe = (PlanElement) o;
+          Task task = pe.getTask();
+          if (task.getVerb().toString().equals(PublisherConstants.PRINTRUN_VERB)) {
+            return (pe.getReportedResult() != null)
+            && pe.getReportedResult().isSuccess();
+          }
+        }
+
+        return false;
+      }
+    };
+
+  /** Predicate for failed publisherpack tasks */
+  private UnaryPredicate failedPackTasksPredicate = new UnaryPredicate() {
+      public boolean execute(Object o) {
+        if (o instanceof Task) {
+          Task t = (Task) o;
+          if (t.getVerb().equals(BolSocietyUtils.PUBLISHERPACK_VERB)) {
+            PlanElement pe = t.getPlanElement();
+            if (pe != null) {
+              if (pe instanceof Disposition) {
+                Disposition disp = (Disposition) pe;
+                return (disp.isSuccess() == false);
+              }
             }
-        };
+          }
+        }
 
-    /** DatabaseService */
-    private DatabaseService dbService = null;
-    /** Subscription to all publisher order tasks */
-    private IncrementalSubscription allPublisherOrderTasksSubscription;
-    /** Subscription to complete print runs */
-    private IncrementalSubscription completePrintRunSubs = null;
-    /** Predicate for completed print runs */
-    private UnaryPredicate completedPrintPredicate = new UnaryPredicate() {
-            public boolean execute(Object o) {
-                if (o instanceof PlanElement) {
-                    PlanElement pe = (PlanElement) o;
-                    Task task = pe.getTask();
-                    if (task.getVerb().toString().equals(PublisherConstants.PRINTRUN_VERB)) {
-                        return (pe.getReportedResult() != null)
-                        && pe.getReportedResult().isSuccess();
-                    }
-                }
+        return false;
+      }
+    };
 
-                return false;
-            }
-        };
+  /**
+   * Load the plugin and setup logging
+   */
+  public void load() {
+    super.load();
+    ServiceBroker sb = getBindingSite().getServiceBroker();
 
-    /** Predicate for failed publisherpack tasks */
-    private UnaryPredicate failedPackTasksPredicate = new UnaryPredicate() {
-            public boolean execute(Object o) {
-                if (o instanceof Task) {
-                    Task t = (Task) o;
-                    if (t.getVerb().equals(BolSocietyUtils.PUBLISHERPACK_VERB)) {
-                        PlanElement pe = t.getPlanElement();
-                        if (pe != null) {
-                            if (pe instanceof Disposition) {
-                                Disposition disp = (Disposition) pe;
-                                return (disp.isSuccess() == false);
-                            }
-                        }
-                    }
-                }
+    DatabaseServiceProvider dbServiceProvider = new DatabaseServiceProvider(getBindingSite()
+                                                                              .getServiceBroker());
+    getBindingSite().getServiceBroker().addService(DatabaseService.class,
+      dbServiceProvider);
+    dbService = (DatabaseService) this.getServiceBroker().getService(this,
+        DatabaseService.class, null);
+  }
 
-                return false;
-            }
-        };
 
-    /**
-     * Load the plugin and setup logging
-     */
-    public void load() {
-        super.load();
-        ServiceBroker sb = getBindingSite().getServiceBroker();
+  /**
+   * Setup Subscriptions
+   */
+  protected void setupSubscriptions() {
+    allPublisherOrderTasksSubscription = (IncrementalSubscription) getBlackboardService()
+                                                                     .subscribe(allPublisherOrderTasksPredicate);
+    completePrintRunSubs = (IncrementalSubscription) getBlackboardService()
+                                                       .subscribe(completedPrintPredicate);
+    checkOrders = (IncrementalSubscription) getBlackboardService().subscribe(checkOrderPredicate);
 
-        DatabaseServiceProvider dbServiceProvider = new DatabaseServiceProvider(getBindingSite()
-                                                                                    .getServiceBroker());
-        getBindingSite().getServiceBroker().addService(DatabaseService.class,
-            dbServiceProvider);
-        dbService = (DatabaseService) this.getServiceBroker().getService(this,
-                DatabaseService.class, null);
+  }
+
+
+  /**
+   * Process Subscriptions
+   */
+  protected void execute() {
+    if (logging.isDebugEnabled()) {
+      logging.debug(pluginName + " executing");
     }
 
+    checkForNewOrders();
+    checkForCompletedPrintTasks();
+    checkOnOrders();
+  }
 
-    /**
-     * Setup Subscriptions
-     */
-    protected void setupSubscriptions() {
-        allPublisherOrderTasksSubscription = (IncrementalSubscription) getBlackboardService()
-                                                                           .subscribe(allPublisherOrderTasksPredicate);
-        completePrintRunSubs = (IncrementalSubscription) getBlackboardService()
-                                                             .subscribe(completedPrintPredicate);
 
+  /**
+   * Check for completed orders and copy reported to observed
+   */
+  private void checkOnOrders() {
+    Enumeration enumeration = checkOrders.getChangedList();
+    while (enumeration.hasMoreElements()) {
+      PlanElement pe = (PlanElement) enumeration.nextElement();
+      pe.setObservedResult(pe.getReportedResult());
+      System.err.println("Copying:" + pe.getReportedResult() + " to observed");
+      getBlackboardService().publishChange(pe);
+    }
+  }
+
+
+  /**
+   * Check for complete print runs, update inventory levels, and try to
+   * complete pending orders.
+   */
+  private void checkForCompletedPrintTasks() {
+    Enumeration enumeration = completePrintRunSubs.getChangedList();
+    boolean newBooks = false;
+    while (enumeration.hasMoreElements()) {
+      newBooks = true;
+      PlanElement pe = (PlanElement) enumeration.nextElement();
+      MPTask printRunTask = (MPTask) pe.getTask();
+      Enumeration printJobTasks = printRunTask.getComposition().getCombinedTask()
+                                              .getParentTasks();
+      while (printJobTasks.hasMoreElements()) {
+        Task printerTask = (Task) printJobTasks.nextElement();
+        getBlackboardService().publishRemove(printerTask);
+        //get book isbn and quantities
+        String orderString = (String) printerTask.getPrepositionalPhrase(BolSocietyUtils.ISBN_PREPOSITION)
+                                                 .getIndirectObject();
+        StringTokenizer tokenizer = new StringTokenizer(orderString, ";");
+        int numberForPrint = 0;
+        while (tokenizer.hasMoreTokens()) {
+          String token = tokenizer.nextToken();
+          int numberAvailable = 0;
+          int colpos = token.indexOf(":");
+          String bookISBN = token.substring(0, colpos);
+          numberForPrint = Integer.parseInt(token.substring(colpos + 1,
+                token.length()));
+          //					decrement inventory and add book to asset group
+          try {
+            //									check inventory level for this book
+            Map parameters = new HashMap();
+            parameters.put(BolSocietyUtils.Database.BOOK_ISBN_PARAMETER,
+              bookISBN);
+
+            ArrayList results = (ArrayList) dbService.executeQuery(BolSocietyUtils.Database.PUBLISHER_FIND_BOOK_BY_ISBN_QUERY,
+                parameters);
+
+            if (results.size() > 0) {
+              Object[] objects = (Object[]) results.get(0);
+              BookModel book = BookUtil.getBookModelFromDatabase(objects);
+
+              //increase inventory
+              parameters = new HashMap();
+              parameters.put(BolSocietyUtils.Database.BOOK_ISBN_PARAMETER,
+                book.getIsbn());
+              parameters.put(BolSocietyUtils.Database.INVENTORY_LEVEL_PARAMETER,
+                "" + (book.getShelf() + numberForPrint));
+              dbService.executeStatement(BolSocietyUtils.Database.PUBLISHER_UPDATE_INVENTORY_QUERY,
+                parameters);
+            }
+          } catch (SQLException sqlex) {
+            if (logging.isErrorEnabled()) {
+              logging.error("Error updating inventory", sqlex);
+            }
+          }
+        }
+      }
+
+      getBlackboardService().publishRemove(printRunTask);
     }
 
-
-    /**
-     * Process Subscriptions
-     */
-    protected void execute() {
+    if (newBooks) {
+      //publish change all failed tasks, so we can try again.
+      Collection failedList = getBlackboardService().query(failedPackTasksPredicate);
+      Iterator iterator = failedList.iterator();
+      while (iterator.hasNext()) {
+        //remove expansion
         if (logging.isDebugEnabled()) {
-            logging.debug(pluginName + " executing");
+          logging.debug("Trying order again...");
         }
 
-        checkForNewOrders();
-        checkForCompletedPrintTasks();
+        Task oldTask = (Task) iterator.next();
+        Task parentTask = oldTask.getWorkflow().getParentTask();
+        PlanElement exp = parentTask.getPlanElement();
+        getBlackboardService().publishRemove(exp);
+        getBlackboardService().publishRemove(oldTask);
+        buildExpansion(parentTask);
+      }
+    }
+  }
+
+
+  /**
+   * Checks for new PublishOrder Tasks.
+   */
+  private void checkForNewOrders() {
+    Enumeration orderTasksEnum = allPublisherOrderTasksSubscription
+      .getAddedList();
+    while (orderTasksEnum.hasMoreElements()) {
+      Task parentTask = (Task) orderTasksEnum.nextElement();
+      buildExpansion(parentTask);
+
+
+    }
+  }
+
+
+  /**
+   * Build the workflow for completing a publish order task
+   *
+   * @param parentTask The PublishOrder Task
+   */
+  private void buildExpansion(Task parentTask) {
+    if (logging.isDebugEnabled()) {
+      logging.debug(pluginName + " Got Publisher Order Task to Expanded");
     }
 
 
-    /**
-     * Check for complete print runs, update inventory levels, and try to
-     * complete pending orders.
-     */
-    private void checkForCompletedPrintTasks() {
-        Enumeration enumeration = completePrintRunSubs.getChangedList();
-        boolean newBooks = false;
-        while (enumeration.hasMoreElements()) {
-            newBooks = true;
-            PlanElement pe = (PlanElement) enumeration.nextElement();
-            MPTask printRunTask = (MPTask) pe.getTask();
-            Enumeration printJobTasks = printRunTask.getComposition()
-                                                    .getCombinedTask()
-                                                    .getParentTasks();
-            while (printJobTasks.hasMoreElements()) {
-                Task printerTask = (Task) printJobTasks.nextElement();
-                getBlackboardService().publishRemove(printerTask);
-                //get book isbn and quantities
-                String orderString = (String) printerTask.getPrepositionalPhrase(BolSocietyUtils.ISBN_PREPOSITION)
-                                                         .getIndirectObject();
-                StringTokenizer tokenizer = new StringTokenizer(orderString, ";");
-                int numberForPrint = 0;
-                while (tokenizer.hasMoreTokens()) {
-                    String token = tokenizer.nextToken();
-                    int numberAvailable = 0;
-                    int colpos = token.indexOf(":");
-                    String bookISBN = token.substring(0, colpos);
-                    numberForPrint = Integer.parseInt(token.substring(colpos
-                                + 1, token.length()));
-                    //					decrement inventory and add book to asset group
-                    try {
-                        //									check inventory level for this book
-                        Map parameters = new HashMap();
-                        parameters.put(BolSocietyUtils.Database.BOOK_ISBN_PARAMETER,
-                            bookISBN);
+    // Create workflow
+    // Create expansion and workflow to represent the expansion
+    // of this task
+    NewWorkflow new_wf = getPlanningFactory().newWorkflow();
+    new_wf.setAllocationResultAggregator(AllocationResultAggregator.DEFAULT);
+    new_wf.setParentTask(parentTask);
 
-                        ArrayList results = (ArrayList) dbService.executeQuery(BolSocietyUtils.Database.PUBLISHER_FIND_BOOK_BY_ISBN_QUERY,
-                                parameters);
-
-                        if (results.size() > 0) {
-                            Object[] objects = (Object[]) results.get(0);
-                            BookModel book = BookUtil.getBookModelFromDatabase(objects);
-
-                            //increase inventory
-                            parameters = new HashMap();
-                            parameters.put(BolSocietyUtils.Database.BOOK_ISBN_PARAMETER,
-                                book.getIsbn());
-                            parameters.put(BolSocietyUtils.Database.INVENTORY_LEVEL_PARAMETER,
-                                "" + (book.getShelf() + numberForPrint));
-                            dbService.executeStatement(BolSocietyUtils.Database.PUBLISHER_UPDATE_INVENTORY_QUERY,
-                                parameters);
-                        }
-                    } catch (SQLException sqlex) {
-                        if (logging.isErrorEnabled()) {
-                            logging.error("Error updating inventory", sqlex);
-                        }
-                    }
-                }
-            }
-
-            getBlackboardService().publishRemove(printRunTask);
-        }
-
-        if (newBooks) {
-            //publish change all failed tasks, so we can try again.
-            Collection failedList = getBlackboardService().query(failedPackTasksPredicate);
-            Iterator iterator = failedList.iterator();
-            while (iterator.hasNext()) {
-                //remove expansion
-                if (logging.isDebugEnabled()) {
-                    logging.debug("Trying order again...");
-                }
-
-                Task oldTask = (Task) iterator.next();
-                Task parentTask = oldTask.getWorkflow().getParentTask();
-                PlanElement exp = parentTask.getPlanElement();
-                getBlackboardService().publishRemove(exp);
-                getBlackboardService().publishRemove(oldTask);
-                buildExpansion(parentTask);
-            }
-        }
+    PrepositionalPhrase isbnPP = parentTask.getPrepositionalPhrase(BolSocietyUtils.ISBN_PREPOSITION);
+    int numBooks = (int) parentTask.getPreferredValue(AspectType.QUANTITY);
+    if (logging.isDebugEnabled()) {
+      logging.debug("PublisherExpander: numbooks = " + numBooks);
     }
 
+    Task packTask = createPackTask((String) isbnPP.getIndirectObject(),
+        numBooks, getPlanningFactory());
+    new_wf.addTask(packTask);
+    ((NewTask) packTask).setWorkflow(new_wf);
+    ((NewTask) packTask).setParentTask(new_wf.getParentTask());
 
-    /**
-     * Checks for new PublishOrder Tasks.
-     */
-    private void checkForNewOrders() {
-        Enumeration orderTasksEnum = allPublisherOrderTasksSubscription
-            .getAddedList();
-        while (orderTasksEnum.hasMoreElements()) {
-            Task parentTask = (Task) orderTasksEnum.nextElement();
-            buildExpansion(parentTask);
+    PrepositionalPhrase methodPP = parentTask.getPrepositionalPhrase(BolSocietyUtils.SHIPMETHOD_PREPOSITION);
+    PrepositionalPhrase userPP = parentTask.getPrepositionalPhrase(BolSocietyUtils.USERDETAIL_PREPOSITION);
+    Task shipTask = createShippingTask((UserDetails) userPP.getIndirectObject(),
+        (String) methodPP.getIndirectObject(), getPlanningFactory(), numBooks);
+    new_wf.addTask(shipTask);
+    ((NewTask) shipTask).setWorkflow(new_wf);
+    ((NewTask) shipTask).setParentTask(parentTask);
+
+    // add Constraints so they all run in order
+    Vector constraints = new Vector();
+
+    NewConstraint haveBook = getPlanningFactory().newConstraint();
+    haveBook.setConstrainingTask(packTask);
+    haveBook.setConstrainingAspect(AspectType.END_TIME);
+    haveBook.setConstrainedTask(shipTask);
+    haveBook.setConstrainedAspect(AspectType.START_TIME);
+    haveBook.setConstraintOrder(Constraint.BEFORE);
+
+    constraints.addElement(haveBook);
+
+    new_wf.setConstraints(constraints.elements());
 
 
-        }
+    // add plan element as expansion
+    AllocationResult estAR = null;
+
+    Expansion new_exp = getPlanningFactory().createExpansion(parentTask.getPlan(),
+        parentTask, new_wf, estAR);
+    getBlackboardService().publishAdd(packTask);
+    getBlackboardService().publishAdd(new_wf);
+    getBlackboardService().publishAdd(new_exp);
+  }
+
+
+  /**
+   * <b>Description</b>: Create a pacing task to get the books packed. <br>
+   * <b>Notes</b>:<br>
+   * - <br>
+   *
+   * @param isbn String
+   * @param quantity int
+   * @param theCOF ClusterObjectFactory
+   *
+   * @return Task
+   */
+  private Task createPackTask(String isbn, int quantity,
+    ClusterObjectFactory theCOF) {
+    NewTask task = theCOF.newTask();
+
+    task.setDirectObject(null);
+    task.setVerb(new Verb(BolSocietyUtils.PUBLISHERPACK_VERB));
+
+    // add the isbn preposition
+    Vector preps = new Vector();
+    NewPrepositionalPhrase npp = BolSocietyUtils.createPrepPhrase(isbn,
+        BolSocietyUtils.ISBN_PREPOSITION, theCOF);
+    preps.add(npp);
+
+    NewPrepositionalPhrase workflowPP = theCOF.newPrepositionalPhrase();
+    workflowPP.setPreposition(BolSocietyUtils.GENERIC_WORKFLOW_PREPOSITION);
+    preps.add(workflowPP);
+    task.setPrepositionalPhrases(preps.elements());
+    task.setPlan(theCOF.getRealityPlan());
+
+    // add the requested quantity as a preference, only the exact amount is preferred
+    Vector newPreferences = new Vector();
+
+    // lose 25% for every day we miss, after 4 days it's too late
+    ScoringFunction scorefcn = ScoringFunction.createPreferredAtValue(AspectValue
+        .newAspectValue(AspectType.QUANTITY, quantity), .95);
+
+    // this counts 33% towards the total completion ability, need to find the book and ship it too, all are equally important
+    Preference pref = theCOF.newPreference(AspectType.QUANTITY, scorefcn, 0.333);
+
+    newPreferences.addElement(pref);
+
+    // show final completion (i.e. the performance of this task is now in the past)
+    ScoringFunction complScorefcn = ScoringFunction.createPreferredAtValue(AspectValue
+        .newAspectValue(BolSocietyUtils.COMPLETED_ASPECT,
+          BolSocietyUtils.ISCOMPLETED), 1.0);
+
+
+    // this counts 0 against the preference score, since it indicates final completion of the task
+    // it isn't used to show how well planned the task is
+    Preference complPref = theCOF.newPreference(BolSocietyUtils.COMPLETED_ASPECT,
+        complScorefcn, 0.0);
+    newPreferences.addElement(complPref);
+    task.setPreferences(newPreferences.elements());
+    return task;
+  }
+
+
+  /**
+   * <b>Description</b>: Create a shipping task to ship the books to either
+   * customer or Warehouse. <br>
+   * <b>Notes</b>:<br>
+   * - <br>
+   *
+   * @param ud UserDetails
+   * @param shippingMethod String
+   * @param theCOF ClusterObjectFactory
+   * @param quantity Quantity of books
+   *
+   * @return Task
+   */
+  private Task createShippingTask(UserDetails ud, String shippingMethod,
+    ClusterObjectFactory theCOF, int quantity) {
+    if (logging.isDebugEnabled()) {
+      logging.debug("PublisherExpander: CreateShippingTask: " + quantity);
     }
 
+    NewTask task = theCOF.newTask();
+    task.setVerb(new Verb(BolSocietyUtils.SHIPPER_VERB));
 
-    /**
-     * Build the workflow for completing a publish order task
-     *
-     * @param parentTask The PublishOrder Task
-     */
-    private void buildExpansion(Task parentTask) {
-        if (logging.isDebugEnabled()) {
-            logging.debug(pluginName + " Got Publisher Order Task to Expanded");
-        }
-
-
-        // Create workflow
-        // Create expansion and workflow to represent the expansion
-        // of this task
-        NewWorkflow new_wf = getPlanningFactory().newWorkflow();
-        new_wf.setAllocationResultAggregator(AllocationResultAggregator.DEFAULT);
-        new_wf.setParentTask(parentTask);
-
-        PrepositionalPhrase isbnPP = parentTask.getPrepositionalPhrase(BolSocietyUtils.ISBN_PREPOSITION);
-        int numBooks = (int) parentTask.getPreferredValue(AspectType.QUANTITY);
-        if (logging.isDebugEnabled()) {
-            logging.debug("PublisherExpander: numbooks = " + numBooks);
-        }
-
-        Task packTask = createPackTask((String) isbnPP.getIndirectObject(),
-                numBooks, getPlanningFactory());
-        new_wf.addTask(packTask);
-        ((NewTask) packTask).setWorkflow(new_wf);
-        ((NewTask) packTask).setParentTask(new_wf.getParentTask());
-
-        PrepositionalPhrase methodPP = parentTask.getPrepositionalPhrase(BolSocietyUtils.SHIPMETHOD_PREPOSITION);
-        PrepositionalPhrase userPP = parentTask.getPrepositionalPhrase(BolSocietyUtils.USERDETAIL_PREPOSITION);
-        Task shipTask = createShippingTask((UserDetails) userPP
-                .getIndirectObject(), (String) methodPP.getIndirectObject(),
-                getPlanningFactory(), numBooks);
-        new_wf.addTask(shipTask);
-        ((NewTask) shipTask).setWorkflow(new_wf);
-        ((NewTask) shipTask).setParentTask(parentTask);
-
-        // add Constraints so they all run in order
-        Vector constraints = new Vector();
-
-        NewConstraint haveBook = getPlanningFactory().newConstraint();
-        haveBook.setConstrainingTask(packTask);
-        haveBook.setConstrainingAspect(AspectType.END_TIME);
-        haveBook.setConstrainedTask(shipTask);
-        haveBook.setConstrainedAspect(AspectType.START_TIME);
-        haveBook.setConstraintOrder(Constraint.BEFORE);
-
-        constraints.addElement(haveBook);
-
-        new_wf.setConstraints(constraints.elements());
+    Vector preps = new Vector();
+    NewPrepositionalPhrase npp = BolSocietyUtils.createPrepPhrase(ud,
+        BolSocietyUtils.USERDETAIL_PREPOSITION, theCOF);
+    preps.add(npp);
+    npp = BolSocietyUtils.createPrepPhrase(shippingMethod,
+        BolSocietyUtils.SHIPMETHOD_PREPOSITION, theCOF);
+    preps.add(npp);
+    NewPrepositionalPhrase workflowPP = getPlanningFactory()
+                                          .newPrepositionalPhrase();
+    workflowPP.setPreposition(BolSocietyUtils.GENERIC_WORKFLOW_PREPOSITION);
+    preps.add(workflowPP);
+    task.setPrepositionalPhrases(preps.elements());
+    task.setPlan(theCOF.getRealityPlan());
+    GregorianCalendar calToday = new GregorianCalendar();
+    calToday.add(GregorianCalendar.DATE, 20);
+    double shipBeforeDay = calToday.getTime().getTime();
 
 
-        // add plan element as expansion
-        AllocationResult estAR = null;
+    // add the desired "hold money until" day as a preference, holding it less than the time required is ok
+    Vector newPreferences = new Vector();
 
-        Expansion new_exp = getPlanningFactory().createExpansion(parentTask
-                .getPlan(), parentTask, new_wf, estAR);
-        getBlackboardService().publishAdd(packTask);
-        getBlackboardService().publishAdd(new_wf);
-        getBlackboardService().publishAdd(new_exp);
-    }
+    ScoringFunction qscorefcn = ScoringFunction.createPreferredAtValue(AspectValue
+        .newAspectValue(AspectType.QUANTITY, quantity), .95);
 
+    // this counts 33% towards the total completion ability, need to find the book and ship it too, all are equally important
+    Preference qpref = theCOF.newPreference(AspectType.QUANTITY, qscorefcn,
+        0.333);
+    newPreferences.addElement(qpref);
+    // lose 5% for every day we miss, after 20 days it's too late, the credit card is no longer on hold for us
+    ScoringFunction scorefcn = ScoringFunction.createNearOrAbove(AspectValue
+        .newAspectValue(AspectType.END_TIME, shipBeforeDay), .05);
 
-    /**
-     * <b>Description</b>: Create a pacing task to get the books packed. <br>
-     * <b>Notes</b>:<br>
-     * - <br>
-     *
-     * @param isbn String
-     * @param quantity int
-     * @param theCOF ClusterObjectFactory
-     *
-     * @return Task
-     */
-    private Task createPackTask(String isbn, int quantity,
-        ClusterObjectFactory theCOF) {
-        NewTask task = theCOF.newTask();
+    // this counts 33% towards the total completion ability, need to find the book and ship it too, all are equally important
+    Preference pref = theCOF.newPreference(AspectType.END_TIME, scorefcn, 1.0);
+    newPreferences.addElement(pref);
 
-        task.setDirectObject(null);
-        task.setVerb(new Verb(BolSocietyUtils.PUBLISHERPACK_VERB));
-
-        // add the isbn preposition
-        Vector preps = new Vector();
-        NewPrepositionalPhrase npp = BolSocietyUtils.createPrepPhrase(isbn,
-                BolSocietyUtils.ISBN_PREPOSITION, theCOF);
-        preps.add(npp);
-
-        NewPrepositionalPhrase workflowPP = theCOF.newPrepositionalPhrase();
-        workflowPP.setPreposition(BolSocietyUtils.GENERIC_WORKFLOW_PREPOSITION);
-        preps.add(workflowPP);
-        task.setPrepositionalPhrases(preps.elements());
-        task.setPlan(theCOF.getRealityPlan());
-
-        // add the requested quantity as a preference, only the exact amount is preferred
-        Vector newPreferences = new Vector();
-
-        // lose 25% for every day we miss, after 4 days it's too late
-        ScoringFunction scorefcn = ScoringFunction.createPreferredAtValue(AspectValue
-                .newAspectValue(AspectType.QUANTITY, quantity), .95);
-
-        // this counts 33% towards the total completion ability, need to find the book and ship it too, all are equally important
-        Preference pref = theCOF.newPreference(AspectType.QUANTITY, scorefcn,
-                0.333);
-
-        newPreferences.addElement(pref);
-
-        // show final completion (i.e. the performance of this task is now in the past)
-        ScoringFunction complScorefcn = ScoringFunction.createPreferredAtValue(AspectValue
-                .newAspectValue(BolSocietyUtils.COMPLETED_ASPECT,
-                    BolSocietyUtils.ISCOMPLETED), 1.0);
+    // show final completion (i.e. the performance of this task is now in the past)
+    ScoringFunction complScorefcn = ScoringFunction.createPreferredAtValue(AspectValue
+        .newAspectValue(BolSocietyUtils.COMPLETED_ASPECT,
+          BolSocietyUtils.ISCOMPLETED), 1.0);
 
 
-        // this counts 0 against the preference score, since it indicates final completion of the task
-        // it isn't used to show how well planned the task is
-        Preference complPref = theCOF.newPreference(BolSocietyUtils.COMPLETED_ASPECT,
-                complScorefcn, 0.0);
-        newPreferences.addElement(complPref);
-        task.setPreferences(newPreferences.elements());
-        return task;
-    }
+    // this counts 0 against the preference score, since it indicates final completion of the task
+    // it isn't used to show how well planned the task is
+    Preference complPref = theCOF.newPreference(BolSocietyUtils.COMPLETED_ASPECT,
+        complScorefcn, 0.0);
+    newPreferences.addElement(complPref);
+    task.setPreferences(newPreferences.elements());
 
+    GISPG gis_pg = (GISPG) getPlanningFactory().createPropertyGroup("GISPG");
+    ((NewGISPG) gis_pg).setSourceCity(new String("Dayton, OH"));
+    task.setDirectObject(new GISBehavior(gis_pg));
 
-    /**
-     * <b>Description</b>: Create a shipping task to ship the books to either
-     * customer or Warehouse. <br>
-     * <b>Notes</b>:<br>
-     * - <br>
-     *
-     * @param ud UserDetails
-     * @param shippingMethod String
-     * @param theCOF ClusterObjectFactory
-     * @param quantity Quantity of books
-     *
-     * @return Task
-     */
-    private Task createShippingTask(UserDetails ud, String shippingMethod,
-        ClusterObjectFactory theCOF, int quantity) {
-        if (logging.isDebugEnabled()) {
-            logging.debug("PublisherExpander: CreateShippingTask: " + quantity);
-        }
+    return task;
 
-        NewTask task = theCOF.newTask();
-        task.setVerb(new Verb(BolSocietyUtils.SHIPPER_VERB));
-
-        Vector preps = new Vector();
-        NewPrepositionalPhrase npp = BolSocietyUtils.createPrepPhrase(ud,
-                BolSocietyUtils.USERDETAIL_PREPOSITION, theCOF);
-        preps.add(npp);
-        npp = BolSocietyUtils.createPrepPhrase(shippingMethod,
-                BolSocietyUtils.SHIPMETHOD_PREPOSITION, theCOF);
-        preps.add(npp);
-        NewPrepositionalPhrase workflowPP = getPlanningFactory()
-                                                .newPrepositionalPhrase();
-        workflowPP.setPreposition(BolSocietyUtils.GENERIC_WORKFLOW_PREPOSITION);
-        preps.add(workflowPP);
-        task.setPrepositionalPhrases(preps.elements());
-        task.setPlan(theCOF.getRealityPlan());
-        GregorianCalendar calToday = new GregorianCalendar();
-        calToday.add(GregorianCalendar.DATE, 20);
-        double shipBeforeDay = calToday.getTime().getTime();
-
-
-        // add the desired "hold money until" day as a preference, holding it less than the time required is ok
-        Vector newPreferences = new Vector();
-
-        ScoringFunction qscorefcn = ScoringFunction.createPreferredAtValue(AspectValue
-                .newAspectValue(AspectType.QUANTITY, quantity), .95);
-
-        // this counts 33% towards the total completion ability, need to find the book and ship it too, all are equally important
-        Preference qpref = theCOF.newPreference(AspectType.QUANTITY, qscorefcn,
-                0.333);
-        newPreferences.addElement(qpref);
-        // lose 5% for every day we miss, after 20 days it's too late, the credit card is no longer on hold for us
-        ScoringFunction scorefcn = ScoringFunction.createNearOrAbove(AspectValue
-                .newAspectValue(AspectType.END_TIME, shipBeforeDay), .05);
-
-        // this counts 33% towards the total completion ability, need to find the book and ship it too, all are equally important
-        Preference pref = theCOF.newPreference(AspectType.END_TIME, scorefcn,
-                1.0);
-        newPreferences.addElement(pref);
-
-        // show final completion (i.e. the performance of this task is now in the past)
-        ScoringFunction complScorefcn = ScoringFunction.createPreferredAtValue(AspectValue
-                .newAspectValue(BolSocietyUtils.COMPLETED_ASPECT,
-                    BolSocietyUtils.ISCOMPLETED), 1.0);
-
-
-        // this counts 0 against the preference score, since it indicates final completion of the task
-        // it isn't used to show how well planned the task is
-        Preference complPref = theCOF.newPreference(BolSocietyUtils.COMPLETED_ASPECT,
-                complScorefcn, 0.0);
-        newPreferences.addElement(complPref);
-        task.setPreferences(newPreferences.elements());
-
-        GISPG gis_pg = (GISPG) getPlanningFactory().createPropertyGroup("GISPG");
-        ((NewGISPG) gis_pg).setSourceCity(new String("Dayton, OH"));
-        task.setDirectObject(new GISBehavior(gis_pg));
-
-        return task;
-
-    }
+  }
 }

@@ -83,7 +83,7 @@ import java.util.Vector;
  * plan element.
  *
  * @author ttschampel
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class PublisherAllocatorPlugin extends BOLComponentPlugin {
     /** Plugin name */
@@ -207,7 +207,7 @@ public class PublisherAllocatorPlugin extends BOLComponentPlugin {
         while (enumeration.hasMoreElements()) {
             Task task = (Task) enumeration.nextElement();
             boolean haveEnough = true;
-
+			
             //Map of isbn --> BookModel
             Map bookMap = new HashMap();
 
