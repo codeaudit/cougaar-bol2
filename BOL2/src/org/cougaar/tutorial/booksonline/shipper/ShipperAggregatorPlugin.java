@@ -294,7 +294,10 @@ public class ShipperAggregatorPlugin extends BOLComponentPlugin {
     Enumeration newParents = vParents.elements();
     mp.setParentTasks(newParents);
 
-    
+    //  make a new aggregation (aggregating ship_route tasks)
+    createAggregate(sfa, task,
+        (NewComposition) mp.getComposition());
+
 
     //  make the allocation
     int number = (int) loadQuantity + quantity;
@@ -625,6 +628,27 @@ public class ShipperAggregatorPlugin extends BOLComponentPlugin {
     return result;
   }
 
+  /**
+   * <b>Description</b>: createAggregate - Cretae a new aggregate task
+   * <br><b>Notes</b>:<br>
+   *
+   * @param myAsset ShippingFleetAsset
+   * @param task Task
+   * @param comp The New Composition created for the Aggregation
+   *
+   * @return CompositeObject                  -    <br>
+   */
+  private Aggregation createAggregate(ShippingFleetAsset myAsset, Task task,
+    NewComposition comp) {
+    AllocationResult estAR = null;
+    Aggregation ag = getPlanningFactory().createAggregation(task.getPlan(),
+        task, comp, estAR);
+    comp.addAggregation(ag);
+
+    getBlackboardService().publishAdd(ag);
+
+    return ag;
+  }
 
   /**
    * <b>Description</b>: setLoadFull - set this load as filled
