@@ -33,7 +33,13 @@ database. E.G. change the username and password parameters.
 
 
 Run the Society
+	NOTE:  change the log.properties file to DEBUG if you want to see more output on the command line
+	
 	Windows
 		From the INSTALL_PATH/configs/base directory run the following:	sNode BOLNode
 	Unix/Linux
 		From the INSTALL_PATH/configs/base directory run the following: sNode.sh BOLNode
+		
+View The Web page
+
+	Open a web browser and goto:  http://localhost:8800/$OrderManager/bol		(Must use the port you are running on)
