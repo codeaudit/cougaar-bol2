@@ -1,0 +1,10 @@
+<commands>
+
+  <command>
+		<task verb="SHIPBOOKS"/>
+		<allocate>
+			<role name="ShipmentVendor"/>
+		</allocate>
+  </command>
+
+</commands>

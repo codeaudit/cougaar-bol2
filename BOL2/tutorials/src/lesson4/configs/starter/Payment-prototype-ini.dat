@@ -1,0 +1,19 @@
+[Prototype]			Organization
+
+[UniqueId]      "UTC/CivilianOrg"
+
+[UIC]           "UIC/Payment"
+
+[Relationship]
+Supporting      "OrderManager"              "PaymentAuthority"
+
+[TypeIdentificationPG]                      
+TypeIdentification          String  "UTC/RTOrg"
+Nomenclature                String  "Payment"
+AlternateTypeIdentification String  "SRC/Payment"
+
+[ClusterPG]
+MessageAddress MessageAddress "Payment"
+
+[OrganizationPG]
+Roles                Collection<Role>   "PaymentAuthority"

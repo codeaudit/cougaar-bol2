@@ -2,7 +2,7 @@
 <HTML>
 <HEAD>
 <link rel="stylesheet" href="../includes/style.css" type="text/css"></link>
-<TITLE>Lesson 1: Cougaar Configuration</TITLE>
+<TITLE>Lesson 3: Creating the custom BOL Domain</TITLE>
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head><a name="#0">
 	<BODY BGCOLOR="#FFFFFF">
@@ -14,16 +14,16 @@
 		</td>
 	</tr>
 	<tr>       
-		<td><b><a href="#step1">Step 1:  Extending the DomainAdapter</a></b></td>	
+		<td><b><a class="blackLinkBold" href="#step1">Step 1:  Extending the DomainAdapter</a></b></td>	
 	</tr>
 	<tr>
-		<td><b><a href="#step2">Step 2:  Making the Domain Accessible</a></b></td>
+		<td><b><a  class="blackLinkBold" href="#step2">Step 2:  Making the Domain Accessible</a></b></td>
 	<tr>
 	<tr>
-		<td><b><a href="#step3">Step 3:  Implement the Domain Factory</a></b></td>
+		<td><b><a  class="blackLinkBold" href="#step3">Step 3:  Implement the Domain Factory</a></b></td>
 	</tr>
 	<tr>
-		<td><b><a href="#step4">Step 4:  Create custom aspect types</a></b></td>
+		<td><b><a class="blackLinkBold"  href="#step4">Step 4:  Create custom aspect types</a></b></td>
 	</tr>
 	<tr>
 		<td><a class="blankLinkBold" href="#0">TOP</a>&nbsp;|&nbsp;<b>Step1: Extending the DomainAdpater</b></td>
@@ -90,7 +90,7 @@ public class BOLDomain extends DomainAdapter {
 		</td>
 	</tr>
 	<tr>
-		<td><a name="step2"></a><B>Step 2: Making the Domain Accessible</B></td>
+		<td><a class="blankLinkBold" href="#0">TOP</a>&nbsp;|&nbsp;<a name="step2"></a><B>Step 2: Making the Domain Accessible</B></td>
 	</tr>
 	<tr>
 		<td>
@@ -104,7 +104,7 @@ public class BOLDomain extends DomainAdapter {
 		</td>
 	</tr>
 	<tr>
-		<td><a name="step3"></a><b>Step 3: Implement the Domain Factory</b></td>
+		<td><a class="blankLinkBold" href="#0">TOP</a>&nbsp;|&nbsp;<a name="step3"></a><b>Step 3: Implement the Domain Factory</b></td>
 	</tr>
 	<tr>
 		<td>The BOLDomain needs a Factory to create the custom Assets created for use within the application. This is done by implementing the org.cougaar.core.domain.Factory interface:</td>
@@ -160,7 +160,55 @@ public class BOLFactory implements Factory {
    </td>
    </tr>
    <tr>
-   	<td></td>
+		<td><a class="blankLinkBold" href="#0">TOP</a>&nbsp;|&nbsp;<a name="step4"></a><b>Step 4: Create Custom Aspect Types</b></td>
+	</tr>
+   <tr>
+   	<td>The BOL Application needs more than the standard AspectTypes provided by Cougaar.  Any custom aspect types need to hava a Factory for the aspect type registered with the AspectTypeFactory.  Take the example of the custom Aspecttype for drop ship date.  The first step for creating a custom Aspect type is to create the Factory by creating your own <i> org.cougaar.planning.ldm.plan.AspectType.Factory</i>:</td>
+   </tr>
+   <tr>
+   	<td class="codeHead">
+   		<pre>
+   Factory DropShipDate = new Factory() {
+            public int getKey() {
+                return BolSocietyUtils.DROP_SHIP_DATE_ASPECT;
+            }
+
+
+            public String getName() {
+                return "DROPSHIPDATE";
+            }
+
+
+            public AspectValue newAspectValue(Object o) {
+                return TimeAspectValue.create(BolSocietyUtils.DROP_SHIP_DATE_ASPECT,
+                    o);
+            }
+        };
+   		</pre>
+   		<br>
+   		<br>
+   	</td>
+   </tr>
+   <tr>
+   	<td>
+   		Now that the Factory for the Drop ship date aspect type is created, the only step left is to register the aspect type with the Aspect type factory.  This is done in the BOLDomain class:
+   	</td>
+   </tr>
+   <tr>
+   	<td class="codeHead">
+   		<pre>
+if (AspectType.registry.get(BolSocietyUtils.DROP_SHIP_DATE_ASPECT) == null) {
+	AspectType.registry.registerFactory(DropShipDate);
+}
+   		</pre>
+   		<br>
+   		<br>
+   	</td>
+   </tr>
+   <tr>
+   	<td>
+   		Thats all there is to creating custom Aspect Types
+   	</td>
    </tr>
 </table>
 

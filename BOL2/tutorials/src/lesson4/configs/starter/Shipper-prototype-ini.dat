@@ -1,0 +1,21 @@
+[Prototype]			Organization
+
+[UniqueId]      "UTC/CivilianOrg"
+
+[UIC]           "UIC/Shipper"
+
+[Relationship]
+Supporting      "Warehouse"              "ShipmentVendor"
+Supporting      "Warehouse2"              "ShipmentVendor"
+Supporting      "Publisher"              "ShipmentVendor"
+
+[TypeIdentificationPG]                      
+TypeIdentification          String  "UTC/RTOrg"
+Nomenclature                String  "Shipper"
+AlternateTypeIdentification String  "SRC/Shipper"
+
+[ClusterPG]
+MessageAddress MessageAddress "Shipper"
+
+[OrganizationPG]
+Roles                Collection<Role>   "ShipmentVendor"

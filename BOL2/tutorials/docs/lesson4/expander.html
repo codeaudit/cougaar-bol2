@@ -1,0 +1,350 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<link rel="stylesheet" href="../includes/style.css" type="text/css"></link>
+<TITLE>Lesson 4:  Order Expander</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+	<BODY BGCOLOR="#FFFFFF">
+<a class="blackLinkBold" href="../index.html">TOC</a>&nbsp&nbsp;
+<a class="blackLinkBold" href="index.html">Configuration Index</a>
+<h2>Creating the Order Expander</h2>
+<br>
+<a name="top"></a>
+
+
+
+<table border="0" cellspacing="2" cellpadding="4" width="800" valign="top">
+	<tr>
+		<td>
+			When a user finishes the order process using the web interface, a Task with the Book Order details is published to the Blackboard.  The actual process needed to fullfill the book order is more complex than a single task.  Therefore, a plugin is needed to subscribe to new book orders and <b>"Expand"</b> the book order task into the additional steps needed to complete the book order process.  The OrderManagerExpanderPlugin will have this responsbility.  An Expander Plugin is used to describe a plugin which subscribes to a task and builds an expansion with a workflow to completed the task.  
+		
+		</td>
+	</tr>
+	<tr>
+		<td><a href="#step1" class="blackLinkBold">Step 1: Subscribe to the Order Task</a></td>
+	</tr>
+	<tr>
+		<td><a href="#step2" class="blackLinkBold">Step 2: Create the Clear Payment Task</a></td>
+	</tr>
+	<tr>
+		<td><a href="#step3" class="blackLinkBold">Step 3: Create the Pack book at warehouse and Final payment tasks</a></td>
+	</tr>
+	<tr>
+		<td><a href="#step4" class="blackLinkBold">Step 4: Create the Workflow and Expansion</a></td>
+	</tr>
+	<tr>
+		<td><a href="#step5" class="blackLinkBold">Step 5: Run it</a></td>
+	</tr>
+	<tr>
+		<td><a class="blankLinkBold" href="#top">Top</a>&nbsp;|&nbsp;<b>Step 1: Subscribing to the Order Task:</b></td>
+	</tr>
+	<tr>
+		<td class="codeHead">
+			<pre>
+ private UnaryPredicate allOrderTasksPredicate = new UnaryPredicate() {
+            public boolean execute(Object o) {
+                return TutorialUtils.isTaskWithVerb(o,
+                    BolSocietyUtils.ORDER_VERB);
+            }
+        };		
+        
+private IncrementalSubscription allOrderTasks = null;
+
+
+protected void setupSubscriptions() {
+        allOrderTasks = (IncrementalSubscription) getBlackboardService()
+                                                      .subscribe(allOrderTasksPredicate);
+ }    		
+			</pre>
+		</td>
+	</tr>
+	<tr>
+		<td><a href="#top">Top</a>&nbsp;|&nbsp;<a name="step2""</a><b>Step 2: Create the Clear Payment Task</b></td>
+	</tr>
+	<tr>
+		<td>Now that the subscription is setup, the order task needs to be expanded into the three major tasks within the order books process: Clear the payment, Pack the books at the warehouse, and Authorize Final payment.  In order to expand the order task into these three sub tasks, the Cougaar Expansion plan element is used and a workflow is created to contain these three steps with constriants.  These constraints are used to make sure the tasks are preformed in the proper sequence.  The first step is to create the Clear Payment Task:
+		</td>  
+	</tr>
+	<tr>
+		<td class="codeHead">
+			<pre>
+private Task createClearPaymentTask(float price, String ccInfo) {
+        NewTask task = getPlanningFactory().newTask();
+
+        task.setDirectObject(null);
+        task.setVerb(Verb.getVerb(BolSocietyUtils.PAYMENT_VERB));
+
+        Vector preps = new Vector();
+
+        //Credit Card info prep. phrase with credit card # as indirect object
+        NewPrepositionalPhrase npp = getPlanningFactory()
+                                         .newPrepositionalPhrase();
+        npp.setPreposition(BolSocietyUtils.CCINFO_PREPOSITION);
+
+
+        // KLUDGE so we don't have to type in a credit card number in the PSP interface
+        // if it's null, empty or ends with two blanks it is not a valid account number
+        if ((ccInfo == null) || (ccInfo.length() == 0) || ccInfo.endsWith("  ")) {
+            ccInfo = new String("1234568");
+        }
+
+        npp.setIndirectObject(ccInfo);
+        preps.add(npp);
+
+        NewPrepositionalPhrase workflowPP = getPlanningFactory()
+                                                .newPrepositionalPhrase();
+        workflowPP.setPreposition(BolSocietyUtils.GENERIC_WORKFLOW_PREPOSITION);
+        preps.add(workflowPP);
+
+        task.setPrepositionalPhrases(preps.elements());
+
+        task.setPlan(getPlanningFactory().getRealityPlan());
+
+        GregorianCalendar calToday = new GregorianCalendar();
+        calToday.setTime(new Date(currentTimeMillis()));
+
+        calToday.add(GregorianCalendar.DATE, 30);
+
+        long blockTillDay = calToday.getTime().getTime();
+
+        int yyyymmdd = calToday.get(Calendar.YEAR) * 10000;
+        yyyymmdd += ((calToday.get(Calendar.MONTH) + 1) * 100);
+        yyyymmdd += calToday.get(Calendar.DAY_OF_MONTH);
+
+        if (logging.isDebugEnabled()) {
+            logging.debug("Requesting payment task with money blocked until: "
+                + yyyymmdd);
+        }
+
+        // add the desired "hold money until" day as a preference, holding it more than the time requested is ok
+        Vector newPreferences = new Vector();
+
+        // lose 5% for every day we miss, if we can't hold the money for at least 10 days it's no good. The book will not have shipped by then. We assume.
+        ScoringFunction blockScorefcn = ScoringFunction.createNearOrAbove(AspectValue
+                .newAspectValue(AspectType.END_TIME, blockTillDay), .05);
+
+        // this counts 50% towards the total completion ability, need to find the book and ship it too, all are equally important
+        Preference blockPref = getPlanningFactory().newPreference(AspectType.END_TIME,
+                blockScorefcn, 0.5);
+
+        newPreferences.addElement(blockPref);
+
+
+        // lose 95% for every dollar we can't put a hold on, if he hits his credit limit in
+        // the middle of this transaction, even if only by a dollar, it's "no sale"
+        ScoringFunction priceScorefcn = ScoringFunction.createNearOrBelow(AspectValue
+                .newAspectValue(AspectType.COST, (double) price), .95);
+
+        // this counts 50% towards the total completion ability, need to find the book and ship it too, all are equally important
+        Preference pricePref = getPlanningFactory().newPreference(AspectType.COST,
+                priceScorefcn, 0.5);
+
+        newPreferences.addElement(pricePref);
+
+
+        // every part of the book order task has an indication to show final completion (i.e. when the performance
+        // of the task transistions to the past)
+        ScoringFunction complScorefcn = ScoringFunction.createPreferredAtValue(AspectValue
+                .newAspectValue(BolSocietyUtils.COMPLETED_ASPECT,
+                    BolSocietyUtils.ISCOMPLETED), 1.0);
+
+
+        // this counts 0 against the preference score, since it indicates final completion of the task
+        // it isn't used to show how well planned the task is
+        Preference complPref = getPlanningFactory().newPreference(BolSocietyUtils.COMPLETED_ASPECT,
+                complScorefcn, 0.0);
+
+        newPreferences.addElement(complPref);
+
+        task.setPreferences(newPreferences.elements());
+
+        return task;
+    }				
+				<br>
+				<br>
+			</pre>
+		</td>
+	</tr>
+	<tr>
+		<td>This is standard Cougaar Task creation, with the addition of Task prepferences and prepositional phrases.  For more information about Tasks, Prepositional Phrases and Preferences reference the Basic Course.  The Pack books at warehouse and Final Payment tasks are created similiarly.</td>
+	</tr>
+	<tr>
+		<td><a class="blankLinkBold" href="#top">Top</a>&nbsp;|&nbsp;<b>
+			<a name="step3"></a>Step3:  Creating the Pack Books at warehouse and Final Payment Tasks:</b>
+		</td>
+	</tr>
+	<tr>
+		<td>Here is the code to create the pack books and final payment tasks, both are performed similiarly to the Clear Payment Task
+	</tr>
+	<tr>
+		<td class="codeHead" >
+		<pre>
+private Task createWarehouseTask(String isbn, int quantity, UserDetails ud,
+        String shipMeth, double millis) {
+        NewTask task = getPlanningFactory().newTask();
+        task.setDirectObject(null);
+        task.setVerb(Verb.getVerb(BolSocietyUtils.WAREHOUSE_VERB));
+
+        // add the preposition data
+        Vector preps = new Vector();
+        NewPrepositionalPhrase npp = getPlanningFactory()
+                                         .newPrepositionalPhrase();
+        npp.setPreposition(BolSocietyUtils.ISBN_PREPOSITION);
+        npp.setIndirectObject(isbn);
+        preps.add(npp);
+
+        NewPrepositionalPhrase userNpp = getPlanningFactory()
+                                             .newPrepositionalPhrase();
+        userNpp.setPreposition(BolSocietyUtils.USERDETAIL_PREPOSITION);
+        userNpp.setIndirectObject(ud);
+        preps.add(userNpp);
+
+        NewPrepositionalPhrase methNpp = getPlanningFactory()
+                                             .newPrepositionalPhrase();
+        methNpp.setPreposition(BolSocietyUtils.SHIPMETHOD_PREPOSITION);
+        methNpp.setIndirectObject(shipMeth);
+        preps.add(methNpp);
+
+        NewPrepositionalPhrase workflowPP = getPlanningFactory()
+                                                .newPrepositionalPhrase();
+        workflowPP.setPreposition(BolSocietyUtils.GENERIC_WORKFLOW_PREPOSITION);
+        preps.add(workflowPP);
+
+        task.setPrepositionalPhrases(preps.elements());
+        task.setPlan(getPlanningFactory().getRealityPlan());
+
+        Vector newPreferences = new Vector();
+
+        // add the requested quantity as a preference, only the exact amount is preferred
+        ScoringFunction scorefcn = ScoringFunction.createPreferredAtValue(AspectValue
+                .newAspectValue(AspectType.QUANTITY, quantity), .95);
+        Preference pref = getPlanningFactory().newPreference(AspectType.QUANTITY,
+                scorefcn, 0.25);
+
+        newPreferences.addElement(pref);
+
+        // show final completion (i.e. the performance of this task is now in the past)
+        ScoringFunction complScorefcn = ScoringFunction.createPreferredAtValue(AspectValue
+                .newAspectValue(BolSocietyUtils.COMPLETED_ASPECT,
+                    BolSocietyUtils.ISCOMPLETED), 1.0);
+
+
+        // this counts 0 against the preference score, since it indicates final completion of the task
+        // it isn't used to show how well planned the task is
+        Preference complPref = getPlanningFactory().newPreference(BolSocietyUtils.COMPLETED_ASPECT,
+                complScorefcn, 0.0);
+
+        newPreferences.addElement(complPref);
+
+        // add start and end time so constraints will work
+        ScoringFunction startScorefcn = ScoringFunction.createPreferredAtValue(AspectValue
+                .newAspectValue(AspectType.START_TIME, (double) millis), .001);
+        Preference startPref = getPlanningFactory().newPreference(AspectType.START_TIME,
+                startScorefcn, 0.25);
+
+        newPreferences.addElement(startPref);
+
+        // add start and end time so constraints will work
+        ScoringFunction endScorefcn = ScoringFunction.createPreferredAtValue(AspectValue
+                .newAspectValue(AspectType.END_TIME, (double) millis), .001);
+        Preference endPref = getPlanningFactory().newPreference(AspectType.END_TIME,
+                endScorefcn, 0.25);
+
+        newPreferences.addElement(endPref);
+
+        task.setPreferences(newPreferences.elements());
+
+        return task;
+
+    }
+
+
+ private Task createFinalPayAuthTask(float price, String ccInfo) {
+        NewTask task = getPlanningFactory().newTask();
+
+        task.setDirectObject(null);
+        task.setVerb(Verb.getVerb(BolSocietyUtils.FINAL_PAYMENT_VERB));
+
+        Vector preps = new Vector();
+
+        NewPrepositionalPhrase npp = getPlanningFactory()
+                                         .newPrepositionalPhrase();
+        npp.setPreposition(BolSocietyUtils.CCINFO_PREPOSITION);
+
+
+        // KLUDGE so we don't have to type in a credit card number in the PSP interface
+        // if it's null, empty or ends with two blanks it is not a valid account number
+        if ((ccInfo == null) || (ccInfo.length() == 0) || ccInfo.endsWith("  ")) {
+            ccInfo = new String("1234568");
+        }
+
+        npp.setIndirectObject(ccInfo);
+        preps.add(npp);
+
+        NewPrepositionalPhrase workflowPP = getPlanningFactory()
+                                                .newPrepositionalPhrase();
+        workflowPP.setPreposition(BolSocietyUtils.GENERIC_WORKFLOW_PREPOSITION);
+        preps.add(workflowPP);
+
+        task.setPrepositionalPhrases(preps.elements());
+
+        task.setPlan(getPlanningFactory().getRealityPlan());
+
+        if (logging.isDebugEnabled()) {
+            logging.debug("Requesting actual payment of funds");
+        }
+
+        // add the desired "hold money until" day as a preference, holding it more than the time requested is ok
+        Vector newPreferences = new Vector();
+
+
+        // lose 95% for every dollar we can't get payment on, if he hits his credit limit in
+        // the middle of this transaction, even if only by a dollar, it's "no sale"
+        ScoringFunction priceScorefcn = ScoringFunction.createNearOrBelow(AspectValue
+                .newAspectValue(AspectType.COST, (double) price), .95);
+
+        // this counts 50% towards the total completion ability, need to find the book and ship it too, all are equally important
+        Preference pricePref = getPlanningFactory().newPreference(AspectType.COST,
+                priceScorefcn, 0.5);
+
+        newPreferences.addElement(pricePref);
+
+
+        // every part of the book order task has an indication to show final completion (i.e. when the performance
+        // of the task transistions to the past)
+        ScoringFunction complScorefcn = ScoringFunction.createPreferredAtValue(AspectValue
+                .newAspectValue(BolSocietyUtils.COMPLETED_ASPECT,
+                    BolSocietyUtils.ISCOMPLETED), 1.0);
+
+
+        // this counts 0 against the preference score, since it indicates final completion of the task
+        // it isn't used to show how well planned the task is
+        Preference complPref = getPlanningFactory().newPreference(BolSocietyUtils.COMPLETED_ASPECT,
+                complScorefcn, 0.0);
+
+        newPreferences.addElement(complPref);
+
+        task.setPreferences(newPreferences.elements());
+
+        return task;
+
+    }
+		</pre>
+		<br>
+		<br>
+		</td>
+	</tr>
+	<tr>
+		<td><a class="blankLinkBold" href="#top">Top</a>&nbsp;|&nbsp;<b>
+			<a name="step4"></a>Step4:  Create the workflow and expansion</b>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Now that all three tasks needed to preform the order books process have been created, all that is left is to add them to the workflow and create the Expansion.  First, Create thw workflow:
+		</td>
+	</tr>
+</table>
+</body>
+</html>
