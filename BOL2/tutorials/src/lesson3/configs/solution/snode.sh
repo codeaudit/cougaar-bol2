@@ -1,7 +1,6 @@
 #!/bin/sh
 
-COUGAAR_DEV_PATH=../../../../build/jars/bol-1.0.jar:../../../../lib/jasper-runtime.jar
-
+COUGAAR_DEV_PATH=../../build/jars/bol-lesson2-1.0.jar:../../../../../lib/jasper-runtime.jar
 
 if [ -z "$COUGAAR_INSTALL_PATH" ]; then
     echo "COUGAAR_INSTALL_PATH is not set. Using ~/COUGAAR9"

@@ -1,0 +1,7 @@
+# Warehouse location	Delivery Depot	Days Away	Route Number
+Dayton			
+	Cincinnati	1	110
+	Chicago	1	120
+	Detroit	1	130
+	Tampa	2	140
+	Boston	2	150

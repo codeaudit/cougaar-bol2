@@ -1,0 +1,220 @@
+<?xml version="1.0"?>
+
+<!-- ================================================================= -->
+<!-- CSI Utilities build file                                          -->
+<!-- ================================================================= -->
+
+<project name="BOL" default="compile" basedir=".">
+
+    <!-- Allow project to override any of these properties with a build.properties file -->
+    <property file="${basedir}/build.properties"/>
+
+    <property environment="env"/>
+    <property name="project.name" value="bol-lesson2"/>
+    <property name="project.version" value="1.0"/>
+	 <property file="${conf.dir}/env.properties"/>
+    <!-- java source dirs -->
+    <property name="src.dir" value="${basedir}/src/solution"/>
+
+    <!-- lib and conf dirs -->
+    <property name="confs.dir" value="${basedir}/configs"/>
+    <property name="lib.dir" value="${basedir}/../../../lib"/>
+    <property name="cougaar.dir" value="${env.COUGAAR_INSTALL_PATH}"/>
+   
+    <property name="clib.dir" value="${cougaar.dir}/lib"/>
+    <property name="csys.dir" value="${cougaar.dir}/sys"/>
+	<property name="javadoc.dir" value="${basedir}/javadocs"/>
+	<property name="doc.dir" value="${basedir}/docs"/>
+    <property name="build.dir" value="${basedir}/build"/>
+
+    <!-- All generated stuff below here: should all be subdirs of build.dir -->
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="project.jar.dir" value="${build.dir}/jars"/>
+    <property name="project.jarfile" value="${project.jar.dir}/${project.name}-${project.version}.jar"/>
+    <!-- optional generated stuff, not required to build -->
+    <property name="javadoc.dir" value="${build.dir}/javadoc"/>
+    <property name="jdepend.dir" value="${build.dir}/jdepend"/>
+    
+    <property name="prod.dir" value="/projects/csiutil"/>
+  	<property name="prod.doc.dir" value="${prod.dir}/doc"/>
+  	<property name="prod.file.dir" value="${prod.dir}/files"/>
+
+
+    <!-- =============================================================== -->
+    <!-- The Classpath                                                   -->
+    <!-- =============================================================== -->
+    <path id="build.classpath">
+      
+      <!-- <path refid="libs.classpath"/>-->
+        <fileset dir="${clib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${csys.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+        <!--
+        <fileset dir="${clib.dir}">
+            <include name="core.jar"/>
+        </fileset>-->
+        <pathelement path="${build.dir}"/>
+        <pathelement location="${lib.dir}/jasper-runtime.jar"/>
+        <pathelement location="${lib.dir}/jasper-compiler.jar"/>
+        
+    </path>
+    <!--
+    <path id="libs.classpath">
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+    -->
+	<!-- Define paths and paths-style properties for use elsewhere -->
+    <property name="build.classpath.property" refid="build.classpath"/>
+    <!-- <property name="libs.classpath.property" refid="libs.classpath"/>
+    <path id="lib.path" path="${lib.dir}"/>
+    <property name="lib.path.property" refid="lib.path"/> -->
+    <path id="cougaar.path" path="${cougaar.dir}"/>
+    <property name="cougaar.path.property" refid="cougaar.path"/>
+    <path id="cougaar.lib.path" path="${cougaar.lib.dir}"/>
+    <property name="cougaar.lib.path.property" refid="cougaar.lib.path"/>
+    <path id="cougaar.sys.path" path="${cougaar.sys.dir}"/>
+    <property name="cougaar.sys.path.property" refid="cougaar.sys.path"/>
+    <path id="project.jarfile.path" path="${project.jarfile}"/>
+    <property name="project.jarfile.path.property" refid="project.jarfile.path"/>
+    
+	
+
+    <!-- =============================================================== -->
+    <!-- Prepares the build directory                                    -->
+    <!-- =============================================================== -->
+    <target name="prepare">
+        <tstamp/>
+        <mkdir dir="${build.dir}"/>
+    </target>
+
+
+    <!-- ============================================================== -->
+    <!-- Cleans up generated stuff                                      -->
+    <!-- ============================================================== -->
+    <target name="clean" depends="" description="Removes generated files.">
+        <delete dir="${build.dir}"/>
+    </target>
+
+	
+
+
+	<target name="release" depends="prepare" description="Zip for release">
+		<zip destfile="${basedir}/bol2.zip">
+			<zipfileset dir="${basedir}/src" includes="**/*" prefix="src"/>
+			<zipfileset dir="${basedir}/lib" includes="**/*" prefix="lib"/>
+			<zipfileset dir="${basedir}/releasedocs" includes="**/*" prefix="docs"/>
+			<zipfileset dir="${basedir}/configs" includes="base/*" prefix="configs"/>
+			<zipfileset dir="${basedir}/build" includes="**/*" prefix="build"/>
+			<zipfileset dir="${basedir}" includes="*.xml"/>
+			<zipfileset dir="${basedir}" includes="*.txt"/>
+		</zip>
+	</target>
+
+    <!-- ============================================================== -->
+    <!-- Builds the Env                                                 -->
+    <!-- ============================================================== -->
+    <target name="all" description="Builds the entire application" depends="prepare,compile"/>
+	
+	<target name="compile-jsps">
+        <jspc srcdir="${src.dir}"
+            destdir="${src.dir}"
+            uriroot="${src.dir}"
+            classpathref="build.classpath">
+        <include name="org/cougaar/tutorial/booksonline/web/orders/*.jsp" />
+        </jspc>
+    </target>
+	<!-- =============================================================== -->
+    <!-- Generates the Source files for the assets                       -->
+    <!-- =============================================================== -->
+	<target name="assets" depends="prepare" description="Makes the assets.">
+		
+		<echo message="Creating Assets"/>
+		<echo message="${cougaar.dir}"/>
+		<java classname="org.cougaar.tools.build.AssetWriter" fork="true"
+			dir="${src.dir}/org/cougaar/tutorial/booksonline/assets">
+			<classpath>
+				<pathelement location="${clib.dir}/core.jar"/>
+				<pathelement location="${clib.dir}/build.jar"/>
+				<pathelement location="${clib.dir}/glm.jar"/>
+			</classpath>
+			<arg value="-Porg.cougaar.tutorial.booksonline.assets"/>
+			<arg value="bol_assets.def"/>
+		</java>
+		
+		<echo message="Creating Properties"/>
+		<java classname="org.cougaar.tools.build.PGWriter" fork="true"
+			dir="${src.dir}/org/cougaar/tutorial/booksonline/assets">
+			<classpath>
+				<pathelement location="${clib.dir}/core.jar"/>
+				<pathelement location="${clib.dir}/build.jar"/>
+			</classpath>
+			<arg value="properties.def"/>
+		</java>
+	</target>
+
+    <!-- =============================================================== -->
+    <!-- Compiles the source code                                        -->
+    <!-- =============================================================== -->
+    <target name="compile" depends="prepare" description="compiles.">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="on" deprecation="off" optimize="off">
+            <classpath refid="build.classpath"/>
+        </javac>
+    </target>
+
+
+    <!-- ============================================================== -->
+    <!-- Creates the jar file.                                          -->
+    <!-- ============================================================== -->
+    <target name="jar" depends="compile" description="Builds the Jar File">
+        <mkdir dir="${project.jar.dir}"/>
+        <jar jarfile="${project.jarfile}">
+            <fileset dir="${classes.dir}" includes="**/*"/>
+        </jar>
+    </target>
+
+
+    <!-- =================================================================== -->
+    <!-- Creates the API documentation                                       -->
+    <!-- =================================================================== -->
+    <target name="javadoc" depends="prepare" description="Creates the API documentation">
+        <mkdir dir="${javadoc.dir}"/>
+        <javadoc packagenames="com.*" sourcepath="${src.dir}" destdir="${javadoc.dir}" author="true" version="true" windowtitle="${name} API" doctitle="${name}" bottom="Copyright &#169; 2001-2002 Cougaar Software. All Rights Reserved.">
+            <classpath refid="build.classpath"/>
+        </javadoc>
+    </target>
+
+
+    <!-- =================================================================== -->
+    <!-- Creates JDepend Quality Metrics                                     -->
+    <!--   requires jdepend.jar to be in ANT_HOME/lib                        -->
+    <!--   available from:                                                   -->
+    <!--   http://www.clarkware.com/software/JDepend.html#download           -->
+    <!-- =================================================================== -->
+    <target name="jdepend" description="Creates JDepend quality metrics">
+        <mkdir dir="${jdepend.dir}"/>
+        <jdepend format="xml" outputfile="${jdepend.dir}/jdepend-report.xml">
+            <sourcespath>
+                <pathelement location="${src.dir}"/>
+            </sourcespath>
+            <classpath refid="build.classpath"/>
+        </jdepend>
+        <style basedir="${jdepend.dir}" destdir="${jdepend.dir}" includes="jdepend-report.xml" style="${env.ANT_HOME}/etc/jdepend.xsl"/>
+    </target>
+    
+    <!-- ============================================================== -->
+  	<!-- Deploy the jar and Docs to the project area                    -->
+  	<!-- ============================================================== -->
+  	<target name="deploy" depends="compile,javadoc,jar" description="Deploy to project area">
+    	<copy todir="${prod.doc.dir}">
+      		<fileset dir="${javadoc.dir}"/>
+    	</copy>
+    	<copy file="${project.jarfile}" todir="${prod.file.dir}"/>
+  	</target>
+
+</project>

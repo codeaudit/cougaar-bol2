@@ -1,0 +1,59 @@
+<?xml version="1.0"  encoding="US-ASCII"?>
+<!DOCTYPE ClusterAssets SYSTEM "AssetList.ldm.dtd" []>
+
+<AssetList>
+  <prototype name="ObjectAsset">
+  	<object class="org.cougaar.tutorial.booksonline.assets.BookAsset" id = "object-proto">
+  	  <field name="TypeIdentificationPG" type="object">
+        <value>
+          <object class="org.cougaar.planning.ldm.asset.NewTypeIdentificationPG">
+          <field name="TypeIdentification" type="String">
+            <value>ObjectAsset</value>
+          </field>
+          <field name="Nomenclature" type="String">
+            <value>ObjectAsset</value>
+          </field>
+          <field name="AlternateTypeIdentification" type="String">
+            <value>ObjectAsset</value>
+          </field>
+          </object>
+        </value>
+      </field>
+  	</object>
+  
+  </prototype>
+  <prototype name="PackerAsset">
+    <object class="org.cougaar.tutorial.booksonline.assets.PackerAsset" id="proto-001">
+      <field name="TypeIdentificationPG" type="object">
+        <value>
+          <object class="org.cougaar.planning.ldm.asset.NewTypeIdentificationPG">
+          <field name="TypeIdentification" type="String">
+            <value>PackerAsset</value>
+          </field>
+          <field name="Nomenclature" type="String">
+            <value>PackerAsset</value>
+          </field>
+          <field name="AlternateTypeIdentification" type="String">
+            <value>PackerAsset</value>
+          </field>
+          </object>
+        </value>
+      </field>
+  	</object>
+  </prototype>
+  <instance prototype="PackerAsset" id="Bob">
+  	<schedule end="01/05/11" start="06/11/03"/>
+  </instance>
+   <instance prototype="PackerAsset" id="Bill">
+  	<schedule end="01/05/11" start="06/11/03"/>
+  </instance>
+   <instance prototype="PackerAsset" id="Joe">
+  	<schedule end="01/05/11" start="06/11/03"/>
+  </instance>
+   <instance prototype="PackerAsset" id="Matt">
+  	<schedule end="01/05/11" start="06/11/03"/>
+  </instance>
+   <instance prototype="PackerAsset" id="Scott">
+  	<schedule end="01/05/11" start="06/11/03"/>
+  </instance>
+</AssetList>

@@ -1,0 +1,10 @@
+bol_assets.gen
+BookAsset.java
+WarehouseAsset.java
+ShippingReqAsset.java
+InventoryAsset.java
+PaymentAsset.java
+PackerAsset.java
+ShippingFleetAsset.java
+AccountAsset.java
+AssetFactory.java

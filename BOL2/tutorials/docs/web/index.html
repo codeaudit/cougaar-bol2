@@ -6,14 +6,14 @@
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
 	<BODY BGCOLOR="#FFFFFF">
-<a href="../index.html">TOC</a>
+<a class="blackLinkBold" href="../index.html">TOC</a>
 <h2>BOL Web tier</h2>
 <br>
 
 
 
 
-<table border="0" cellspacing="2" cellpadding="4" width="100%" valign="top">
+<table border="0" cellspacing="2" cellpadding="4" width="800" valign="top">
 	<tr>
 		<td>The goal of this lesson is to create the web tier of the BOL Application and demonstrate using Servlets within Cougaar.  The starter source for this tutorial is located <a href="../../src/lesson2/src/starter/org/cougaar/tutorial/booksonline/web/BOLServlet.java">here</a>  
 		</td>
@@ -33,7 +33,7 @@
 	</tr>
 	<tr>
 		<td>
-			<a href="#1">Step 1: Creating the AbstractServlet and Web Constants Interface</a><br>
+			<a href="#1">Step 1: Creating the AbstractServlet and the Web Constants Interface</a><br>
 			<a href="#2">Step 2: Creating the OrderManagerServlet</a><br>
 			<a href="#3">Step 3: Adding the JSP Presentation Layer</a><br>
 			<a href="#4">Step 4: Creating the CatalogSearchServlet on the Warehouse Agent</a><br>
@@ -50,21 +50,33 @@
 				<li>The WebConstants interface has already been created <a href="../src/lesson2/src/org/cougaar/tutorial/booksonline/web/WebConstants.java">here</a>, this file contains all of the URL parameters needed for the 6 screens needed for the web tier.</li>
 				<li>Create the BOLServlet in the web package.  The core Cougaar API provides a convenient base class, <i>org.cougaar.core.servlet.BaseServletComponent</i> for developing Servlets within Cougaar. Create the BOLServlet and extend the org.cougaar.core.servlet.BaseServletComponent class:
 				<br>
-				<pre>
-import org.cougaar.core.servlet.BaseServletComponent;
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<td class="codeHead">
 				
-public class BOLServlet extends BaseServletComponent{
+import org.cougaar.core.servlet.BaseServletComponent;<br><br>
+				
+public class BOLServlet extends BaseServletComponent{<br><br>
 				
 }
 				</pre>
-				
+		</td>
+	</tr>
+	<tr>
+		<td>
 				The BaseServletComponent class has two abstract methods which need to be impelmented:
 					<ul>
 						<li>public String getPath() : returns the path to this servlet</li>
 						<li>public Servlet createServlet() : return the Servlet to handle requests</li>
 					</ul>
 				Implement the abstract methods:
-				<pre><font color="navy">
+		</td>
+	</tr>
+	<tr>
+		<td class="codeHead">
+				<pre>
 /**Make implementation classes specify the path to the servlet*/
 protected abstract String getPath();
 				    
@@ -72,9 +84,17 @@ protected Servlet createServlet() {
 	componentServlet = new ComponentServlet();
 	return (Servlet) componentServlet;
 }
-    			</font></pre>
+    			</pre>
+    	</td>
+    </tr>
+    <tr>
+    	<td>
     			Now, create the ComponentServlet to service the HTTPRequests:
-    			<pre><font color="navy">	
+    	</td>
+    </tr>
+    <tr>
+    	<td class="codeHead">
+    			<pre>
 /**
 * Out HTTPServlet
 *
@@ -113,19 +133,44 @@ private class ComponentServlet extends HttpServlet {
     	}
 	}
 }
-				</font></pre>
-				All of the Serlet Requests will now be handled by the abstract method serviceRequest:
-				<pre><font color="navy">
+				</pre>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			
+				All of the Servlet Requests will now be handled by the abstract method serviceRequest:
+			</td>
+		</tr>
+		<tr>
+			<td class="codeHead">
+				<pre>
 protected abstract void serviceRequest(HttpServletRequest request,
 		HttpServletResponse response) throws ServletException, IOException;
-				</font></pre>
-				and all of the service requests to the BOLServlet will be forwarded to the abstract initServelt Method:
-				<pre><font color="navy">
+				</pre>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				and all of the service requests to the BOLServlet will be forwarded to the abstract initSevlet Method:
+			</td>
+		</tr>
+		<tr>
+			<td class="codeHead">
+				<pre>
 protected abstract void initServlet(ServletConfig config)
         				throws ServletException;
-				</font></pre>
+				</pre>
+			</td>
+		</tr>
+		<tr>
+			<td>
 				Now, all implementation servlets need to do is implement the getPath(), serviceRequest() and initServlet() methods.  Now, lets make some Cougaar Services available to the servlet.  The load() method of the BaseServletComponent is called when the ServletComponent is loaded.  This is a good place to get access to some of Cougaar's services. Add these member variables:
-				<pre><font color="navy">
+			</td>
+		</tr>
+		<tr>
+			<td class="codeHead">
+				<pre>
 /** Cougaar NodeIdentificationService */
 protected NodeIdentificationService nodeIdService;
 /** Cougaar AgentContainmentService */
@@ -142,9 +187,18 @@ protected NamingService namingService;
 protected UIDService uidService;
 /** Cougaar Logging Service */
 protected LoggingService logging;
-				</font></pre>
-				Now override the load() method:
-				<pre><font color="navy">
+				</pre>
+					
+	</td>
+	</tr>
+	<tr>
+		<td>				
+				Now override the load() method to get access to the Cougaar Services we want:
+		</td>
+	</tr>
+	<tr>
+		<td>
+				<pre>
 public void load() {
 	this.serviceBroker = this.bindingSite.getServiceBroker();
     this.domainService = (DomainService) serviceBroker.getService(this,
@@ -165,8 +219,16 @@ public void load() {
     super.load();
 }
 				</font></pre>
+			</td>
+		</tr>
+		<tr>
+			<td>				
 				Since we are getting the BlackboardService here, the BOLServlet needs to implement the BlackboardClient interface.  This interface requires the implementation of the getBlackboardClientName() and currentTimeMillis() methods:
-				<pre><font color="navy">
+			</td>
+		</tr>
+		<tr>
+			<td class="codeHead">
+				<pre>
 public String getBlackboardClientName() {
   return this.getClass().getName();
 }
@@ -177,20 +239,29 @@ public long currentTimeMillis() {
   return 0;
 }
 				</font></pre>
-				Now the BOLServlet is ready to be useded throughout BOL.  
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Now the BOLServlet is ready to be useed throughout BOL.  
 				</li>
 			</ul>
 		 </td>
 	</tr>		
 	<tr>
-		<td><a href="#0">top</a>-<a name="2"></a><b>Step 2: Creating the OrderManagerServlet</b></td>
+		<td><a class="blackLinkBold" href="#0">TOP</a>-<a name="2"></a><b>Step 2: Creating the OrderManagerServlet</b></td>
 	</tr>
 	<tr>
 		<td>
-			Now we create the OrderManagerServlet to process all of the logic on the OrderManager Agent, which will host the Booksonline web site.
+			A Servlet needs to be created to handle the web-centric logic on the OrderManager Agent; the OrderManagerServlet.  This Servlet will act has the web-based gateway into the BooksOnline Application.
 			<ul>
-				<li>Create the OrderManagerServlet and extend the BOLServlet:
-				<pre><font color="navy">
+				<li>Create the OrderManagerServlet and extend the BOLServlet:</li>
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<td class="codeHead">
+				<pre>
 public class OrderManagerServlet extends BOLServlet implements WebConstants {
    
     /**
@@ -236,22 +307,35 @@ public class OrderManagerServlet extends BOLServlet implements WebConstants {
        
     }
 }
-</font>				</pre>
+			</pre>
+		</td>
+	</tr>
+	<tr>
+		<td>
 				This servlet can be accessed from the web using the /bol path (identified in the getPath() method) from the OrderManager Agent.  Also, in the serviceRequest method, the ground work has been laid to get the mode of the ServletRequest to identify what has to be done with the ServletRequest.
 				<br>
-				</li><br>
+				<br>
+				<ul>
 				<li>Add the OrderManagerServlet to the OrderManager Agent
-					In the OrderManager.ini file add the OrderManagerServlet:
-				<pre><font color="navy">
+					In the OrderManager.ini file add the OrderManagerServlet:</li>
+				</ul>
+		</td>
+	</tr>
+	<tr>
+		<td class="codeHead">
+				<pre>
 plugin=org.cougaar.tutorials.booksonline.web.orders.OrderManagerServlet
-				</font></pre>
-				</li>
-			</ul>	
+				</pre>
+				
+		</td>
+	</tr>
+	<tr>
+		<td>
 		Now that the base of the OrderManagerServlet is in place, lets add the JSP Presentation Layer and integerate the JSPs with the OrderManagerServlet
 		</td>
 	</tr>
 	<tr>
-		<td><a href="#0">top</a>-<a name="3"></a><b>Step 3: Adding the JSP Presentation Layer</b></td>
+		<td><a class="topLinkBold" href="#0">TOP</a>-<a name="3"></a><b>Step 3: Adding the JSP Presentation Layer</b></td>
 	</tr>
 	<tr>
 		<td>
@@ -262,24 +346,50 @@ plugin=org.cougaar.tutorials.booksonline.web.orders.OrderManagerServlet
 				<li>Add the main BOL page
 					<br>
 					The index.jsp file is in the same package as the OrderManagerServlet (org.cougaar.tutorials.booksonline.web.orders).  The Jasper Compiler will be used to compile the JSPs into Servlets, which are then used by the OrderManagerServlet to service the ServletRequests.  Using the compile-jsps ANT target will create Servlets from the .jsp files.  Now, integrate the index.jsp into the OrderManagerServlet. First add a member variable to the OrderManagerServlet:
-					<pre><font color="navy">
+				</li>
+			</ul>
+		</td>
+	</tr>
+	<tr>	
+		<td class="codeHead">
+					<pre>
 HttpServlet _index = new index();					
-					</font></pre>
+					</pre>
+		</td>
+	</tr>
+	<tr>
+		<td>
 					Next, add the following to the initServlet method of the OrderManagerServlet to initialize the init servlet:
-					<pre><font color="navy">
+		</td>
+	</tr>
+	<tr>
+		<td class="codeHead">
+					<pre>
 _index.init(config);					
-					</font></pre> 
+					</pre>
+		</td>
+	</tr>
+	<tr>
+		<td> 
 					Where index is the Java class created as a result of the compile-jsps Ant target.
 					<br>
-					Next, add the following to the serviceRequest method of the OrderManagerServlet to forward the request to index.jsp when their is no mode:
-					<pre><font color="navy">
+					Next, add the following to the serviceRequest method of the OrderManagerServlet to forward the request to index.jsp when their is no mode; the default action:
+		</td>
+	<tr>
+		<td class="codeHead">
+					<pre>
 if (modeStr == null) {
             //send to default page
             _index.service(request, response);
 }					
-					</font></pre>
+					</pre>
+		</td>
+	</tr>
+	<tr>
+		<td>
+		
 					At this point when browing to the /bol path on the OrderManager, you will be forwarded to the index.jsp page.
-				</li>
+				<ul>
 				<li>
 					Integrate the other jsp pages into the OrderManagerServlet:
 					<ul>
@@ -290,35 +400,54 @@ if (modeStr == null) {
 					  <li>searchresults.jsp</li>
 					</ul>
 					Add the following variables to the OrderManagerServlet:
-					<pre><font color="navy">
+				</li>
+				</ul>
+		</td>
+	</tr>
+	<tr>
+		<td class="codeHead">
+					<pre>
 HttpServlet _searchresults = new searchresults();
 HttpServlet _cart = new cart();
 HttpServlet _bookdetails = new bookdetails();
 HttpServlet _checkout = new checkout();
 HttpServlet _ordercomplete = new ordercomplete();					
-					</font></pre>
+					</pre>
+		</td>
+	</tr>
+	<tr>
+		<td>
 					<br>
-					and add the following to the initServlet method:
-					<pre><font color="navy">
+					and add the following to the initServlet method to initialize the other generated servlet classes:
+		</td>
+	</tr>
+	<tr>
+		<td class="codeHead">
+					<pre>
  _searchresults.init(config);
 _cart.init(config);
 _bookdetails.init(config);
 _checkout.init(config);
 _ordercomplete.init(config);
-        </font></pre>
-				</li>
-			</ul>
-		</td>
-	</tr>
+        </pre>
+	</td>
+</tr>
+
 	<tr>
-		<td><a href="#0">top</a>-<a name="4"></a><b>Step 4: Creating the CatalogSearchServlet on the Warehouse Agent</b></td>
+		<td><a class="blackLinkBold" href="#0">TOP</a>-<a name="4"></a><b>Step 4: Creating the CatalogSearchServlet on the Warehouse Agent</b></td>
 	</tr>
 	<tr>
 		<td>
 			At this point, the OrderManagerServlet has the framework to forward a request to a number of jsp pages depending on the mode.  However, some of the work cannot be done on the OrderManager Agent because it does not have access to the Warehouse's database.  So we need to create a CatalogSearchServlet on the Warehouse Agent to enable the searching and retrieval of book data from the OrderManager's web interface.
 			<ul>
 			  <li>Create the CatalogSearchServlet in the web.warehouse package (starter template <a href="../../src/lesson2/src/starter/org/cougaar/tutorial/booksonline/web/warehouse/CatalogSearchServlet.java">here</a>):
-<pre><font color="navy">
+			  </li>
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<td class="codeHead">
+<pre>
 public class CatalogSearchServlet extends BOLServlet implements WebConstants {
    /**
    * Get Path to this servlet
@@ -358,12 +487,22 @@ public class CatalogSearchServlet extends BOLServlet implements WebConstants {
 
   
 }
-</font></pre>			  
+</pre>			  
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<ul>
+					<li>
+			  
 			
-			  </li>
-			<li>
-			Implement the search functionality in the CatalogSearchServlet. First we need to search the database, so add the DatabaseService and get access to by overriding the load method:
-<pre><font color="navy">
+			Implement the search functionality in the CatalogSearchServlet. First we need to search the database, so add the DatabaseService to the Servlet and get access to it by overriding the load method and getting it from the ServiceBroker:
+			</li>
+		</ul>
+		</td>
+	</tr>
+		<td class="codeHead">
+<pre>
 DatabaseService dbService = null;
 
  public void load() {
@@ -377,10 +516,18 @@ DatabaseService dbService = null;
         DatabaseService.class, null);
 
   }
-</font>
+
 </pre>
-		Now with the database servive available add functionality to parse the ServletRequest and then to retrieve book data:
-<pre><font color="navy">
+	</td>
+</tr>
+<tr>
+	<td>
+		Now with the database servive available, add functionality to parse the ServletRequest and then to retrieve book data:
+	</td>
+</tr>
+<tr>
+	<td class="codeHead">
+	<pre>
 public void doGet(HttpServletRequest request, HttpServletResponse response) {
     try {
       String modeStr = request.getParameter(MODE);
@@ -494,25 +641,41 @@ private void getBook(HttpServletRequest request, HttpServletResponse response) {
       + book.getPublisherNotes() + ";" + book.getLength() + ";" + book.getTOC());
 
   }      		
-</font>
+
 </pre>
+	</td>
+</tr>
+<tr>
+	<td>
 			Now just link the following to the serviceRequest method to call the doGet method:
-<pre><font color="navy">
-doGet(request, response);
-</font></pre>
-			</li>  
-			These methods parse the ServletRequest for URL parameters and retrieve data from the database accordingly. The results are then written back to the client using the outputBookDetailsMethod. 
-			</ul>
 		</td>
 	</tr>
 	<tr>
-		<td><a href="#0">top</a>-<a name="5"></a><b>Step 5: Adding the business logic to the OrderManagerServlet</b></td>
+		<td class="codeHead">
+<pre>
+doGet(request, response);
+</pre>
+		</td>
+	</tr>
+	<tr><td>
+		<td>			 
+			These methods parse the ServletRequest for URL parameters and retrieve data from the database accordingly. The results are then written back to the client using the outputBookDetailsMethod. 
+			
+		</td>
+	</tr>
+	<tr>
+		<td><a class="blackLinkBold" href="#0">TOP</a>-<a name="5"></a><b>Step 5: Adding the business logic to the OrderManagerServlet</b></td>
 	</tr>
 	<tr>
 		<td>
 			<ul>
-				<li>Create a switch statement for all of the possible web modes by modifying the serviceRequest method as follows:
-				<pre><font color="navy">
+				<li>Create a switch statement for all of the possible web modes by modifying the serviceRequest method as follows:</li>
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<td class="codeHead">
+				<pre>
 if (modeStr == null) {
      //send to default page
 	_index.service(request, response);
@@ -542,9 +705,17 @@ if (modeStr == null) {
             break;
         }
  }				
-				</font></pre>
-				The submitOrder method of the code block above is the only block we will cover here because it is the only method that interacts with Cougaar.  This submitOrder method is the method which creates the order and publishes it to the Blackboard.  Here is the source of the submitOrder method: 
-				<pre><font color="navy">
+				</pre>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				The submitOrder method of the code block above is the only block we will cover here because it is the only method that interacts with Cougaar.  This submitOrder method is the method which creates the order and publishes it to the Blackboard.  Here is the source of the submitOrder method:
+			</td>
+		</tr>
+		<tr>
+			<td class="codeHead"> 
+				<pre>
 private void submitOrder(HttpServletRequest request,
         HttpServletResponse response) throws ServletException, IOException {
         if (logging.isDebugEnabled()) {
@@ -584,13 +755,23 @@ private void submitOrder(HttpServletRequest request,
         request.setAttribute("UID", task.getUID());
         _ordercomplete.service(request, response);
     }				
-				</font></pre>
-				As you can see in the above code fragement, the BolSocietyUtils.createOrderTask method is called to create a Cougaar Task, which is then published to the Blackboard.
-				</li>
-				<li>Creating the Order Task
-				<br>
-				The BolSocietyUtils.createOrderTask method creates and populates a Cougaar Task to contain Order information.  First the prepositionalphrases of the Order's task are populated:  
-				<pre><font color="navy">
+				</pre>
+		</td>
+	</tr>
+	<tr>
+		<td>				
+				In the above code fragment, the BlackboardService is used to publish the Task to the OrderManager's Blackboard.  The openTransaction and closeTransaction methods are used because the Blackboard is being used from outside of an execute block of a Plugin.  The BolSocietyUtils.createOrderTask utility method is called to construct the Order Task:
+				<ul>
+					<li>Creating the Order Task
+					<br>
+					The BolSocietyUtils.createOrderTask method creates and populates a Cougaar Task to contain Order information.  First the prepositionalphrases of the Order's task are populated:
+					</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td class="codeHead">  
+				<pre>
 public static void setOrderPrepPhrases(NewTask task, Vector bo,
     UserDetails ud, String ccInfo, String shipMethod,
     ClusterObjectFactory theCOF) {
@@ -643,9 +824,17 @@ public static void setOrderPrepPhrases(NewTask task, Vector bo,
 
     task.setPrepositionalPhrases(preps.elements());
   }				
-				</font></pre> 
+				</pre>
+			</td>
+		</tr>
+		<tr>
+			<td> 
 				PrepositionalPhrases are created to hold the credit card info, shipping method, user data, order details, isbn(s)/quantity of the orderd books, and a phrase marking this task as being part of a workflow.  The Task preferences are created in the setOrderPreferences method:
-				<pre><font color="navy">
+			</td>
+		</tr>
+		<tr>
+			<td class="codeHead">
+				<pre>
 public static void setOrderPreferences(NewTask task, Vector boVec,
     ClusterObjectFactory theCOF) {
     Vector newPreferences = new Vector();
@@ -699,11 +888,19 @@ public static void setOrderPreferences(NewTask task, Vector boVec,
 
 
   }				
-				</font></pre>
-				The 3 preferences created on the order task are for completed, cost, and quantity aspect types.
+				</pre>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				The above code fragment shows the creation of the Preferences of the Order Task.  The preferences include values for the completion, cost and quantity aspect types.
 				<br>
-				And finally the createOrderTask method :
-				<pre><font color="navy">
+				And finally the createOrderTask method which utilized the previous methods outlined:
+			</td>
+		</tr>
+		<tr>
+			<td class="codeHead">
+				<pre>
  public static Task createOrderTask(PlanningFactory pf, Vector bo,
     String ccInfo, UserDetails ud, String shipMethod, String verb) {
     NewTask task = pf.newTask();
@@ -715,19 +912,20 @@ public static void setOrderPreferences(NewTask task, Vector boVec,
 
     return (task);
   }				
-				</font></pre>
-				</li>
-			</ul>
+				</pre>
+				
+			
 		</td>
 	</tr>
 	<tr>
-		<td><a href="#0">top</a>-<a name="6"></a><b>Step 6: Running the Society</b></td>
+		<td><a class="blackLinkBold" href="#0">TOP</a>-<a name="6"></a><b>Step 6: Running the Society</b></td>
 	</tr>
 	<tr>
 		<td>
-			You can now run the society and browse to the /bol servlet to purchase some books and to create an order task.  At this point nothing happens when the OrderTask is published on the Blackboard, but you can view the OrderTask using the Cougaar Task Servlet. To Run:
+			You can now run the society and browse to the /bol servlet to purchase some books and to create an order task.  At this point nothing happens when the OrderTask is published on the Blackboard, but you can view the OrderTask using the Cougaar Task Servlet. To Run use the snode script:
 			<ul>
-				<li>Run the snode</li>
+				<li><a href="../../src/lesson2/configs/solution/snode.bat">snode.bat</a></li>
+				<li><a href="../../src/lesson2/configs/solution/snode.sh">snode.sh</a></li>
 			</ul>
 		</td>
 	</tr>

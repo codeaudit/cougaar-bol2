@@ -2,7 +2,7 @@
 
 
 set COUGAAR_DEV_PATH=.
-set COUGAAR_DEV_PATH=%COUGAAR_DEV_PATH%;../../../../build/jars/bol-1.0.jar;../../../../lib/jasper-runtime.jar
+set COUGAAR_DEV_PATH=%COUGAAR_DEV_PATH%;../../build/jars/bol-lesson2-1.0.jar;../../../../../lib/jasper-runtime.jar
 
 REM Make sure that COUGAAR_INSTALL_PATH is specified
 IF NOT "%COUGAAR_INSTALL_PATH%" == "" GOTO L_2
@@ -37,7 +37,7 @@ CALL %COUGAAR_INSTALL_PATH%\bin\setarguments.bat
 
 REM pass in "NodeName" to run a specific named Node
 REM pass in "admin" to run SANode separately
-set MYARGUMENTS= -c -n "%1"
+set MYARGUMENTS= -c -n "BOLNode"
 set MYPROPERTIES=%MYPROPERTIES% -Dorg.cougaar.core.logging.config.filename=log.properties
 
 

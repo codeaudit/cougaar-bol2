@@ -1,0 +1,231 @@
+- - - - - List of machine generated PropertyGroups - - - - -
+* AccountPG
+Customer account record
+    String Customeraccount;	//account number
+    String Customername;	//customer name
+    String Customeraddress;	//customer address
+    double Customerbalance;	//what he owes
+    double Customerlimit;	//what his limit is
+* AuthorPG
+Author info
+    String DisplayName;	//name as the author wants it displayed
+    String Affiliation;	//Overview of author's qualifications, history, or relevant experience
+    String Interview;	//Transcript of an interview with the author, if available.
+    String SearchableName;
+* GISPG
+Estimated time of arrival PG based on location
+    String SourceCity;
+    double FromLat;
+    double FromLong;
+* InvListPG
+Parallel lists of book information for the catalog display
+    List<OverviewPG> OverviewList;
+    List<AuthorPG> AuthList;
+    List<PublisherPG> PublList;
+    List<SpecificsPG> SpefsList;
+    List<PricePG> PriceList;
+    List<ReviewPG> ReviewList;
+    List<StockPG> StockList;
+* OverviewPG
+Characteristics and properties of the object
+    String Title;
+    String TableOfContents;
+    int SalesRank;
+    String PublisherNotes;
+    String SubjectKeywords;
+    String SearchableTitle;
+* PackTimePG
+number of minutes per book
+    int Minutes;
+* PaymentPG
+information related to credit card payment authorization
+    String AuthNumber;
+    float AmtAuthorized;
+    long BlockEndDate;	//ending date this money will be on hold for this transaction
+* PricePG
+Definition of Pricing Strategy
+    float ListPrice;	//suggested price by Publisher
+    float OurPrice;	//price we charge
+    long EndDateOfDiscount;	//Date special pricing ends, if ever
+* PublisherPG
+Publisher info
+    String Name;	//Publisher company name
+    String Address;	//Publisher address
+    String City;	//Publisher city
+    String State;	//State of Province in which publisher has hq
+* ReviewPG
+Official and customer reviews of the product
+    String Review;	//The text of the review
+    float AvgRating;	//numerical average of rating by all parties
+    int NumberOfReviews;	//running count of reviews submitted
+* ShipperPG
+Simple representation of shipping request
+    String ShipperName;	//Company Name
+    String DestinationAddress;	//where the book(s) are going
+    String Method;
+* SpecificsPG
+facts about this specific book, cd, dvd, or whatever
+    String ShipMessage;	//message as to when this can ship
+    int PhotoIndex;	//index into some (as yet undefined) array of images of the products
+    int MediaType;	//flag values indicating which form this item takes; CD, DVD, VHS, Book, Beta
+    int PageTrackCount;	//number of pages in book or number of tracks on CD or lenght of movie in minutes
+    long ReleaseDate;	//month and year item is available for general consumption
+    String ISBNASIN;	//specific identifying number for this item, not to be confused with a serial number of each physical copy of this
+    String Dimension;	//text describing the shape or the item, if applicable
+* StockPG
+Simple representation of stock tracking metrics
+    int ShelfCount;	//Number of books on the shelves at the moment
+    int OnOrderCount;	//Number the publisher is sending us
+    String SupplierName;	//Name from which to order more when necessary
+* VehiclePG
+Vehicles used for shipping
+    String Type;	//type of vehicle(plane or truck)
+    int Capacity;	//How much can it hold
+    String Region;	//what region the vehicle serves
+    int Load;	//current load
+    String Vid;	//Vehicle ID
+    boolean Free;	//vehicle availability
+    int Containers;	//number of loads waiting for this asset
+* WareHouseDescriptionPG
+Characteristics of a warehouse description
+    String Name;
+    String Address1;
+    String Address2;
+    String City;
+    String State;
+    String ZipCode;
+    String CcExpDate;
+    long CcNumber;
+* global
+- - - - - Permuted index of PropertyGroupSlots - - - - -
+* ISBNASIN
+    SpecificsPG
+* Address
+    PublisherPG
+* Address1
+    WareHouseDescriptionPG
+* Address2
+    WareHouseDescriptionPG
+* Affiliation
+    AuthorPG
+* AmtAuthorized
+    PaymentPG
+* AuthList
+    InvListPG
+* AuthNumber
+    PaymentPG
+* AvgRating
+    ReviewPG
+* BlockEndDate
+    PaymentPG
+* Capacity
+    VehiclePG
+* CcExpDate
+    WareHouseDescriptionPG
+* CcNumber
+    WareHouseDescriptionPG
+* City
+    PublisherPG
+    WareHouseDescriptionPG
+* Containers
+    VehiclePG
+* Customeraccount
+    AccountPG
+* Customeraddress
+    AccountPG
+* Customerbalance
+    AccountPG
+* Customerlimit
+    AccountPG
+* Customername
+    AccountPG
+* DestinationAddress
+    ShipperPG
+* Dimension
+    SpecificsPG
+* DisplayName
+    AuthorPG
+* EndDateOfDiscount
+    PricePG
+* Free
+    VehiclePG
+* FromLat
+    GISPG
+* FromLong
+    GISPG
+* Interview
+    AuthorPG
+* ListPrice
+    PricePG
+* Load
+    VehiclePG
+* MediaType
+    SpecificsPG
+* Method
+    ShipperPG
+* Minutes
+    PackTimePG
+* Name
+    PublisherPG
+    WareHouseDescriptionPG
+* NumberOfReviews
+    ReviewPG
+* OnOrderCount
+    StockPG
+* OurPrice
+    PricePG
+* OverviewList
+    InvListPG
+* PageTrackCount
+    SpecificsPG
+* PhotoIndex
+    SpecificsPG
+* PriceList
+    InvListPG
+* PublList
+    InvListPG
+* PublisherNotes
+    OverviewPG
+* Region
+    VehiclePG
+* ReleaseDate
+    SpecificsPG
+* Review
+    ReviewPG
+* ReviewList
+    InvListPG
+* SalesRank
+    OverviewPG
+* SearchableName
+    AuthorPG
+* SearchableTitle
+    OverviewPG
+* ShelfCount
+    StockPG
+* ShipMessage
+    SpecificsPG
+* ShipperName
+    ShipperPG
+* SourceCity
+    GISPG
+* SpefsList
+    InvListPG
+* State
+    PublisherPG
+    WareHouseDescriptionPG
+* StockList
+    InvListPG
+* SubjectKeywords
+    OverviewPG
+* SupplierName
+    StockPG
+* TableOfContents
+    OverviewPG
+* Title
+    OverviewPG
+* Type
+    VehiclePG
+* Vid
+    VehiclePG
+* ZipCode
+    WareHouseDescriptionPG

@@ -1,0 +1,31 @@
+<commands>
+
+  <command>
+		<task verb="CLEARPAYMENT"/>
+		<allocate>
+			<role name="PaymentAuthority"/>
+		</allocate>
+  </command>
+
+  <command>
+		<task verb="GETTHEMONEY"/>
+		<allocate>
+			<role name="PaymentAuthority"/>
+		</allocate>
+  </command>
+
+  <command>
+		<task verb="BOOKSFROMWAREHOUSE"/>
+		<allocate>
+			<role name="WarehouseControl"/>
+		</allocate>
+  </command>
+
+  <command>
+		<task verb="UPDATEREVIEW"/>
+		<allocate>
+			<role name="ReviewUpdateControl"/>
+		</allocate>
+  </command>
+
+</commands>

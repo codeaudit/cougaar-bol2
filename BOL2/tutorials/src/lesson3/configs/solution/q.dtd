@@ -1,0 +1,12 @@
+<!ELEMENT queryfile (database*)>
+
+<!ELEMENT database (query*)>
+<!ATTLIST database url ID #REQUIRED>
+<!ATTLIST database driver ID #REQUIRED>
+<!ATTLIST database username ID #REQUIRED>
+<!ATTLIST database password ID #REQUIRED>
+
+<!ELEMENT query CDATA>
+<!ATTLIST query name ID #REQUIRED>
+
+
