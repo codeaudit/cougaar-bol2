@@ -1,0 +1,168 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<link rel="stylesheet" href="../includes/style.css" type="text/css"></link>
+<TITLE>Lesson 1: Cougaar Configuration</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head><a name="#0">
+	<BODY BGCOLOR="#FFFFFF">
+<a class="blankLinkBold" href="../index.html">TOC</a>	
+<h2>Creating the Custom BOL Domain</h2>
+<table width="800">
+	<tr>
+		<td>Shows how to create a custom BOL domain and how to create your own custom aspect types.
+		</td>
+	</tr>
+	<tr>       
+		<td><b><a href="#step1">Step 1:  Extending the DomainAdapter</a></b></td>	
+	</tr>
+	<tr>
+		<td><b><a href="#step2">Step 2:  Making the Domain Accessible</a></b></td>
+	<tr>
+	<tr>
+		<td><b><a href="#step3">Step 3:  Implement the Domain Factory</a></b></td>
+	</tr>
+	<tr>
+		<td><b><a href="#step4">Step 4:  Create custom aspect types</a></b></td>
+	</tr>
+	<tr>
+		<td><a class="blankLinkBold" href="#0">TOP</a>&nbsp;|&nbsp;<b>Step1: Extending the DomainAdpater</b></td>
+	</tr>
+	<tr>
+		<td>The first step in creating your own Domain is the extend <i>org.cougaar.core.domain.DomainAdapter</i>:</td>
+	</tr>
+	<tr>
+		<td class="codeHead">
+			<pre>
+public class BOLDomain extends DomainAdapter {
+   
+    /**
+     * Get the Domain Name
+     *
+     * @return Domain name
+     */
+    public String getDomainName() {
+        return "BOLDomain";
+    }
+
+
+    /**
+     * Load the domain and custom aspect types used throughout BOL
+     */
+    public void load() {
+        super.load();
+     
+    }
+
+
+   
+
+
+    /**
+     * Load BOLFactory
+     */
+    protected void loadFactory() {
+        
+
+    }
+
+
+    /**
+     * Load Logic Providers
+     */
+    protected void loadLPs() {
+    }
+
+
+    /**
+     * Load XPlan
+     */
+    protected void loadXPlan() {
+       
+
+    }
+}			
+			</pre>
+		</td>
+	</tr>
+	<tr>
+		<td>This implementation does not provide any real implementation except for the returning of "BOLDomain" as the Doman's name.  This name will be used to reference the BOLDomain in the LDMDomains.ini file:
+		</td>
+	</tr>
+	<tr>
+		<td><a name="step2"></a><B>Step 2: Making the Domain Accessible</B></td>
+	</tr>
+	<tr>
+		<td>
+			In order for the BOLDomain to be used, it needs to be added to the LDMDomain.ini file:
+		</td>
+	</tr>
+	<tr>
+		<td class="codeHead"><Br><br>
+			BOLDomain=org.cougaar.tutorials.booksonline.domain.BOLDomain
+			<br><br>
+		</td>
+	</tr>
+	<tr>
+		<td><a name="step3"></a><b>Step 3: Implement the Domain Factory</b></td>
+	</tr>
+	<tr>
+		<td>The BOLDomain needs a Factory to create the custom Assets created for use within the application. This is done by implementing the org.cougaar.core.domain.Factory interface:</td>
+	</tr>
+	<tr>
+		<td class="codeHead"><Br><Br><pre>
+public class BOLFactory implements Factory {
+    /**
+     * Creates a new BOLFactory object.
+     */
+    public BOLFactory() {
+    }
+
+
+    /**
+     * Creates a new BOLFactory object.
+     *
+     * @param pf PlanningFactory
+     */
+    public BOLFactory(PlanningFactory pf) {
+        pf.addAssetFactory(new org.cougaar.tutorial.booksonline.assets.AssetFactory());
+        pf.addPropertyGroupFactory(new org.cougaar.tutorial.booksonline.assets.PropertyGroupFactory());
+
+    }
+}</pre>
+		</td>
+	</tr>
+	<tr>
+		<td>The BOLFactory is a simple factory that adds the BOL property groups and assets to the PlanningFactory.</td>
+	</tr> 
+	<tr>
+		<td>Now, the factory needs to be loaded by the BOLDomain.  The DomainAdapter contains a loadFactory method to do this.  Override the loadFactory method:</td>
+	</tr>
+	<tr>
+		<td class="codeHead">	
+			<br>
+			<br>
+			<pre>
+ /**
+     * Load BOLFactory
+     */
+    protected void loadFactory() {
+        DomainBindingSite bindingSite = (DomainBindingSite) getBindingSite();
+        DomainService ds = (DomainService) bindingSite.getServiceBroker()
+                                                      .getService(this,
+                DomainService.class, null);
+        setFactory(new BOLFactory((PlanningFactory) ds.getFactory("planning")));
+
+    }
+    <pre>
+    <br>
+    <br>
+   </td>
+   </tr>
+   <tr>
+   	<td></td>
+   </tr>
+</table>
+
+</BODY>
+</HTML>
