@@ -108,14 +108,34 @@
 
 
 	<target name="release" depends="prepare" description="Zip for release">
-		<zip destfile="${basedir}/bol2.zip">
-			<zipfileset dir="${basedir}/src" includes="**/*" prefix="src"/>
-			<zipfileset dir="${basedir}/lib" includes="**/*" prefix="lib"/>
-			<!--<zipfileset dir="${basedir}/releasedocs" includes="**/*" prefix="docs"/>-->
-			<zipfileset dir="${basedir}/configs" includes="base/*" prefix="configs"/>
-			<zipfileset dir="${basedir}/build" includes="**/*" prefix="build"/>
-			<zipfileset dir="${basedir}" includes="*.xml"/>
-			<zipfileset dir="${basedir}" includes="*.txt"/>
+		<mkdir dir="${basedir}/release"/>
+		<mkdir dir="${basedir}/release/sys"/>
+		<mkdir dir="${basedir}/release/bol2"/>
+		<mkdir dir="${basedir}/release/bol2/configs"/>
+		<mkdir dir="${basedir}/release/bol2/javadocs"/>
+		
+		
+	    <copydir src="${basedir}/lib"
+    		 dest="${basedir}/release/sys"
+    		 includes="**/*.jar"
+    		 excludes="servlet.jar"/>
+    	<copydir src="${basedir}/build/jars"
+    		 dest="${basedir}/release/sys"
+    		 includes="**/*.jar"/>
+    	<copydir src="${basedir}/configs"
+    		 dest="${basedir}/release/bol2/configs"
+    		 includes="**/**"/>	 
+     	<copydir src="${basedir}/javadocs"
+     		 dest="${basedir}/release/bol2/javadocs"
+     		 includes="**/**"/>
+      	<copydir src="${basedir}"
+      		 dest="${basedir}/release"
+      		 includes="readme.txt"/>
+		
+ 
+	
+		 <zip destfile="${basedir}/bol2.zip">
+			<zipfileset dir="${basedir}/release" includes="**/**"/>
 		</zip>
 	</target>
 

@@ -27,8 +27,8 @@ for arg in \
     -Dorg.cougaar.core.agent.startTime=08/10/2005 \
     -Dorg.cougaar.society.file=${SOCIETY_FILE} \
     -Dorg.cougaar.node.name=${NODE_NAME} \
-    -Dorg.cougaar.name.server=localhost:8000 \
-    -Dorg.cougaar.core.load.wp.server=false 
+    -Dorg.cougaar.name.server=127.0.0.1:8000 \
+    -Dorg.cougaar.core.load.wp.server=true 
 do
     export args="${args} ${arg}"
 done
@@ -37,9 +37,9 @@ done
 bootclass="org.cougaar.bootstrap.Bootstrapper"
 nodeclass="org.cougaar.core.node.Node"
 boostrapper=${COUGAAR_INSTALL_PATH}/lib/bootstrap.jar
-COUGAAR_DEV_PATH=../../build/jars/bol-1.0.jar:../../lib/jasper-runtime.jar
 
-myclasspath=$boostrapper;$COUGAAR_DEV_PATH
+
+myclasspath=$boostrapper
 #echo $myclasspath
 echo $args
 $JAVA_HOME/bin/java $args -classpath $myclasspath $bootclass $nodeclass 
