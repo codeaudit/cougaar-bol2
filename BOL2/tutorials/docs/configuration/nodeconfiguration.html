@@ -12,16 +12,27 @@
 		<td>
 		    The Node configuration file contains the agents which make up the node, as well as components which are part of the NodeAgent.<br>
 		    Below is an example Node Configuration file named TestNode.ini:
+		</td>
+	</tr>
+	<tr>
+		<td class="codeHead">
 			<br><pre>
 			[ Clusters ]
 			cluster = AgentA
 			cluster = AgentB
 			cluster = AgentC
-			
-
 			</pre>
+		</td>
+	</tr>
+	<tr>
+		<td>
 			In this example the <i>TestNode</i> Node configuration file identifies three agents to be loaded into the TestNode Node: AgentA, AgentB, and AgentC.
 			When the node is being loaded, it looks for agent configuration files following the naming covention [AGENT_NAME].ini.  Therefore, for our TestNode Node, there also needs to be a corresponding agent configuration file for AgentA named AgentA.ini, AgentB called AgentB.ini and AgentC called AgentC.ini
+			<br>
+			<br>
+			<b>Adding your own Agent Implementation</b><br>
+			You can extend and implement you own custom Agent if the SimpleAgent implementation provided with Cougaar is not sufficient.  Using your own agent implementation is quite simple, and includes chaning the standard cluster=AGENT_NAME line in the node configuration file to  something like:
+			Node.AgentManager.Agent=com.foo.agent.SampleAgent(AgentA)
 			<br><br>
 			Now that we have covered the basics to Configuring a Node, the next step is to <a href="ldmdomains.html">configure the Domains</a>.	
 		</td>

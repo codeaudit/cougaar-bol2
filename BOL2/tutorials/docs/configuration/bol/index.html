@@ -6,7 +6,7 @@
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
 	<BODY BGCOLOR="#FFFFFF">
-<a href="../index.html">Configuration tutorial</a>&nbsp;<a href="../../index.html">TOC</a>	
+<a class="blackLinkBold" href="../index.html">Configuration tutorial</a>&nbsp;<a class="blackLinkBold" href="../../index.html">TOC</a>	
 <h2>BOL Configuration</h2>
 
 
@@ -81,6 +81,10 @@
 		   			
 		   			<br><br>
 		   			At this point you should have the LDMDomains.ini, BOLNode.ini and the Agent .ini files completed.  The next step is to define replationships between the Organizations within the BOLSociety so Tasks can be allocated from one organization to another. The prototype-ini.dat will identify the relationships each agent has with other agents within the BOLSociety.  Lets take the Shipper agent as an example.  The shipper organization supports the Publisher and Warehouse Organizations by providing a shipping service. Therefore in the Shipper agent's prototype-ini.dat file, it must be identified that the Shipper agent supports the "ShipmentVendor" to the Payment and Warehouse Agents.  Doing this will enable plugins on the Publisher and Payment agents to find an organization that fullfills the role of "ShipmentVendor" and will find  the Shipper Agent's Organization. Now that the Organization can be found on the Blackboard, Tasks can be allocated to the Shipper.  Here is the Shipper's prototype-ini.dat file:
+		   		</td>
+		   	</tr>
+		   	<tr>
+		   		<td colspan="2" class="codeHead">
 		   			<pre>
 		   			[Prototype]			Organization
 
@@ -105,6 +109,10 @@
 					Roles                Collection<Role>   "ShipmentVendor"
 		   			</pre>
 		   			<br>
+		   		</td>
+		   	</tr>
+		   	<tr>
+		   		<td colspan="2">
 		   			In order for the Organzation Assets to be successfully created and propagated to the correct agents, two plugins must be added to each agent:
 		   			<br>
 		   			 1. org.cougaar.mlm.plugin.organization.OrgRTDataPlugin<br>
@@ -122,17 +130,17 @@
 		   			Finally, complete the Warehouse Agent's prototype-ini.data file, it provides the supporting Role of "WarehouseControl" to the OrderManager Agent.
 		   			<br><br>
 		   			br>Starter files:<br>
-		   			<a href="../../src/lesson1/src/OrderManager-prototype-ini.dat">OrderManager</a><br>
-		   			<a href="../../src/lesson1/src/Publisher-prototype-ini.dat">Publisher</a><br>
-		   			<a href="../../src/lesson1/src/Payment-prototype-ini.dat">Payment</a><br>
-		   			<a href="../../src/lesson1/src/Warehouse-prototype-ini.dat">Warehouse</a><br>
-		   			<a href="../../src/lesson1/src/Shipper-prototype-ini.dat">Shipper</a>
+		   			<a href="../../../src/lesson1/src/OrderManager-prototype-ini.dat">OrderManager</a><br>
+		   			<a href="../../../src/lesson1/src/Publisher-prototype-ini.dat">Publisher</a><br>
+		   			<a href="../../../src/lesson1/src/Payment-prototype-ini.dat">Payment</a><br>
+		   			<a href="../../../src/lesson1/src/Warehouse-prototype-ini.dat">Warehouse</a><br>
+		   			<a href="../../../src/lesson1/src/Shipper-prototype-ini.dat">Shipper</a>
 		   			<br><br>Solutions:<br>
-		   			<a href="../../src/lesson1/solution/OrderManager-prototype-ini.dat">OrderManager</a><br>
-		   			<a href="../../src/lesson1/solution/Publisher-prototype-ini.dat">Publisher</a><br>
-		   			<a href="../../src/lesson1/solution/Payment-prototype-ini.dat">Payment</a><br>
-		   			<a href="../../src/lesson1/solution/Warehouse-prototype-ini.dat">Warehouse</a><br>
-		   			<a href="../../src/lesson1/solution/Shipper-prototype-ini.dat">Shipper</a>
+		   			<a href="../../../src/lesson1/solution/OrderManager-prototype-ini.dat">OrderManager</a><br>
+		   			<a href="../../../src/lesson1/solution/Publisher-prototype-ini.dat">Publisher</a><br>
+		   			<a href="../../../src/lesson1/solution/Payment-prototype-ini.dat">Payment</a><br>
+		   			<a href="../../../src/lesson1/solution/Warehouse-prototype-ini.dat">Warehouse</a><br>
+		   			<a href="../../../src/lesson1/solution/Shipper-prototype-ini.dat">Shipper</a>
 		   			
 		   		</td>
 		   	</tr>

@@ -6,11 +6,11 @@
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
 	<BODY BGCOLOR="#FFFFFF">
-<a href="index.html">Configuration Trail</a>&nbsp;<a href="../index.html">TOC</a>	
-<table>
+<a class="blackLinkBold" href="index.html">Configuration Trail</a>&nbsp;<a class="blackLinkBold" href="../index.html">TOC</a>	
+<table width="800">
 	<tr>
 		<td>
-			Relationships between Agents can be defined using the prototype-ini.dat file.  This file, along with the addition of two Cougaar plugins to an Agent will enable the creation of Organization Assets and the transfer of these Assets to other Agents as identified by the relationships in the Prototype-ini.dat file.
+			Agents can often represent Organizations.  The <AGENT_NAME>-prototype-ini.dat file defines the relatinships between these Organizations.  This file, along with the addition of two Cougaar plugins to an Agent will enable the creation of Organization Assets and the transfer of these Assets to other Agents as identified by the relationships in the Prototype-ini.dat file.  This make its easy to Task another agent to perform a Task using Cougaar's Task Allocation and assigning the Organization Asset of the Agent to be tasked to the Allocation.
 			<br><br>
 			In order to use Relationships, you must first do the following:<br>
 			1. Add the  plugin = org.cougaar.mlm.plugin.organization.OrgRTDataPlugin entry to the Agent configuration file.
@@ -24,27 +24,36 @@
 			At this point you are ready to make use of the prototype-ini.dat file.<br><br>
 			Lets take an example of two agents: StoreAgent and PaymentAgent.  The PaymentAgent agent provides the role of "PaymentAuthority" for the store.  So it makes sense for the PaymentAgent to have the role of "PaymentAuthority".  This is how PaymentAgent's prototype-ini.dat file might look:
 			<br>
-			<pre>
-				[Prototype]			Organization
+		</td>
+	</tr>
+	<tr>
+		<td class="codeHead">
+				<br><br>
+				[Prototype]			Organization<br>
+				<br>
+				[UniqueId]      "UTC/CivilianOrg"<br>
+				<br>
+				[UIC]           "UIC/PaymentAgent"<br><br>
 
-				[UniqueId]      "UTC/CivilianOrg"
+				[Relationship]<br><br>
+				Supporting      "StoreAgent"              "PaymentAuthority"<br>
 
-				[UIC]           "UIC/PaymentAgent"
+				[TypeIdentificationPG]<br>                      
+				TypeIdentification          String  "UTC/RTOrg"<br>
+				Nomenclature                String  "PaymentAgent"<br>
+				AlternateTypeIdentification String  "SRC/PaymentAgent"<br><br>
 
-				[Relationship]
-				Supporting      "StoreAgent"              "PaymentAuthority"
+				[ClusterPG]<br>
+				MessageAddress MessageAddress "PaymentAgent"<br><br>
 
-				[TypeIdentificationPG]                      
-				TypeIdentification          String  "UTC/RTOrg"
-				Nomenclature                String  "PaymentAgent"
-				AlternateTypeIdentification String  "SRC/PaymentAgent"
-
-				[ClusterPG]
-				MessageAddress MessageAddress "PaymentAgent"
-
-				[OrganizationPG]
-				Roles                Collection<Role>   "PaymentAuthority"
-			</pre>
+				[OrganizationPG]<br>
+				Roles                Collection<Role>   "PaymentAuthority"<br>
+			<br>
+			<br>
+		</td>
+	</tr>
+	<tr>
+		<td>
 			<br>
 			Here is a line by line description of the above example:
 			<br>
@@ -52,7 +61,7 @@
 			<br>
 			2.  [UniqueId]      "UTC/CivilianOrg"  
 			<br>
-			3.  [Relationship]  This line identifies that this portion of the file identifies Relationships
+			3.  [Relationship]  This line identifies that the following portion of the file identifies Relationships
 			<br>
 			4.  Supporting      "StoreAgent"              "PaymentAuthority"  This line identifies a Supporting relationship where PaymentAuthority supports StoreAgent.
 			<br>

@@ -6,38 +6,40 @@
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
 <BODY BGCOLOR="#FFFFFF">
-<a href="index.html">Configuration Trail</a>&nbsp;&nbsp;<a href="../index.html">TOC</a>
-<table>
+<a class="blackLinkBold" href="index.html">Configuration Trail</a>&nbsp;&nbsp;<a class="blackLinkBold" href="../index.html">TOC</a>
+<table width="800">
 	<tr>
 
 
 	<td>
 		The Agent configuration file contains configuration parameters identifying the name of the agent, the agent implmentation class to use, and the components to be loaded into the Agent.  An Agent Configuration file needs to be named [AGENT_NAME].ini and match the agent name with the one present in the Node configuration file.  Here is an example Agent Configuration file for an Agent called <i>Foo</i>:
-		
+	</td>
+	<tr>
+	<td class="codeHead">	
 		  <br>
-			<pre>
-			[ Cluster ]
-			class = org.cougaar.core.agent.SimpleAgent
-			MessageAddress = Foo
 			
-
-			[ PlugIns ]
-			plugin = org.cougaar.core.servlet.SimpleServletComponent(org.cougaar.planning.servlet.PlanViewServlet, /tasks)
-			plugin = org.cougaar.core.servlet.SimpleServletComponent(org.cougaar.planning.servlet.CompletionServlet, /completion)
-     		</pre>
-			
+			[ Cluster ]<br>
+			uic = UIC/Foo<br>			
+			<br><br>
+			[ PlugIns ]<br>
+			plugin = org.cougaar.core.servlet.SimpleServletComponent(org.cougaar.planning.servlet.PlanViewServlet, /tasks)<br>
+			plugin = org.cougaar.core.servlet.SimpleServletComponent(org.cougaar.planning.servlet.CompletionServlet, /completion)<br>
+     		
+		</td>
+	</tr>
+	<tr>
+		<td>
 			<br>
 			Lets go over the example line by line:<br>
-			1.  [Cluster]   This line identifies that this portion of the configuration file contains properties of the agent.
+			<ul>
+			<li>1.  [Cluster]   This line identifies that the following portion of the configuration file contains properties of the Cluster.</li>
 			<br>
-			2. class = org.cougaar.core.agent.SimpleAgent  This line identifies the implementation class to use for the Agent. Most of the time, unless you would like to change an Agent's behaviour, you should use SimpleAgent.
+			<li>2. uid=UIC/Foo  This line identifies the Message Address to use for the agent; in this case Foo.</li>
 			<br>
-			3.  MessageAddress = Foo  This line identifies the name of the Agent
+			<li>3.  [ Plugins ]  This line indentifies that the following portion of the configuration file contains components or plugins to be loaded into the agent.</li>
 			<br>
-			4.  [ Plugins ]  This line indentifies that this portion of the configuration file contains components to be loaded into the agent.
-			<br>
-			5.  plugin = org.cougaar.core.servlet.SimpleServletComponent(org.cougaar.planning.servlet.PlanViewServlet, /tasks)  This line identifies a component to be loaded into the Foo Agent.  The plugin's component is org.cougaar.core.servlet.SimpleServletComponent.  The values inside the () are used to pass argument(s) to the component.  In this case two arguments are passed to SimpleServletComponent.
-			
+			<li>4.  plugin = org.cougaar.core.servlet.SimpleServletComponent(org.cougaar.planning.servlet.PlanViewServlet, /tasks)  This line identifies a component to be loaded into the Foo Agent.  The plugin's component is org.cougaar.core.servlet.SimpleServletComponent.  The values inside the () are used to pass argument(s) to the component.  In this case two arguments are passed to SimpleServletComponent.</li>
+			</ul>
 			<br>
 			This is the basics of the Agent Configuration File, the next step is to configure <a href="prototype.html">Agent Relationships</a>.
 			</td>

@@ -6,16 +6,25 @@
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
 <BODY BGCOLOR="#FFFFFF">
-<a href="index.html">Configuration Trail</a>&nbsp;&nbsp;<a href="../index.html">TOC</a>
-<table>
+<a class="blackLinkBold" href="index.html">Configuration Trail</a>&nbsp;&nbsp;<a class="blackLinkBold" href="../index.html">TOC</a>
+<table width="800">
 	<tr>
 		<td>
-			Domains (implementations of org.cougaar.core.Domain) can be loaded into a Cougaar Society.  The configuration identifying the Domains to load into the Node is located in the <b><i>LDMDomains.ini</i></b> file.  This is a very simple configuration file containing a list of domain name, domain implementation class pairs.  By default the PlanningDomain is loaded into every Node, so no line needs to be added to the LDMDomain.ini file.  Here is an example LDMDomain file:
+			Domains (implementations of org.cougaar.core.DomainAdapter) can be loaded into a Cougaar Society.  The configuration identifying the Domains to load into the Node is located in the <b><i>LDMDomains.ini</i></b> file.  This is a very simple configuration file containing a list of domain name, domain implementation class pairs.  By default the PlanningDomain ("planning") is loaded into every Node, so no line needs to be added to the LDMDomain.ini file.  Here is an example LDMDomain file:
+		</td>
+	</tr>
+	<tr>
+		<td class="codeHead">
 			<br>
-			<pre>
-				glm=org.cougaar.glm.ldm.GLMDomain
-				mydomain=com.test.domain.MyDomain
-			</pre>
+			
+				glm=org.cougaar.glm.ldm.GLMDomain<br>
+				mydomain=com.test.domain.MyDomain<br>
+			<br>
+			<br>
+		</td>
+	</tr>
+	<tr>
+		<td>
 			This LDMDomain configuration file identifies 2 Domains to be loaded into the node: the org.cougaar.glm.ldm.GLMDomain and the com.test.domain.MyDomain Domain.  The name of the domain is important because this is how you get a reference to a domain factory from most Cougaar Components.  This is usually done by using the DomainService.getFactory(domainName) method.
 			<br><br>
 			Having covered the basics to configuring the domains of a Node, the next step is <a href="agentconfiguration.html">configuring an agent</a>.
