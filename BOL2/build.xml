@@ -100,78 +100,21 @@
         <delete dir="${build.dir}"/>
     </target>
 
-	<target name="zip-all" depends="prepare" description="Zips everything into one file">
-		<zip destfile="${basedir}/bol_full.zip">
-			<zipfileset dir="${confs.dir}" prefix="configs"/>
-			<zipfileset dir="${lib.dir}" prefix="lib"/>
-			<zipfileset dir="${src.dir}" prefix="src"/>
-			<zipfileset dir="${build.dir}" prefix="build"/>
-			<zipfileset dir="${doc.dir}" includes="BOL_2_Tutorial_V2.doc" prefix="doc"/>
-			<zipfileset dir="${javadoc.dir}" prefix="javadocs"/>
-		</zip>
-	</target>
 	
-	<target name="zip-all-gzip" depends="prepare">
-		<tar destfile="${basedir}/bol_full.tar">
-			<tarfileset dir="${confs.dir}" prefix="configs"/>
-			<tarfileset dir="${lib.dir}" prefix="lib"/>
-			<tarfileset dir="${src.dir}" prefix="src"/>
-			<tarfileset dir="${build.dir}" prefix="build"/>
-			<tarfileset dir="${doc.dir}" includes="BOL_2_Tutorial_V2.doc" prefix="doc"/>
-			<tarfileset dir="${javadoc.dir}" prefix="javadocs"/>
-		</tar>
-    	<gzip zipfile="${basedir}/bol_full.tar.gz" src="${basedir}/bol_full.tar"/>
-		
-	</target>
-	
-	<target name="zip-src" depends="prepare" description="Zip src">
-		<zip destfile="${basedir}/bol2_src.zip">
-			<zipfileset dir="${src.dir}" includes="**/*.java" prefix="src"/>
-		</zip>
-	</target>
-	
-	<target name="zip-src-gzip" depends="prepare" description="Zip src">
-		<tar destfile="${basedir}/bol2_src.tar">
-			<tarfileset dir="${src.dir}" includes="**/*.java" prefix="src"/>
-		</tar>
-		<gzip zipfile="${basedir}/bol2_src.tar.gz" src="${basedir}/bol2_src.tar"/>
-		
-	</target>
-	
-	<target name="zip-exe" depends="prepare" description="Zip exe">
+
+
+	<target name="release" depends="prepare" description="Zip for release">
 		<zip destfile="${basedir}/bol2.zip">
-			<zipfileset dir="${confs.dir}" prefix="configs"/>
-			<zipfileset dir="${lib.dir}" prefix="lib"/>
-			<zipfileset dir="${build.dir}" includes="**/*.jar" prefix="build"/>
-		</zip>
-	</target>
-	
-	<target name="zip-exe-gzip" depends="prepare" description="Zip exe">
-		<tar destfile="${basedir}/bol2.tar">
-			<tarfileset dir="${confs.dir}" prefix="configs"/>
-			<tarfileset dir="${lib.dir}" prefix="lib"/>
-			<tarfileset dir="${build.dir}" includes="**/*.jar" prefix="build"/>
-		</tar>
-		<gzip zipfile="${basedir}/bol2.tar.gz" src="${basedir}/bol2.tar"/>
-		
-	</target>
-	
-	
-	<target name="zip-doc" depends="prepare" description="Zip documentation">
-		<zip destfile="${basedir}/bol2_doc.zip">
-			<zipfileset dir="${doc.dir}" includes="BOL_2_Tutorial_V2.doc" prefix="doc"/>
-			<zipfileset dir="${javadoc.dir}" prefix="javadocs"/>
+			<zipfileset dir="${basedir}/src" includes="**/*" prefix="src"/>
+			<zipfileset dir="${basedir}/lib" includes="**/*" prefix="lib"/>
+			<zipfileset dir="${basedir}/releasedocs" includes="**/*" prefix="docs"/>
+			<zipfileset dir="${basedir}/configs" includes="base/*" prefix="configs"/>
+			<zipfileset dir="${basedir}/build" includes="**/*" prefix="build"/>
+			<zipfileset dir="${basedir}" includes="*.xml"/>
+			<zipfileset dir="${basedir}" includes="*.txt"/>
 		</zip>
 	</target>
 
-	<target name="zip-doc-gzip" depends="prepare" description="Zip documentation">
-		<tar destfile="${basedir}/bol2_doc.tar">
-			<tarfileset dir="${doc.dir}" includes="BOL_2_Tutorial_V2.doc" prefix="doc"/>
-			<tarfileset dir="${javadoc.dir}" prefix="javadocs"/>
-		</tar>
-		<gzip zipfile="${basedir}/bol2_doc.tar.gz" src="${basedir}/bol2_doc.tar"/>
-		
-	</target>
     <!-- ============================================================== -->
     <!-- Builds the Env                                                 -->
     <!-- ============================================================== -->

@@ -7,11 +7,10 @@ Not all of the functionality of the original tutorial has been implemented, this
 The tutorial has been tested with Cougaar versions 10 and 10.2.
 
 Description of file release:
-	bol2_javadoc.zip/tar.gz - contains javadoc.
-	
-	bol2_src.zip/tar.gz - contains the Java source for BOL
-	
-	bol2.zip/tar.gz - contains the third party jars, the bol-1.0.jar file and the configuration files necessary to 
+	The src folder contains all of the Java Source code.
+	The build folder contains an already build bol.jar file, so the BOL Society can be run right after the download.
+	The configs folder contains all of the Cougaar configuration files and a database sub directory containing the scripts necessary to create the MySQL database.
+	The docs folder contains the PDF manual, giving an overview of the BooksOnline Tutorial.
 
 run the BOLSociety.
 	
