@@ -83,7 +83,7 @@ import java.util.Vector;
  * plan element.
  *
  * @author ttschampel
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class PublisherAllocatorPlugin extends BOLComponentPlugin {
     /** Plugin name */
@@ -224,12 +224,10 @@ public class PublisherAllocatorPlugin extends BOLComponentPlugin {
             StringTokenizer tokenizer = new StringTokenizer(orderString, ";");
             while (tokenizer.hasMoreTokens()) {
                 String token = tokenizer.nextToken();
-                int numberAvailable = 0;
-                int colpos = token.indexOf(":");
+               int colpos = token.indexOf(":");
                 String bookISBN = token.substring(0, colpos);
                 int numOrdered = Integer.parseInt(token.substring(colpos + 1,
                             token.length()));
-                numberAvailable = numOrdered;
                 //check inventory level for this book
                 Map parameters = new HashMap();
                 parameters.put(BolSocietyUtils.Database.BOOK_ISBN_PARAMETER,
@@ -284,7 +282,7 @@ public class PublisherAllocatorPlugin extends BOLComponentPlugin {
 
                 //Vector of BookAsset for AssetGroup
                 Vector books = new Vector();
-                AssetGroup assetGroup;
+               
 
                 while (keyIterator.hasNext()) {
                     String isbn = (String) keyIterator.next();
@@ -422,7 +420,6 @@ public class PublisherAllocatorPlugin extends BOLComponentPlugin {
         double packBy = 0.0;
         long yyyymmdd;
         GregorianCalendar today = new GregorianCalendar();
-        Date nowdate = new Date(currentTimeMillis());
         today.setTime(new Date(currentTimeMillis()));
         today.add(Calendar.DATE, 2); // project pack date 2 days from now
         packBy = (double) today.getTime().getTime();

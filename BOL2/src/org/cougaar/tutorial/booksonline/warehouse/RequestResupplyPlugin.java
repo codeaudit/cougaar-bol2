@@ -254,7 +254,6 @@ public class RequestResupplyPlugin extends BOLComponentPlugin {
         getBlackboardService().publishRemove(task);
       } else {
         //Create replenish book task for the Publisher
-        NewTask replenishTask = getPlanningFactory().newTask();
         Vector bookVector = new Vector();
         bookVector.add(new BolBookOrder(isbn, title, 1000, (cost * 1000)));
         NewTask getBooksTask = (NewTask) BolSocietyUtils.createOrderTask(getPlanningFactory(),

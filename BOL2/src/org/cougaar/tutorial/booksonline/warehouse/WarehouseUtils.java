@@ -265,7 +265,7 @@ public class WarehouseUtils {
    * @param theLDMF LDM factory with which to create property group
    */
   protected static void fillStockPG(NewStockPG stock_pg, int stockCount,
-    int onOrderCount, String suppName, PlanningFactory theLDMF) {
+    int onOrderCount, String suppName) {
     //    NewStockPG stock_pg = (NewStockPG)theLDMF.createPropertyGroup("StockPG");  for reference
     stock_pg.setShelfCount(stockCount);
     stock_pg.setOnOrderCount(onOrderCount);

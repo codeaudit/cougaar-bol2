@@ -112,8 +112,7 @@ public class PublisherPrinterPlugin extends BOLComponentPlugin {
             MPTask printRun = (MPTask) enumeration.nextElement();
             PerformJob printPerformJob = new PerformJob(getBlackboardService(),
                     printRun, logging, getPlanningFactory());
-            threadService.schedule(printPerformJob, timeToPrint);
-
+            threadService.getThread(this, printPerformJob).schedule(timeToPrint);
         }
     }
 }

@@ -63,7 +63,6 @@ public abstract class AdvancedComponentPlugin extends ComponentPlugin {
     /** Logging Service */
     protected LoggingService logging;
     private boolean loggingActive = false;
-    private boolean namingActive = false;
     /** Community Service */
     protected CommunityService communityService;
     private boolean communityServiceActive = false;

@@ -432,7 +432,7 @@ public class BolSocietyUtils {
     String ccInfo, UserDetails ud, String shipMethod, String verb) {
     NewTask task = pf.newTask();
     task.setDirectObject(null);
-    task.setVerb(new Verb(verb));
+    task.setVerb(Verb.getVerb(verb));
     setOrderPrepPhrases(task, bo, ud, ccInfo, shipMethod, pf);
     setOrderPreferences(task, bo, pf);
     task.setPlan(pf.getRealityPlan());
@@ -584,7 +584,7 @@ public class BolSocietyUtils {
 
     task.setDirectObject(null);
 
-    task.setVerb(new Verb(UPDATE_REVIEW_VERB));
+    task.setVerb(Verb.getVerb(UPDATE_REVIEW_VERB));
 
     setUpdReviewPrepPhrases(task, isbn, review, theCOF);
 
@@ -620,9 +620,7 @@ public class BolSocietyUtils {
   private static void setUpdReviewPreference(NewTask task,
     ClusterObjectFactory theCOF) {
     Vector newPreferences = new Vector();
-    int totalOrderCount = 0;
-    float totalPrice = (float) 0.0;
-
+    
 
     ScoringFunction scorefcn = ScoringFunction.createStrictlyAtValue((AspectValue
         .newAspectValue(AspectType.CUSTOMER_SATISFACTION, 1.0)));
@@ -790,8 +788,7 @@ public class BolSocietyUtils {
 
     // Hashtable myTSTHash = new Hashtable();
     List taskList = (List) new Vector();
-    List arList = (List) new Vector();
-
+    
     // first load the tasks so we can count them (I hate this solution!)
     while (enum.hasMoreElements()) {
       Task myTask = (Task) enum.nextElement();

@@ -294,9 +294,7 @@ public class ShipperAggregatorPlugin extends BOLComponentPlugin {
     Enumeration newParents = vParents.elements();
     mp.setParentTasks(newParents);
 
-    //  make a new aggregation (aggregating ship_route tasks)
-    Aggregation ag = createAggregate(sfa, task,
-        (NewComposition) mp.getComposition());
+    
 
     //  make the allocation
     int number = (int) loadQuantity + quantity;
@@ -402,7 +400,6 @@ public class ShipperAggregatorPlugin extends BOLComponentPlugin {
         int quantity = (int) task.getPreferredValue(AspectType.QUANTITY);
         int loadQuantity = (int) highestRoleSchedule.getEstimatedResult()
                                                     .getValue(AspectType.QUANTITY);
-        NewVehiclePG v_pg = (NewVehiclePG) sfa.getVehiclePG();
         int capacity = sfa.getVehiclePG().getCapacity();
         if (logging.isDebugEnabled()) {
           logging.debug("^^^^ findasset: capacity = " + capacity + " load = "
@@ -431,27 +428,7 @@ public class ShipperAggregatorPlugin extends BOLComponentPlugin {
   }
 
 
-  /**
-   * <b>Description</b>: createAggregate - Cretae a new aggregate task
-   * <br><b>Notes</b>:<br>
-   *
-   * @param myAsset ShippingFleetAsset
-   * @param task Task
-   * @param comp The New Composition created for the Aggregation
-   *
-   * @return CompositeObject                  -    <br>
-   */
-  private Aggregation createAggregate(ShippingFleetAsset myAsset, Task task,
-    NewComposition comp) {
-    AllocationResult estAR = null;
-    Aggregation ag = getPlanningFactory().createAggregation(task.getPlan(),
-        task, comp, estAR);
-    comp.addAggregation(ag);
-
-    getBlackboardService().publishAdd(ag);
-
-    return ag;
-  }
+ 
 
 
   /**
@@ -468,7 +445,6 @@ public class ShipperAggregatorPlugin extends BOLComponentPlugin {
     // return the allocation for this asset role schedule as the most likely candidate
     // for loading the order onto.
     Vector assets = (Vector) assetsForRegion.get(key);
-    Allocation highestRoleSchedule = null;
     int lastValue = 10000;
     ShippingFleetAsset returnedAsset = null;
     ShippingFleetAsset sfa = null;
@@ -600,8 +576,7 @@ public class ShipperAggregatorPlugin extends BOLComponentPlugin {
     NewComposition comp = getPlanningFactory().newComposition();
     NewMPTask routeTask = getPlanningFactory().newMPTask();
     routeTask.setPlan(getPlanningFactory().getRealityPlan());
-    routeTask.setVerb(new Verb("VEHICLEROUTER"));
-    AllocationResult estAR = null;
+    routeTask.setVerb(Verb.getVerb("VEHICLEROUTER"));
     comp.setCombinedTask(routeTask);
     ProportionalDistributor pDist = new ProportionalDistributor();
     comp.setDistributor(pDist);

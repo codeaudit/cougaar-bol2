@@ -185,7 +185,7 @@ public class ShipperExpanderPlugin extends BOLComponentPlugin {
     NewTask task = theCOF.newTask();
     task.setDirectObject(gisb);
 
-    task.setVerb(new Verb(BolSocietyUtils.SHIP_ROUTE_VERB));
+    task.setVerb(Verb.getVerb(BolSocietyUtils.SHIP_ROUTE_VERB));
 
     Vector preps = new Vector();
     NewPrepositionalPhrase usernpp = BolSocietyUtils.createPrepPhrase(ud,

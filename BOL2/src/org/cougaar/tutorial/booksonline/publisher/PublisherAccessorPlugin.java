@@ -139,12 +139,10 @@ public class PublisherAccessorPlugin extends BOLComponentPlugin {
 
             while (tokenizer.hasMoreTokens()) {
                 String token = tokenizer.nextToken();
-                int numberAvailable = 0;
                 int colpos = token.indexOf(":");
                 String bookISBN = token.substring(0, colpos);
                 int numOrdered = Integer.parseInt(token.substring(colpos + 1,
                             token.length()));
-                numberAvailable = numOrdered;
                 //check inventory level for this book
                 Map parameters = new HashMap();
                 parameters.put(BolSocietyUtils.Database.BOOK_ISBN_PARAMETER,

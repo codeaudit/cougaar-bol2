@@ -125,9 +125,7 @@ public class PublisherPrinterAggregatorPlugin extends BOLComponentPlugin {
             int numberForPrint = 0;
             while (tokenizer.hasMoreTokens()) {
                 String token = tokenizer.nextToken();
-                int numberAvailable = 0;
                 int colpos = token.indexOf(":");
-                String bookISBN = token.substring(0, colpos);
                 numberForPrint = Integer.parseInt(token.substring(colpos + 1,
                             token.length()));
             }
@@ -169,7 +167,6 @@ public class PublisherPrinterAggregatorPlugin extends BOLComponentPlugin {
 
             NewMPTask printRunTask = getPlanningFactory().newMPTask();
             printRunTask.setParentTasks(waitingTasks.elements());
-            Vector preps = new Vector();
             printRunTask.setVerb(Verb.getVerb(PublisherConstants.PRINTRUN_VERB));
 
             NewComposition runcomposition = getPlanningFactory().newComposition();

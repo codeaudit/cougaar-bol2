@@ -121,8 +121,7 @@ public class PublisherExecutionPlugin extends BOLComponentPlugin {
             PerformJob performJob = new PerformJob(getBlackboardService(),
                     packerTask, logging, getPlanningFactory());
             long packingTime = 10000;
-            threadService.schedule(performJob, packingTime);
-
+            threadService.getThread(this, performJob).schedule(packingTime);
             if (logging.isDebugEnabled()) {
                 logging.debug("received packer task");
             }

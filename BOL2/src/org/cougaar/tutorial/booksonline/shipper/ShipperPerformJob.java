@@ -44,7 +44,6 @@ import org.cougaar.planning.ldm.plan.AspectValue;
 import org.cougaar.planning.ldm.plan.MPTask;
 import org.cougaar.planning.ldm.plan.PlanElement;
 import org.cougaar.planning.ldm.plan.Task;
-import org.cougaar.tutorial.booksonline.assets.NewVehiclePG;
 import org.cougaar.tutorial.booksonline.assets.ShippingFleetAsset;
 import org.cougaar.tutorial.booksonline.util.BolSocietyUtils;
 
@@ -94,7 +93,6 @@ public class ShipperPerformJob extends TimerTask {
     double startTime = alloc.getStartTime();
     double endTime = alloc.getEndTime();
     double numAvail = alloc.getEstimatedResult().getValue(AspectType.QUANTITY);
-    double full = alloc.getEstimatedResult().getValue(BolSocietyUtils.FULL_LOAD_ASPECT);
     if (logging.isDebugEnabled()) {
       logging.debug("^^$$shipperMark: num avail " + numAvail);
     }
@@ -114,8 +112,6 @@ public class ShipperPerformJob extends TimerTask {
     aspectValues[3] = AspectValue.newAspectValue(aspect_types[3], results[3]);
     aspectValues[4] = AspectValue.newAspectValue(aspect_types[4], results[4]);
 
-    NewVehiclePG v_pg = (NewVehiclePG) sfa.getVehiclePG();
-    int capacity = sfa.getVehiclePG().getCapacity();
     String region = sfa.getVehiclePG().getRegion();
     String type = sfa.getVehiclePG().getType();
     String id = sfa.getVehiclePG().getVid();

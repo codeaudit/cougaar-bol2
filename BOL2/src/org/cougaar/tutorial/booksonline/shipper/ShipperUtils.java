@@ -42,7 +42,7 @@ import java.util.Vector;
  * Utility Methods to fill the Shipping Asset's PGs
  *
  * @author ttschampel
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ShipperUtils {
   protected static String SHIPREQ_PROTOTYPE = "ShippinReqObject";
@@ -153,7 +153,7 @@ public class ShipperUtils {
       increment = -1; //  if load is free, decrement the container count
     }
 
-    changeLoadProperty(v_pg, region, capacity, load, type, id, free, sfa,
+    changeLoadProperty(v_pg, region, capacity, load, type, id, free,
       increment, containers);
   }
 
@@ -175,7 +175,7 @@ public class ShipperUtils {
    */
   public static void changeLoadProperty(NewVehiclePG v_pg, String regionName,
     int capacity, int currentLoad, String type, String id, boolean free,
-    ShippingFleetAsset sfa, int increment, int containers) {
+     int increment, int containers) {
     v_pg.setContainers(containers + increment);
     v_pg.setCapacity(capacity);
     v_pg.setRegion(regionName);
@@ -183,6 +183,6 @@ public class ShipperUtils {
     v_pg.setLoad(currentLoad);
     v_pg.setFree(free);
     v_pg.setVid(id);
-    String assetFinder = type + regionName;
+    
   }
 }

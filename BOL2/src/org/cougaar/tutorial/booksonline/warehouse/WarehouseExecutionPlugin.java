@@ -110,8 +110,7 @@ public class WarehouseExecutionPlugin extends BOLComponentPlugin {
       PerformJob performJob = new PerformJob(getBlackboardService(), task,
           logging, getPlanningFactory());
       long packingTime = 10000;
-      threadService.schedule(performJob, packingTime);
-
+      threadService.getThread(this, performJob).schedule(packingTime);
       if (logging.isDebugEnabled()) {
         logging.debug("received packer task");
       }

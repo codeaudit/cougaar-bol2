@@ -85,15 +85,11 @@ import java.util.Vector;
  * to the customer  directly from the publisher
  *
  * @author ttschampel
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class WarehouseAllocatorPlugin extends BOLComponentPlugin {
   private static final String pluginName = "WarehouseAllocatorPlugin";
-  private static int[] packingAspectTypes = {
-    AspectType.START_TIME, AspectType.END_TIME, AspectType.QUANTITY,
-    BolSocietyUtils.PACK_DATE_ASPECT, BolSocietyUtils.DROP_SHIP_DATE_ASPECT,
-    BolSocietyUtils.COMPLETED_ASPECT
-  };
+  
   /** Time for packer to pack book */
   public static double packerTime = 1000.0;
   /** DatabaseService */
@@ -223,7 +219,6 @@ public class WarehouseAllocatorPlugin extends BOLComponentPlugin {
 
       //Vector of BookAssets used in AssetGroup for packer
       Vector books = new Vector();
-      AllocationResult estAR = null;
       PrepositionalPhrase pp = task.getPrepositionalPhrase(BolSocietyUtils.ISBN_PREPOSITION);
       String allOrderString = (String) pp.getIndirectObject();
       String dropshipOrderString = null;
@@ -553,7 +548,6 @@ public class WarehouseAllocatorPlugin extends BOLComponentPlugin {
     double packBy = 0.0;
     long yyyymmdd;
     GregorianCalendar today = new GregorianCalendar();
-    Date nowdate = new Date(currentTimeMillis());
     today.setTime(new Date(currentTimeMillis()));
     today.add(Calendar.DATE, 2); // project pack date 2 days from now
     packBy = (double) today.getTime().getTime();
@@ -627,17 +621,5 @@ public class WarehouseAllocatorPlugin extends BOLComponentPlugin {
   }
 
 
-  /**
-   * <b>Description</b>: Looks at the Plugin parameters for the packerTime
-   * value.
-   */
-  private void parseParameters() {
-    // Look through the Plugin parameters for the packer time
-    Vector pVec = new Vector(getParameters());
-    if (pVec.size() > 0) {
-      String assets = (String) pVec.elementAt(0);
-      int intTime = Integer.parseInt(assets);
-      packerTime = (double) intTime;
-    }
-  }
+ 
 }

@@ -28,6 +28,14 @@
 package org.cougaar.tutorial.booksonline.ordermanager;
 
 
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.Vector;
+
 import org.cougaar.core.blackboard.IncrementalSubscription;
 import org.cougaar.planning.ldm.plan.AllocationResult;
 import org.cougaar.planning.ldm.plan.AllocationResultAggregator;
@@ -51,12 +59,6 @@ import org.cougaar.tutorial.booksonline.util.TutorialUtils;
 import org.cougaar.tutorial.booksonline.util.UserDetails;
 import org.cougaar.util.UnaryPredicate;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.GregorianCalendar;
-import java.util.Vector;
-
 
 /**
  * This is the main driver fo rthe order manager cluster.  It subscribes to
@@ -69,11 +71,10 @@ public class OrderManagerExpanderPlugin extends BOLComponentPlugin {
     private static final String pluginName = "OrderManagerExpanderPlugin";
     /** subscription to all order book tasks (NEW and CHANGED) */
     private IncrementalSubscription allOrderTasks = null;
-    /**
-     * Subscription for all 'BOOKORDER' Expansions, we want to get the changed
-     * subscriptions so we can check status
-     */
-    private IncrementalSubscription allOrderExpansions;
+    /**Plugin parameter to delete the order workflow or not*/
+    private static final String REMOVE_ORDER_WORKFLOW="REMOVE_ORDER_WORKFLOW";
+    /**Whether to remove workflow or not*/
+    private boolean removeOrderWorkflow  = false;
     /** Predicate for Task containing ORDER_VERB verb */
     private UnaryPredicate allOrderTasksPredicate = new UnaryPredicate() {
             public boolean execute(Object o) {
@@ -116,6 +117,20 @@ public class OrderManagerExpanderPlugin extends BOLComponentPlugin {
      */
     public void load() {
         super.load();
+        Collection parameters = this.getParameters();
+        if(parameters!=null){
+            Iterator iterator = parameters.iterator();
+            while(iterator.hasNext()){
+                String param = (String)iterator.next();
+                if(param.indexOf(",")>0){
+                    String paramName = param.substring(0, param.indexOf(","));
+                    String paramValue = param.substring(param.indexOf(",")+1, param.length());
+                    if(paramName.equals(REMOVE_ORDER_WORKFLOW)){
+                        this.removeOrderWorkflow = new Boolean(paramValue).booleanValue();
+                    }
+                }
+            }
+        }
     }
 
 
@@ -141,13 +156,14 @@ public class OrderManagerExpanderPlugin extends BOLComponentPlugin {
             PlanElement pe = (PlanElement) completedOrders.nextElement();
             if ((pe != null) && (pe.getReportedResult() != null)
                 && (pe.getReportedResult().isSuccess() == true)) {
-                Task orderTask = pe.getTask();
                 if (logging.isDebugEnabled()) {
                     logging.debug(
                         "****************************************************Received order complete notification...");
                 }
-				//Leave task worflow, exp on blackboard for viewing purposes.
-                //getBlackboardService().publishRemove(orderTask);
+                if(removeOrderWorkflow){
+				    Task orderTask = pe.getTask();
+	                getBlackboardService().publishRemove(orderTask);
+				}
             }
         }
     }

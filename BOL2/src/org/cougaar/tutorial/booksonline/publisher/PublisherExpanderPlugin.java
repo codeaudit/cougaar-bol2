@@ -28,11 +28,18 @@
 package org.cougaar.tutorial.booksonline.publisher;
 
 
-import com.cougaarsoftware.common.service.DatabaseService;
-import com.cougaarsoftware.common.service.DatabaseServiceProvider;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 import org.cougaar.core.blackboard.IncrementalSubscription;
-import org.cougaar.core.component.ServiceBroker;
 import org.cougaar.planning.ldm.plan.AllocationResult;
 import org.cougaar.planning.ldm.plan.AllocationResultAggregator;
 import org.cougaar.planning.ldm.plan.AspectType;
@@ -62,17 +69,8 @@ import org.cougaar.tutorial.booksonline.util.UserDetails;
 import org.cougaar.tutorial.booksonline.web.model.BookModel;
 import org.cougaar.util.UnaryPredicate;
 
-import java.sql.SQLException;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.Vector;
+import com.cougaarsoftware.common.service.DatabaseService;
+import com.cougaarsoftware.common.service.DatabaseServiceProvider;
 
 
 /**
@@ -83,7 +81,7 @@ import java.util.Vector;
  * to try to process the task again.
  *
  * @author ttschampel
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class PublisherExpanderPlugin extends BOLComponentPlugin {
   private static final String pluginName = "PublisherExpanderPlugin";
@@ -167,8 +165,7 @@ public class PublisherExpanderPlugin extends BOLComponentPlugin {
    */
   public void load() {
     super.load();
-    ServiceBroker sb = getBindingSite().getServiceBroker();
-
+    
     DatabaseServiceProvider dbServiceProvider = new DatabaseServiceProvider(getBindingSite()
                                                                               .getServiceBroker());
     getBindingSite().getServiceBroker().addService(DatabaseService.class,
@@ -242,7 +239,6 @@ public class PublisherExpanderPlugin extends BOLComponentPlugin {
         int numberForPrint = 0;
         while (tokenizer.hasMoreTokens()) {
           String token = tokenizer.nextToken();
-          int numberAvailable = 0;
           int colpos = token.indexOf(":");
           String bookISBN = token.substring(0, colpos);
           numberForPrint = Integer.parseInt(token.substring(colpos + 1,
@@ -397,7 +393,7 @@ public class PublisherExpanderPlugin extends BOLComponentPlugin {
     NewTask task = theCOF.newTask();
 
     task.setDirectObject(null);
-    task.setVerb(new Verb(BolSocietyUtils.PUBLISHERPACK_VERB));
+    task.setVerb(Verb.getVerb(BolSocietyUtils.PUBLISHERPACK_VERB));
 
     // add the isbn preposition
     Vector preps = new Vector();
@@ -459,7 +455,7 @@ public class PublisherExpanderPlugin extends BOLComponentPlugin {
     }
 
     NewTask task = theCOF.newTask();
-    task.setVerb(new Verb(BolSocietyUtils.SHIPPER_VERB));
+    task.setVerb(Verb.getVerb(BolSocietyUtils.SHIPPER_VERB));
 
     Vector preps = new Vector();
     NewPrepositionalPhrase npp = BolSocietyUtils.createPrepPhrase(ud,

@@ -57,23 +57,13 @@ public class BookUtil {
 
     String title = (String) objects[0];
     String toc = (String) objects[1];
-    int rank = ((Integer) objects[2]).intValue();
     String pNotes = (String) objects[3];
-    String keywords = (String) objects[4];
     String author = (String) objects[5];
-    String affil = (String) objects[6];
-    String intrvw = (String) objects[7];
-    String shipMesasge = (String) objects[8];
-    String photo = (String) objects[9];
-    String media = (String) objects[10];
-    String lnth = (String) objects[11];
-    String release = (String) objects[12];
+     String lnth = (String) objects[11];
     String isbn = (String) objects[13];
-    String dimension = (String) objects[14];
     float list = Float.parseFloat((String) objects[15]);
     float ourPrice = ((BigDecimal) objects[16]).floatValue();
     String endPrice = (String) objects[17];
-    String reviews = (String) objects[18];
     int numReviews = ((Integer) objects[19]).intValue();
     float avgRating = ((BigDecimal) objects[20]).floatValue();
     String pubName = (String) objects[21];

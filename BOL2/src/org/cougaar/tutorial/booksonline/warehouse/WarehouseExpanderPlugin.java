@@ -176,7 +176,7 @@ public class WarehouseExpanderPlugin extends BOLComponentPlugin {
     NewTask task = getPlanningFactory().newTask();
 
     task.setDirectObject(null);
-    task.setVerb(new Verb(BolSocietyUtils.WAREHOUSEPACK_VERB));
+    task.setVerb(Verb.getVerb(BolSocietyUtils.WAREHOUSEPACK_VERB));
 
     // add the isbn preposition
     Vector preps = new Vector();
@@ -238,7 +238,7 @@ public class WarehouseExpanderPlugin extends BOLComponentPlugin {
     NewTask task = getPlanningFactory().newTask();
 
     task.setDirectObject(null);
-    task.setVerb(new Verb(BolSocietyUtils.SHIPPER_VERB));
+    task.setVerb(Verb.getVerb(BolSocietyUtils.SHIPPER_VERB));
     Vector preps = new Vector();
     NewPrepositionalPhrase npp = null;
 

@@ -36,12 +36,10 @@ import org.cougaar.planning.ldm.plan.AllocationResult;
 import org.cougaar.planning.ldm.plan.AspectType;
 import org.cougaar.planning.ldm.plan.AspectValue;
 import org.cougaar.planning.ldm.plan.PlanElementForAssessor;
-import org.cougaar.planning.ldm.plan.Task;
 import org.cougaar.tutorial.booksonline.assets.ShippingFleetAsset;
 import org.cougaar.tutorial.booksonline.common.BOLComponentPlugin;
 import org.cougaar.tutorial.booksonline.util.BolSocietyUtils;
 import org.cougaar.tutorial.booksonline.util.TutorialUtils;
-import org.cougaar.tutorial.booksonline.util.assessor.BolTriggerMyTester;
 import org.cougaar.util.UnaryPredicate;
 
 import java.util.Enumeration;
@@ -98,12 +96,10 @@ public class ShipperAssessorPlugin extends BOLComponentPlugin {
 
       Allocation allocation = (Allocation) e.nextElement();
       ShippingFleetAsset sfa = (ShippingFleetAsset) allocation.getAsset();
-      int capacity = sfa.getVehiclePG().getCapacity();
       int load = sfa.getVehiclePG().getLoad();
       boolean freeProperty = sfa.getVehiclePG().getFree();
       boolean success = false;
-      Task task = allocation.getTask();
-
+      
       // find the time period
       double currentTime = currentTimeMillis();
       double startTime = allocation.getEstimatedResult().getValue(AspectType.START_TIME);
@@ -155,7 +151,6 @@ public class ShipperAssessorPlugin extends BOLComponentPlugin {
             double newstartTime = newAllocation.getEstimatedResult().getValue(AspectType.START_TIME);
             double newendTime = newAllocation.getEstimatedResult().getValue(AspectType.END_TIME);
             double newquant = newAllocation.getEstimatedResult().getValue(AspectType.QUANTITY);
-            double newcompleted = newAllocation.getEstimatedResult().getValue(BolSocietyUtils.COMPLETED_ASPECT);
             int[] newaspect_types = {
               AspectType.START_TIME, AspectType.END_TIME, AspectType.QUANTITY,
               BolSocietyUtils.COMPLETED_ASPECT, BolSocietyUtils.FULL_LOAD_ASPECT
@@ -199,29 +194,22 @@ public class ShipperAssessorPlugin extends BOLComponentPlugin {
             timePeriod = wakeAfterTime;
           }
 
-          Object[] allocArray = { allocation };
-
+          
           //PluginDelegate delegate = getDelegate();
           if (logging.isDebugEnabled()) {
             logging.debug("^^^^shipper assessor trigger set  = " + timePeriod);
           }
 
           //WakeAfterMonitor myMonitor = new  WakeAfterMonitor((long)timePeriod, allocArray, delegate);
-          BolTriggerMyTester myTester = null;
           ShipperPerformJob performJob = new ShipperPerformJob(getBlackboardService(),
               getPlanningFactory(), allocation, logging);
-          threadService.schedule(performJob, (long) timePeriod);
+          threadService.getThread(this, performJob).schedule((long)timePeriod);
+         
 
           // getBlackboardService().publishAdd(trigger);
         } //  end if free and load = 0
         else {
-          int[] aspect_types = {
-            AspectType.START_TIME, AspectType.END_TIME, AspectType.QUANTITY,
-            BolSocietyUtils.COMPLETED_ASPECT, BolSocietyUtils.FULL_LOAD_ASPECT
-          };
-          double[] results = {
-            startTime, endTime, quant, BolSocietyUtils.ISNOTCOMPLETED, full
-          };
+          
           AspectValue[] values = new AspectValue[4];
 
           AllocationResult oldAR = getPlanningFactory().newAllocationResult(1.0,
