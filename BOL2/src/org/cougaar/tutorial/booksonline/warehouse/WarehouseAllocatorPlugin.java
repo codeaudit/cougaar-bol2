@@ -45,8 +45,10 @@ import org.cougaar.planning.ldm.plan.NewPrepositionalPhrase;
 import org.cougaar.planning.ldm.plan.NewTask;
 import org.cougaar.planning.ldm.plan.NewWorkflow;
 import org.cougaar.planning.ldm.plan.PlanElement;
+import org.cougaar.planning.ldm.plan.Preference;
 import org.cougaar.planning.ldm.plan.PrepositionalPhrase;
 import org.cougaar.planning.ldm.plan.Role;
+import org.cougaar.planning.ldm.plan.ScoringFunction;
 import org.cougaar.planning.ldm.plan.Task;
 import org.cougaar.planning.ldm.plan.Verb;
 import org.cougaar.planning.service.PrototypeRegistryService;
@@ -83,7 +85,7 @@ import java.util.Vector;
  * to the customer  directly from the publisher
  *
  * @author ttschampel
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class WarehouseAllocatorPlugin extends BOLComponentPlugin {
   private static final String pluginName = "WarehouseAllocatorPlugin";
@@ -117,7 +119,7 @@ public class WarehouseAllocatorPlugin extends BOLComponentPlugin {
       public boolean execute(Object o) {
         if (o instanceof PlanElement) {
           PlanElement pe = (PlanElement) o;
-          if (pe.getReportedResult() != null) {
+          if (pe.getReceivedResult() != null) {
             Task t = pe.getTask();
             if (t.getVerb().equals(Verb.getVerb(BolSocietyUtils.SHIPPER_VERB))
               || t.getVerb().toString().equals(PublisherConstants.ORDER_VERB)) {
@@ -193,16 +195,19 @@ public class WarehouseAllocatorPlugin extends BOLComponentPlugin {
     Enumeration e = allocationResults.getChangedList();
     while (e.hasMoreElements()) {
       PlanElement pe = (PlanElement) e.nextElement();
-      if (pe.getObservedResult() == null) {
+      if ((pe.getObservedResult() == null)
+        || ((pe.getReceivedResult() != null)
+        && (pe.getReceivedResult().getConfidenceRating() != pe.getObservedResult()
+                                                              .getConfidenceRating()))) {
         if (logging.isDebugEnabled()) {
           logging.debug("Rolling up allocation results for" + pe.getTask());
         }
 
-        AllocationResult repAr = pe.getReportedResult();
+
+        AllocationResult repAr = pe.getReceivedResult();
         pe.setObservedResult(repAr);
         pe.setEstimatedResult(repAr);
         getBlackboardService().publishChange(pe);
-
       }
     }
   }
@@ -351,6 +356,24 @@ public class WarehouseAllocatorPlugin extends BOLComponentPlugin {
           if (logging.isErrorEnabled()) {
             logging.error("Error checking inventory for books", sqlex);
           }
+        }
+      }
+
+      //update the ship task to ship only numberofBooksAvailable
+      Enumeration workflowTasks = task.getWorkflow().getTasks();
+      while (workflowTasks.hasMoreElements()) {
+        NewTask wft = (NewTask) workflowTasks.nextElement();
+        if (wft.getVerb().toString().equals(BolSocietyUtils.SHIPPER_VERB)) {
+          // lose 90% for every book we can't ship, if we can't ship all the books we fail
+          ScoringFunction numBksScorefcn = ScoringFunction
+            .createStrictlyAtValue(AspectValue.newAspectValue(
+                AspectType.QUANTITY, numberOfBooksAvailable));
+
+          // this counts 70% towards completion if we can't deliver them then we've failed completely
+          Preference numBksPref = getPlanningFactory().newPreference(AspectType.QUANTITY,
+              numBksScorefcn, .70);
+          wft.setPreference(numBksPref);
+          getBlackboardService().publishChange(wft.getWorkflow());
         }
       }
 
