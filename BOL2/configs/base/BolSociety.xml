@@ -14,7 +14,7 @@
         -Dorg.cougaar.system.path=COUGAAR_INSTALL_PATH/sys
       </vm_parameter>
       <vm_parameter>
-        -Dorg.cougaar.core.node.InitializationComponent=com.cougaarsoftware.core.configuration.services.CSIXMLInitializerServiceComponent
+        -Dorg.cougaar.core.node.InitializationComponent=XML
       </vm_parameter>
       <vm_parameter>
         -Dorg.cougaar.lib.web.scanRange=100
@@ -89,7 +89,7 @@
           	<argument>/completion</argument>
        </component>
       <component
-          name='org.cougaar.tutorial.booksonline.common.RandomOrgAllocatorPlugin()'
+          name='org.cougaar.tutorial.booksonline.common.RandomOrgAllocatorPlugin(OrderManagerOrgAllocations.xml)'
           class='org.cougaar.tutorial.booksonline.common.RandomOrgAllocatorPlugin'
           priority='COMPONENT'
           insertionpoint='Node.AgentManager.Agent.PluginManager.Plugin'>
@@ -215,7 +215,7 @@
           insertionpoint='Node.AgentManager.Agent.PluginManager.Plugin'>
         </component>
           <component
-          name='org.cougaar.tutorial.booksonline.common.RandomOrgAllocatorPlugin()'
+          name='org.cougaar.tutorial.booksonline.common.RandomOrgAllocatorPlugin(PublisherOrgAllocations.xml)'
           class='org.cougaar.tutorial.booksonline.common.RandomOrgAllocatorPlugin'
           priority='COMPONENT'
           insertionpoint='Node.AgentManager.Agent.PluginManager.Plugin'>
@@ -328,7 +328,7 @@
           insertionpoint='Node.AgentManager.Agent.PluginManager.Plugin'>
         </component>
          <component
-          name='org.cougaar.tutorial.booksonline.common.RandomOrgAllocatorPlugin()'
+          name='org.cougaar.tutorial.booksonline.common.RandomOrgAllocatorPlugin(WarehouseManagerOrgAllocations.xml)'
           class='org.cougaar.tutorial.booksonline.common.RandomOrgAllocatorPlugin'
           priority='COMPONENT'
           insertionpoint='Node.AgentManager.Agent.PluginManager.Plugin'>

@@ -113,7 +113,7 @@
 		<mkdir dir="${basedir}/release/bol2"/>
 		<mkdir dir="${basedir}/release/bol2/configs"/>
 		<mkdir dir="${basedir}/release/bol2/javadocs"/>
-		
+		<mkdir dir="${basedir}/release/bol2/src"/>
 		
 	    <copydir src="${basedir}/lib"
     		 dest="${basedir}/release/sys"
@@ -127,6 +127,9 @@
     		 includes="**/**"/>	 
      	<copydir src="${basedir}/javadocs"
      		 dest="${basedir}/release/bol2/javadocs"
+     		 includes="**/**"/>
+     		<copydir src="${basedir}/src"
+     		 dest="${basedir}/release/bol2/src"
      		 includes="**/**"/>
       	<copydir src="${basedir}"
       		 dest="${basedir}/release"

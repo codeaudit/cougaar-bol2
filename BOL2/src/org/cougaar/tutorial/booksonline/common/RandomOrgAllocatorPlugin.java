@@ -56,8 +56,17 @@ public class RandomOrgAllocatorPlugin extends NoARGenericTablePlugin
 
 //public class RandomOrgAllocatorPlugin extends org.cougaar.mlm.plugin.generic.GenericTablePlugin
  {
+    String xmlFile = null;
     
-
+    protected void setupSubscriptions() {
+        initializeTables(xmlFile);
+        initializeSubscriptions();
+      }
+     public void setParameter(Object param) {
+       if(param!=null){
+        xmlFile = (String)((Collection)param).iterator().next();
+       }
+      }
 
     /**
      * <b>Description</b>: Over-rides
