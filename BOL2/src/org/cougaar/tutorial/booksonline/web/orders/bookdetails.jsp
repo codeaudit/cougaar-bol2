@@ -42,7 +42,7 @@ BookModel book = (BookModel)request.getAttribute("book");
 		</tr>
 		<tr>
 			<td colspan="2">
-				<input type="submit" value="Add To Card">
+				<input type="submit" value="Add To Cart">
 				<input type="button" value="Back to Results" onclick="javascript:history.back();">
 			</td>
 		</tr>	
