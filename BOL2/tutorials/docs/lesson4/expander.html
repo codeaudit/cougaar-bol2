@@ -345,6 +345,101 @@ private Task createWarehouseTask(String isbn, int quantity, UserDetails ud,
 			Now that all three tasks needed to preform the order books process have been created, all that is left is to add them to the workflow and create the Expansion.  First, Create thw workflow:
 		</td>
 	</tr>
+	<tr>
+		<td>Create the a new workflow, where parentTask is the Order Books Task:</td>
+	</tr>
+	<tr>
+		<td class="codeHead">
+			<pre>
+       NewWorkflow new_wf = getPlanningFactory().newWorkflow();
+        new_wf.setAllocationResultAggregator(AllocationResultAggregator.DEFAULT);
+        new_wf.setParentTask(parentTask);			
+			</pre>
+			<br>
+			<br>
+		</td>
+	</tr>
+	<tr>
+		<td>Now, add the Clear Payment Task created with the createClearPaymentTask method to the workflow</td>
+	</tr>
+	<tr>
+		<td class="codeHead">
+			<pre>
+ Task clearPayTask = createClearPaymentTask(price,
+                (String) ccPP.getIndirectObject());
+ new_wf.addTask(clearPayTask);
+ ((NewTask) clearPayTask).setWorkflow(new_wf);
+ ((NewTask) clearPayTask).setParentTask(parentTask);				
+			</pre>
+			<br>
+			<br>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Its important to add the task to the workflow and to also set the parent task of the task to the expansion task, and to set the workflow of the task. 
+		</td>
+	</tr>
+	<tr>
+		<td>
+			The Final Payament and Pack books at warehouse can be added to the workflow in a similar manner.  Now that the tasks have been added to the workflow, constraints need to be added to ensure the sequence of the task execution.  The following shows how to create a constraint for the clear payment constraining the ware house task:
+		</tr>
+	</tr>
+	<tr>
+		<td class="codeHead">
+			<pre>
+ NewConstraint clearPayFirst = (getPlanningFactory()).newConstraint();
+        clearPayFirst.setConstrainingTask(clearPayTask);
+        clearPayFirst.setConstrainingAspect(AspectType.END_TIME);
+        clearPayFirst.setConstrainedTask(wareTask);
+        clearPayFirst.setConstrainedAspect(AspectType.START_TIME);
+        clearPayFirst.setConstraintOrder(Constraint.BEFORE);
+        constraints.addElement(clearPayFirst);			
+			</pre>
+			<br>
+			<br>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			In this constraint, the constraining task is the Clear Payment Task, and the constrained Task is the warehouse task.  A similiar constraint can be created and added to the workflow for the Warehouse task to constrain the Final Payment Task.  Now that the Workflow has been created with all of the appropriate constraints, the Expansion needs to be created.  This is a simple call to the Cougaar PlanningFactory:
+		</td>
+	</tr>
+	<tr>
+		<td class="codeHead">
+			<pre>
+ AllocationResult estAR = null;
+ Expansion new_exp = getPlanningFactory().createExpansion(parentTask
+                .getPlan(), parentTask, new_wf, estAR);
+			
+			</pre>
+			<br>
+			<br>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Now that the expansion has been created, the Expansion and the unconstrained Task (Clear Payment) are published to the blackboard in accordance with the WorkflowExecution pattern used in BOL.
+		</td>
+	</tr>
+	<tr>
+		<td class="codeHead">
+		</td>
+	</tr>
+	<tr>
+		<td>
+		  getBlackboardService().publishAdd(clearPayTask);
+		  getBlackboardService().publishAdd(new_exp);
+		</td>
+	</tr>
+	<tr>
+		<td><a class="blankLinkBold" href="#top">Top</a>&nbsp;|&nbsp;<b>
+			<a name="step5"></a>Step5:  Run the Society</b>
+		</td>
+	</tr>
+	<tr>
+		<td>Run the <a>snode</a> to run the BOL Society.  When an order is placed, the OrderTask should now be expanded into the 3 tasks.  The PlanningServlet can be used to view the Expansion and the sub tasks.</td>
+	</tr>
 </table>
 </body>
 </html>
