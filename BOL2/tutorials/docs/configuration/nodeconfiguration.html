@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<link rel="stylesheet" href="../includes/style.css" type="text/css"></link>
+<TITLE>Node Configuration</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<BODY BGCOLOR="#FFFFFF">
+<a href="index.html">Configuration Trail</a>&nbsp;&nbsp;<a href="../index.html">TOC</a>
+<table>
+	<tr>
+		<td>
+			The <a href="">BOLNode.ini</a> file contains the configuration for the BOLNode.
+			<br>
+			This is the file:
+			<br><pre>
+			# $id$
+			[ Clusters ]
+			cluster = OrderManager
+			cluster = Payment
+			cluster = Warehouse
+			cluster = Shipper
+			cluster = Publisher
+
+			[ AlpProcess ]
+
+			[ Policies ]
+
+			[ Permission ]
+
+			[ AuthorizedOperation ]
+			</pre>
+			The node configuration file is where the agents that make up the node are identified.  Each agent is assigned to the node using the cluster=AGENT_NAME syntax.  There most be an Agent Configuration file following the AGENT_NAME.ini file in the Cougaar Configs directory path.
+		
+		</td>
+	</tr>
+</table>
+</body>
+</html>

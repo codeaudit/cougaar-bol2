@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<link rel="stylesheet" href="../includes/style.css" type="text/css"></link>
+<TITLE>LDM Domains</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<BODY BGCOLOR="#FFFFFF">
+<a href="index.html">Configuration Trail</a>&nbsp;&nbsp;<a href="../index.html">TOC</a>
+<table>
+	<tr>
+		<td>
+			The LDMDomain.ini file describes the Domains to be used in the BOL Node. Here is the <a href="">LDMDomains.ini</a> file used in Books Online:
+				<br>
+				<pre>
+					glm=org.cougaar.glm.ldm.GLMDomain
+					BOLDomain=org.cougaar.tutorial.booksonline.domain.BOLDomain
+				</pre>
+				The Planning Domain is added to a Cougaar Node by default.  The format of this file is a DOMAIN_NAME=DOMAIN_IMPLEMENTATION_CLASS format. So in this example the BOL Domain is implemented in the BOLDomain class and can be referenced within cougaar by the name "BOL".
+		</td>
+	</tr>
+</table>
+</body>
+</html>

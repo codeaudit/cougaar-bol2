@@ -4,11 +4,10 @@
 <link rel="stylesheet" href="../includes/style.css" type="text/css"></link>
 <TITLE>The BOL Tutorial</TITLE>
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<head>
+</head>
 	<BODY BGCOLOR="#FFFFFF">
-	
+<a href="../index.html">TOC</a>	
 <h2>BOL Configuration</h2>
-<a name="TOP"></a><a href="../index.html">TOC</a> | <a href="#D">Description</a> | <a href="#N">Node</a> | <a href="#L">LDMDomain</a> | <a href="#A">Agent</a>
 <table>
 	<tr>
 		<td valign="top">
@@ -19,256 +18,23 @@
 		</td>
 	</tr>
 	<tr>
-		<td valign="top"><a name="N"></a><b>Node Configurations</b></td>
-		<td>
-			The <a href="">BOLNode.ini</a> file contains the configuration for the BOLNode.
-			<br>
-			This is the file:
-			<br><pre>
-			# $id$
-			[ Clusters ]
-			cluster = OrderManager
-			cluster = Payment
-			cluster = Warehouse
-			cluster = Shipper
-			cluster = Publisher
-
-			[ AlpProcess ]
-
-			[ Policies ]
-
-			[ Permission ]
-
-			[ AuthorizedOperation ]
-			</pre>
-			The node configuration file is where the agents that make up the node are identified.  Each agent is assigned to the node using the cluster=AGENT_NAME syntax.  There most be an Agent Configuration file following the AGENT_NAME.ini file in the Cougaar Configs directory path.
-		
-		</td>
+		<td colspan="2"><a href="nodeconfiguration.html">Node Configuration</a></td>
 	</tr>
 	<tr>
-		<td colspan="2" valign="top"><a name="L"></a><a href="#TOP">top</a></td>
+		<td colspan="2"><a href="ldmdomains.html">LDMDomain</a></td>
 	</tr>
 	<tr>
-		<td valign="top"><b>LDMDomain</b></td>
-		<td>
-			The LDMDomain.ini file describes the Domains to be used in the BOL Node. Here is the <a href="">LDMDomains.ini</a> file used in Books Online:
-				<br>
-				<pre>
-					glm=org.cougaar.glm.ldm.GLMDomain
-					BOLDomain=org.cougaar.tutorial.booksonline.domain.BOLDomain
-				</pre>
-				The Planning Domain is added to a Cougaar Node by default.  The format of this file is a DOMAIN_NAME=DOMAIN_IMPLEMENTATION_CLASS format. So in this example the BOL Domain is implemented in the BOLDomain class and can be referenced within cougaar by the name "BOL".
-		</td>
+		<td colspan="2"><a href="agentconfiguration.html">Agent Configuration</a></td>
 	</tr>
 	<tr>
-		<td colspan="2">
-			<a href="#TOP">top</a>
-		</td>
+		<td colspan="2"><a href="prototype.html">Prototype INI</a></td>
 	</tr>
 	<tr>
-		<td valign="top">
-			<a name="A"></a><b>Agent configuration files</b>:
-		</td>
-		<td>
-			Agent configuration files must be named AGENT_NAME.ini and the AGENT_NAME should match the associated entry in the Node configuration file.
-			<br>
-			Here is an example of the <a href="">OrderManager.ini</a> Agent configuration file from BooksOnLine:
-			<br>
-			<pre>
-			# $id$
-			[ Cluster ]
-			class = org.cougaar.core.agent.SimpleAgent
-			MessageAddress = OrderManager
-			
-
-			[ PlugIns ]
-			plugin = org.cougaar.core.servlet.SimpleServletComponent(org.cougaar.planning.servlet.PlanViewServlet, /tasks)
-			plugin = org.cougaar.core.servlet.SimpleServletComponent(org.cougaar.planning.servlet.CompletionServlet, /completion)
-
-			plugin = org.cougaar.tutorial.booksonline.common.RandomOrgAllocatorPlugin(OrderManagerOrgAllocations.xml)
-			plugin = org.cougaar.tutorial.booksonline.ordermanager.OrderManagerExpanderPlugin
-			plugin = org.cougaar.tutorial.booksonline.common.BOLWorkflowExecutionPlugin
-			plugin = org.cougaar.mlm.plugin.organization.OrgRTDataPlugin
-			plugin = org.cougaar.mlm.plugin.organization.OrgReportPlugin
-
-
-			#Servlets
-			plugin = org.cougaar.tutorial.booksonline.web.orders.OrderManagerServlet
-
-			[ Policies ]
-
-			[ Permission ]
-
-			[ AuthorizedOperation ]
-			</pre>
-			
-			<br>
-			Here is a line by line explanation of the above example:
-			<pre>
-				[ Cluster ]
-				class = org.cougaar.core.agent.SimpleAgent
-				MessageAddress = OrderManager
-			</pre>
-			The [ Cluster ] syntax identifies the following lines for Cluster Configuration.
-			<br>
-			The next line identifies the Implmentation class to use as the Agent.
-			<br>
-			The next line populates the MessageAddress attribute of the SimpleAgent class.  The MessageAddress is the name of the Agent.
-			<br>
-			The section of the file headed by the [ PlugIns ] syntax identifies the plugins contained within the Agent.
-			<br>
-			Use the following syntax:<i> plugin = PLUGIN_CLASS(PLUGIN_PARAMETER,PLUGIN_PARAMETER)</i>.  For example:<br>
-			<pre>
-			plugin = org.cougaar.core.servlet.SimpleServletComponent(org.cougaar.planning.servlet.PlanViewServlet, /tasks)
-			</pre>
-			Loads the SimpleServletComponent as a plugin with two arguments.
-		</td>
-	</tr>
-	
+		<td colspan="2"><a href="ldmxml.html">LDM XML</a></td>
+	</tr>		
 	<tr>
-		<td colspan="2"><a href="#TOP">top</a></td>
-	</tr>
-	<tr>
-		<td valign="top">	
-			<b>Prototype configuration files</b>:
-		</td>
-		<td>
-			Coming Soon
-		</td>
-	</tr>
-	<tr>
-		<td colspan="2"><a href="#TOP">top</a></td>
-	</tr>
-	<tr>
-		<td valign="top"><b>LDM XML</b></td>
-		<td>
-			The LDM XML File is used to create prototypes and to also create instances of Assets on an Agent's Blackboard.
-			The LDM XML file is parsed by the org.cougaar.lib.plugin.UTILLdmXMLPlugin plugin.  When this plugin is added to an Agent's Configuration file, the plugin will look for a file called AGENT_NAME.ldm.xml to parse.  Here is an example ldm.xml file for the Warehouse Agent from BooksOnline:
-			<br>
-			<pre>
-			&#60;?xml version="1.0"  encoding="US-ASCII"?&#62;
-&#60;!DOCTYPE ClusterAssets SYSTEM "AssetList.ldm.dtd" []&#62;
-
-&#60;AssetList&#62;
-  &#60;prototype name="ObjectAsset"&#62;
-  	&#60;object class="org.cougaar.tutorial.booksonline.assets.BookAsset" id = "object-proto"&#62;
-  		&#60;field name="TypeIdentificationPG" type="object"&#62;
-        &#60;value&#62;
-          &#60;object class="org.cougaar.planning.ldm.asset.NewTypeIdentificationPG"&#62;
-          &#60;field name="TypeIdentification" type="String"&#62;
-            &#60;value&#62;ObjectAsset&#60;/value&#62;
-          &#60;/field&#62;
-          &#60;field name="Nomenclature" type="String"&#62;
-            &#60;value&#62;ObjectAsset&#60;/value&#62;
-          &#60;/field&#62;
-          &#60;field name="AlternateTypeIdentification" type="String"&#62;
-            &#60;value&#62;ObjectAsset&#60;/value&#62;
-          &#60;/field&#62;
-          &#60;/object&#62;
-        &#60;/value&#62;
-      &#60;/field&#62;
-  	&#60;/object&#62;
-  &#60;/prototype&#62;
-  &#60;prototype name="PackerAsset"&#62;
-    &#60;object class="org.cougaar.tutorial.booksonline.assets.PackerAsset" id="PackerProto-001"&#62;
-      &#60;field name="TypeIdentificationPG" type="object"&#62;
-        &#60;value&#62;
-          &#60;object class="org.cougaar.planning.ldm.asset.NewTypeIdentificationPG"&#62;
-          &#60;field name="TypeIdentification" type="String"&#62;
-            &#60;value&#62;PackerAsset&#60;/value&#62;
-          &#60;/field&#62;
-          &#60;field name="Nomenclature" type="String"&#62;
-            &#60;value&#62;PackerAsset&#60;/value&#62;
-          &#60;/field&#62;
-          &#60;field name="AlternateTypeIdentification" type="String"&#62;
-            &#60;value&#62;PackerAsset&#60;/value&#62;
-          &#60;/field&#62;
-          &#60;/object&#62;
-        &#60;/value&#62;
-      &#60;/field&#62;
-      
-    &#60;/object&#62;
-  &#60;/prototype&#62;
-  &#60;prototype name="WarehouseAsset"&#62;
-    &#60;object class="org.cougaar.tutorial.booksonline.assets.WarehouseAsset" id="protowarehouse-001"&#62;
-      &#60;field name="TypeIdentificationPG" type="object"&#62;
-        &#60;value&#62;
-          &#60;object class="org.cougaar.planning.ldm.asset.NewTypeIdentificationPG"&#62;
-          &#60;field name="TypeIdentification" type="String"&#62;
-            &#60;value&#62;WarehouseAsset&#60;/value&#62;
-          &#60;/field&#62;
-          &#60;field name="Nomenclature" type="String"&#62;
-            &#60;value&#62;WarehouseAsset&#60;/value&#62;
-          &#60;/field&#62;
-          &#60;field name="AlternateTypeIdentification" type="String"&#62;
-            &#60;value&#62;WarehouseAsset&#60;/value&#62;
-          &#60;/field&#62;
-          &#60;/object&#62;
-        &#60;/value&#62;
-      &#60;/field&#62;
-      &#60;field name="WarehouseDescriptionPG" type="object"&#62;
-      	&#60;value&#62;
-      		&#60;object class="org.cougaar.tutorial.booksonline.assets.NewWareHouseDescriptionPG"&#62;
-      		&#60;field name="Address1" type="java.lang.String"&#62;
-      			&#60;value&#62;123 Main St.&#60;/value&#62;
-      		&#60;/field&#62;
-      		&#60;field name="Address2" type="java.lang.String"&#62;
-      			&#60;value&#62;Suite 3433&#60;/value&#62;
-      		&#60;/field&#62;
-      		&#60;field name="City" type="java.lang.String"&#62;
-      			&#60;value&#62;Washington&#60;/value&#62;
-      		&#60;/field&#62;
-      		&#60;field name="State" type="java.lang.String"&#62;
-      			&#60;value&#62;DC&#60;/value&#62;
-      		&#60;/field&#62;
-      		&#60;field name="ZipCode" type="java.lang.String"&#62;
-      			&#60;value&#62;20045&#60;/value&#62;
-      		&#60;/field&#62;
-      		&#60;field name="CcExpDate" type="java.lang.String"&#62;
-      			&#60;value&#62;01/2006&#60;/value&#62;
-      		&#60;/field&#62;
-      		&#60;field name="CcNumber" type="long"&#62;
-      			&#60;value&#62;5105105105105100&#60;/value&#62;
-      		&#60;/field&#62;
-      		&#60;/object&#62;
-      	&#60;/value&#62;
-      &#60;/field&#62;
-    &#60;/object&#62;
-  &#60;/prototype&#62;
- &#60;instance prototype="PackerAsset" id="Bob"&#62;
-  	&#60;schedule end="01/05/11" start="06/11/03"/&#62;
-  &#60;/instance&#62;
-   &#60;instance prototype="PackerAsset" id="Bill"&#62;
-  	&#60;schedule end="01/05/11" start="06/11/03"/&#62;
-  &#60;/instance&#62;
-   &#60;instance prototype="PackerAsset" id="Joe"&#62;
-  	&#60;schedule end="01/05/11" start="06/11/03"/&#62;
-  &#60;/instance&#62;
-   &#60;instance prototype="PackerAsset" id="Matt"&#62;
-  	&#60;schedule end="01/05/11" start="06/11/03"/&#62;
-  &#60;/instance&#62;
-   &#60;instance prototype="PackerAsset" id="Scott"&#62;
-  	&#60;schedule end="01/05/11" start="06/11/03"/&#62;
-  &#60;/instance&#62;
-  &#60;instance prototype="WarehouseAsset" id="Warehouse"&#62;
-  	&#60;schedule end="01/05/11" start="06/11/03"/&#62;
-  &#60;/instance&#62;
-&#60;/AssetList&#62;
-	
-			
-			</pre> 
-			Here is the DTD for the ldm.xml file <a href="">AssetList.ldm.dtd</a><br>
-			The ldm.xml file identifies the prototypes to be cached in the Prototype Registry service for later use within a Plugin. The <i>prototype</i> element has a <i>name</i> attribute that will be the name used to cache the prototype in the PrototypeRegistry Servivce.  The prototype element contains the <i>object<i> element that identifies the class of the Asset to be prototypes using the <i>class</i> attribute.
-			
-		</td>
-	</tr>
-	<tr>
-		<td colspan="2"><a href="#TOP">top</a></td>
-	</tr>
-	<tr>
-		<td valign="top"><b>Q xml files (Database)</b></td>
-		<td></td>
-	</tr>
+		<td colspan="2"><a href="q.html">Q(Query) XML</a></td>
+	</tr>	
 </table>
 </body>
 </html>
