@@ -156,8 +156,8 @@ public class OrderManagerExpanderPlugin extends BOLComponentPlugin {
             PlanElement pe = (PlanElement) completedOrders.nextElement();
             if ((pe != null) && (pe.getReportedResult() != null)
                 && (pe.getReportedResult().isSuccess() == true)) {
-                if (logging.isDebugEnabled()) {
-                    logging.debug(
+                if (logging.isInfoEnabled()) {
+                    logging.info(
                         "****************************************************Received order complete notification...");
                 }
                 if(removeOrderWorkflow){
