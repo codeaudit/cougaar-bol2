@@ -28,10 +28,6 @@ import org.cougaar.util.UnaryPredicate;
  * relies upon the Cougaar infastructure to propogate allocation results from
  * subtasks to parent tasks.  To ensure that the infastructure will propogate
  * results, you must set the parent task when create subtasks for a workflow
- * TODO: matt:  It seems that the allWorkflowPlanElementsPredicate() is a
- * superset of allWorkflowExpansionsPredicate() (as Expansions are
- * PlanElements).  Please remove the allWorkflowExpansionsPredicate() method
- * and fix the logic to work with just the other predicate if it is possible.
  *
  * @author mabrams
  */
