@@ -100,7 +100,8 @@ public class RequestResupplyPlugin extends BOLComponentPlugin {
           PlanElement pe = (PlanElement) o;
           Task t = pe.getTask();
           return (t.getVerb().equals(Verb.getVerb(PublisherConstants.ORDER_VERB))
-          && (t.getPrepositionalPhrase(UPDATE_INVENTORY_PHRASE) != null));
+          && (t.getPrepositionalPhrase(UPDATE_INVENTORY_PHRASE) != null) && pe.getReportedResult()!=null
+          	&& pe.getReportedResult().isSuccess());
         }
 
         return false;
@@ -165,7 +166,7 @@ public class RequestResupplyPlugin extends BOLComponentPlugin {
           + ")");
 
       }
-
+		getBlackboardService().publishRemove(t);
       try {
         Map parameters = new HashMap();
         parameters.put(BolSocietyUtils.Database.BOOK_ISBN_PARAMETER, isbn);
