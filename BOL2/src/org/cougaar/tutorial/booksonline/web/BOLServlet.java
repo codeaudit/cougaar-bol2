@@ -128,7 +128,7 @@ public abstract class BOLServlet extends BaseServletComponent
      * @see org.cougaar.core.blackboard.BlackboardClient#getBlackboardClientName()
      */
     public String getBlackboardClientName() {
-        return null;
+        return this.getClass().getName();
     }
 
 
