@@ -28,18 +28,17 @@
 package org.cougaar.tutorial.booksonline.common;
 
 
-import org.cougaar.core.service.LoggingService;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Vector;
+
 import org.cougaar.glm.ldm.asset.Organization;
 import org.cougaar.planning.ldm.plan.HasRelationships;
 import org.cougaar.planning.ldm.plan.Relationship;
 import org.cougaar.planning.ldm.plan.RelationshipSchedule;
 import org.cougaar.planning.ldm.plan.Role;
 import org.cougaar.util.TimeSpan;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Vector;
 
 
 /**
@@ -57,16 +56,7 @@ public class RandomOrgAllocatorPlugin extends NoARGenericTablePlugin
 
 //public class RandomOrgAllocatorPlugin extends org.cougaar.mlm.plugin.generic.GenericTablePlugin
  {
-    private LoggingService logging;
-
-    /**
-     * Set the Logging Service
-     *
-     * @param service Logging Service
-     */
-    public void setLoggingService(LoggingService service) {
-        this.logging = service;
-    }
+    
 
 
     /**
@@ -120,10 +110,7 @@ public class RandomOrgAllocatorPlugin extends NoARGenericTablePlugin
 
                     // If we found any matches return one, else try the default 
                     if (intersection.size() > 0) {
-                        if (logging.isDebugEnabled()) {
-                            logging.debug("RandomOrgAllocatorPlugin::Orgs: "
-                                + intersection);
-                        }
+                       
 
                         Vector organizations = new Vector(intersection);
 

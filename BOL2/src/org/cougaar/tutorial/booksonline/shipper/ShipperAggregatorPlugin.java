@@ -28,6 +28,12 @@
 package org.cougaar.tutorial.booksonline.shipper;
 
 
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Vector;
+
 import org.cougaar.core.blackboard.IncrementalSubscription;
 import org.cougaar.glm.packer.ProportionalDistributor;
 import org.cougaar.planning.ldm.plan.Aggregation;
@@ -48,15 +54,9 @@ import org.cougaar.tutorial.booksonline.assets.NewVehiclePG;
 import org.cougaar.tutorial.booksonline.assets.ShippingFleetAsset;
 import org.cougaar.tutorial.booksonline.common.BOLComponentPlugin;
 import org.cougaar.tutorial.booksonline.util.BolSocietyUtils;
+import org.cougaar.tutorial.booksonline.util.TutorialUtils;
 import org.cougaar.tutorial.booksonline.util.UserDetails;
-import org.cougaar.tutorial.faststart.TutorialUtils;
 import org.cougaar.util.UnaryPredicate;
-
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Vector;
 
 
 /**

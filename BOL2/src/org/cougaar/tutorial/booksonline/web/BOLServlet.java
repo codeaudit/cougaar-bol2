@@ -31,7 +31,7 @@ import org.cougaar.core.service.AgentContainmentService;
 import org.cougaar.core.service.BlackboardService;
 import org.cougaar.core.service.DomainService;
 import org.cougaar.core.service.LoggingService;
-import org.cougaar.core.service.NamingService;
+
 import org.cougaar.core.service.UIDService;
 import org.cougaar.core.servlet.BaseServletComponent;
 
@@ -56,9 +56,7 @@ public abstract class BOLServlet extends BaseServletComponent
     protected BlackboardService blackboardService;
     /** Cougaar DomainService */
     protected DomainService domainService;
-    /** Cougaar  NamingService */
-    protected NamingService namingService;
-    /** Cougaar UIDService */
+   /** Cougaar UIDService */
     protected UIDService uidService;
     /** Cougaar Logging Service */
     protected LoggingService logging;
@@ -111,8 +109,7 @@ public abstract class BOLServlet extends BaseServletComponent
                 BlackboardService.class, null);
         this.agentContainmentService = (AgentContainmentService) serviceBroker
             .getService(this, AgentContainmentService.class, null);
-        this.namingService = (NamingService) serviceBroker.getService(this,
-                NamingService.class, null);
+        
         this.uidService = (UIDService) serviceBroker.getService(this,
                 UIDService.class, null);
         this.nodeIdService = (NodeIdentificationService) serviceBroker

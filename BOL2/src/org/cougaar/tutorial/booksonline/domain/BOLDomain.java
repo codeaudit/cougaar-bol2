@@ -35,21 +35,16 @@ package org.cougaar.tutorial.booksonline.domain;
 
 
 import org.cougaar.core.domain.DomainAdapter;
-import org.cougaar.core.domain.DomainBindingSite;
-import org.cougaar.core.domain.XPlan;
 import org.cougaar.core.service.DomainService;
 import org.cougaar.planning.ldm.LogPlan;
 import org.cougaar.planning.ldm.LogPlanImpl;
 import org.cougaar.planning.ldm.PlanningFactory;
 import org.cougaar.planning.ldm.plan.AspectType;
-import org.cougaar.planning.ldm.plan.AspectType.Factory;
 import org.cougaar.planning.ldm.plan.AspectValue;
 import org.cougaar.planning.ldm.plan.LongAspectValue;
 import org.cougaar.planning.ldm.plan.TimeAspectValue;
+import org.cougaar.planning.ldm.plan.AspectType.Factory;
 import org.cougaar.tutorial.booksonline.util.BolSocietyUtils;
-
-import java.util.Collection;
-import java.util.Iterator;
 
 
 /**
@@ -220,8 +215,7 @@ public class BOLDomain extends DomainAdapter {
      * Load BOLFactory
      */
     protected void loadFactory() {
-        DomainBindingSite bindingSite = (DomainBindingSite) getBindingSite();
-        DomainService ds = (DomainService) bindingSite.getServiceBroker()
+        DomainService ds = (DomainService) getBindingSite().getServiceBroker()
                                                       .getService(this,
                 DomainService.class, null);
         setFactory(new BOLFactory((PlanningFactory) ds.getFactory("planning")));
@@ -240,24 +234,8 @@ public class BOLDomain extends DomainAdapter {
      * Load XPlan
      */
     protected void loadXPlan() {
-        DomainBindingSite bindingSite = (DomainBindingSite) getBindingSite();
-        Collection xPlans = bindingSite.getXPlans();
-        LogPlan logPlan = null;
-
-        for (Iterator iterator = xPlans.iterator(); iterator.hasNext();) {
-            XPlan xPlan = (XPlan) iterator.next();
-            if (xPlan instanceof LogPlan) {
-                // Note that this means there are 2 paths to the plan.
-                // Is this okay?
-                logPlan = (LogPlan) xPlan;
-                break;
-            }
-        }
-
-        if (logPlan == null) {
-            logPlan = new LogPlanImpl();
-        }
-
+        LogPlan logPlan =  new LogPlanImpl();
+       
         setXPlan(logPlan);
 
 

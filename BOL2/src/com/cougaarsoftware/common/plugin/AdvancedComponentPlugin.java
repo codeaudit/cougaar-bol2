@@ -17,16 +17,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
-import javax.naming.directory.BasicAttribute;
-import javax.naming.directory.BasicAttributes;
-
 import org.cougaar.core.component.ServiceBroker;
 import org.cougaar.core.node.NodeIdentificationService;
 import org.cougaar.core.plugin.ComponentPlugin;
 import org.cougaar.core.service.AgentContainmentService;
 import org.cougaar.core.service.DomainService;
 import org.cougaar.core.service.LoggingService;
-import org.cougaar.core.service.NamingService;
 import org.cougaar.core.service.UIDService;
 import org.cougaar.core.service.community.CommunityService;
 import org.cougaar.planning.ldm.PlanningFactory;
@@ -67,8 +63,6 @@ public abstract class AdvancedComponentPlugin extends ComponentPlugin {
     /** Logging Service */
     protected LoggingService logging;
     private boolean loggingActive = false;
-    /** Naming Service */
-    protected NamingService naming;
     private boolean namingActive = false;
     /** Community Service */
     protected CommunityService communityService;
@@ -167,25 +161,9 @@ public abstract class AdvancedComponentPlugin extends ComponentPlugin {
     }
 
 
-    /**
-     * set NamingService at load time
-     *
-     * @param service NamingService
-     */
-    public void setNamingService(NamingService service) {
-        this.naming = service;
-        this.namingActive = true;
-    }
+   
 
-
-    /**
-     * get NamingService
-     *
-     * @return NamingService
-     */
-    public NamingService getNamingService() {
-        return this.naming;
-    }
+    
 
 
     /**
@@ -322,16 +300,7 @@ public abstract class AdvancedComponentPlugin extends ComponentPlugin {
     }
 
 
-    /**
-     * Release naming service
-     */
-    protected void closeNaming() {
-        ServiceBroker sb = getBindingSite().getServiceBroker();
-        if (namingActive) {
-            sb.releaseService(this, NamingService.class, naming);
-            namingActive = false;
-        }
-    }
+  
 
 
     /**
@@ -377,8 +346,7 @@ public abstract class AdvancedComponentPlugin extends ComponentPlugin {
     public void unload() {
         super.unload();
         closeLogging();
-        closeNaming();
-        closeCommunityService();
+       closeCommunityService();
         closeAgentContainment();
         closeDomainService();
         closeNodeIDService();
@@ -936,80 +904,7 @@ public abstract class AdvancedComponentPlugin extends ComponentPlugin {
     }
 
 
-    /**
-     * Helper method to join the specified community. Handles lazy creation of
-     * communities (will create comm if request to join non-existant comm).
-     * Agent is joined as EntityType="Agent" and has the Role "Member"
-     *
-     * @param community the community name
-     *
-     * @return success
-     */
-    public boolean joinCommunity(String community) {
-        boolean result = false;
-        if (communityServiceActive) {
-            if (!communityService.communityExists(community)) {
-                if (logging.isDebugEnabled()) {
-                    logging.debug("Community(" + community
-                        + ") doesn't exist, creating");
-                }
-
-                BasicAttributes attrs = new BasicAttributes();
-                attrs.put(new BasicAttribute("Type", "Domain"));
-                result = communityService.createCommunity(community, attrs);
-                logging.debug("createCommunity " + (result ? "pass" : "fail"));
-                if (result == false) {
-                    return false;
-                }
-            }
-
-            //setup the agent attributes
-            BasicAttributes attrs = new BasicAttributes();
-            attrs.put("Name", this.getAgentIdentifier().getAddress());
-            attrs.put("EntityType", "Agent");
-            attrs.put("Role", "Member");
-            //add the agent
-            result = communityService.addToCommunity(community,
-                    this.getAgentIdentifier(),
-                    this.getAgentIdentifier().getAddress(), attrs);
-            if (logging.isDebugEnabled()) {
-                logging.debug("Method: joinCommunity "
-                    + (result ? "pass" : "fail"));
-            }
-        } else {
-            if (logging.isErrorEnabled()) {
-                logging.error("COMMUNITY SERVICE NOT ACTIVE!!!");
-            }
-        }
-
-        return result;
-    }
-
-
-    /**
-     * Helper method to leave the specified community.
-     *
-     * @param community the community name
-     *
-     * @return success
-     */
-    public boolean leaveCommunity(String community) {
-        boolean result = false;
-        if (communityServiceActive) {
-            result = communityService.removeFromCommunity(community,
-                    this.getAgentIdentifier().getAddress());
-            if (logging.isDebugEnabled()) {
-                logging.debug("Method: leaveCommunity "
-                    + (result ? "pass" : "fail"));
-            }
-        } else {
-            if (logging.isErrorEnabled()) {
-                logging.error("COMMUNITY SERVICE NOT ACTIVE!!!");
-            }
-        }
-
-        return result;
-    }
+   
 
 
     /**
