@@ -1,0 +1,37 @@
+;!generate: org.cougaar.tools.build.AssetWriter
+;; Basis for generating class definitions for Subclasses of Assets
+;;
+
+package=org.cougaar.tutorial.booksonline.assets
+
+[BookAsset Asset]
+slots=OverviewPG, AuthorPG, SpecificsPG, PricePG, ReviewPG, PublisherPG
+doc=Representation of a book in our inventory including author, title, and pricing info
+
+[WarehouseAsset Asset]
+slots=WareHouseDescriptionPG
+doc=Simple Representation of a warehouse
+
+[ShippingReqAsset Asset]
+slots=ShipperPG
+doc=Simple representation of shipping assignment
+
+[InventoryAsset Asset]
+slots=InvListPG
+doc=Catalog list of books available in the warehouse
+
+[PaymentAsset Asset]
+slots=PaymentPG
+doc=Payment authorization
+
+[PackerAsset Asset]
+slots=PackTimePG
+doc=Packer resource for boxing the books
+
+[ShippingFleetAsset Asset]
+slots=VehiclePG
+doc=the fleet of shipper vehicles
+
+[AccountAsset Asset]
+slots=AccountPG
+doc=the customer account

@@ -1,0 +1,287 @@
+<?xml version="1.0"  encoding="US-ASCII"?>
+<!DOCTYPE ClusterAssets SYSTEM "AssetList.ldm.dtd" []>
+<AssetList>
+<prototype name="ShippinReqObject">
+  	<object class="org.cougaar.tutorial.booksonline.assets.ShippingReqAsset" id = "object-proto">
+  		<field name="TypeIdentificationPG" type="object">
+        <value>
+          <object class="org.cougaar.planning.ldm.asset.NewTypeIdentificationPG">
+          <field name="TypeIdentification" type="java.lang.String">
+            <value>ShippinReqObject</value>
+          </field>
+          <field name="Nomenclature" type="java.lang.String">
+            <value>ShippinReqObject</value>
+          </field>
+          <field name="AlternateTypeIdentification" type="java.lang.String">
+            <value>ShippinReqObject</value>
+          </field>
+          </object>
+        </value>
+      </field>
+    </object>
+  </prototype>
+  <prototype name="NorthTruckShippingFleetObject">
+  	<object class="org.cougaar.tutorial.booksonline.assets.ShippingFleetAsset" id = "object-proto">
+  		<field name="TypeIdentificationPG" type="object">
+        <value>
+          <object class="org.cougaar.planning.ldm.asset.NewTypeIdentificationPG">
+          <field name="TypeIdentification" type="java.lang.String">
+            <value>NorthTruckShippingFleetObject</value>
+          </field>
+          <field name="Nomenclature" type="java.lang.String">
+            <value>NorthTruckShippingFleetObject</value>
+          </field>
+          <field name="AlternateTypeIdentification" type="java.lang.String">
+            <value>NorthTruckShippingFleetObject</value>
+          </field>
+          </object>
+        </value>
+      </field>
+     <field name="VehiclePG" type="object">
+      <value>
+      	<object class="org.cougaar.tutorial.booksonline.assets.NewVehiclePG">
+      	<field name="Capacity" type="int">
+      		<value>2000</value>
+      	</field>
+      	<field name="Region" type="java.lang.String">
+      		<value>North</value>
+      	</field>
+      	<field name="Free" type="boolean">
+      		<value>true</value>
+      	</field>
+      	<field name="Vid" type="java.lang.String">
+      		<value>TN1</value>
+      	</field>
+      	<field name="Containers" type="int">
+      		<value>0</value>
+      	</field>
+      	<field name="Type" type="java.lang.String">
+      		<value>Truck</value>
+      	</field>
+      	</object>
+        </value>
+      </field>
+    </object>
+  </prototype>
+  <prototype name="EastTruckShippingFleetObject">
+  	<object class="org.cougaar.tutorial.booksonline.assets.ShippingFleetAsset" id = "object-proto">
+  		<field name="TypeIdentificationPG" type="object">
+        <value>
+          <object class="org.cougaar.planning.ldm.asset.NewTypeIdentificationPG">
+          <field name="TypeIdentification" type="java.lang.String">
+            <value>EastTruckShippingFleetObject</value>
+          </field>
+          <field name="Nomenclature" type="java.lang.String">
+            <value>EastTruckShippingFleetObject</value>
+          </field>
+          <field name="AlternateTypeIdentification" type="java.lang.String">
+            <value>EastTruckShippingFleetObject</value>
+          </field>
+          </object>
+        </value>
+      </field>
+     <field name="VehiclePG" type="object">
+      <value>
+      	<object class="org.cougaar.tutorial.booksonline.assets.NewVehiclePG">
+      	<field name="Capacity" type="int">
+      		<value>2000</value>
+      	</field>
+      	<field name="Region" type="java.lang.String">
+      		<value>East</value>
+      	</field>
+      	<field name="Free" type="boolean">
+      		<value>true</value>
+      	</field>
+      	<field name="Vid" type="java.lang.String">
+      		<value>TE1</value>
+      	</field>
+      	<field name="Containers" type="int">
+      		<value>0</value>
+      	</field>
+      	<field name="Type" type="java.lang.String">
+      		<value>Truck</value>
+      	</field>
+      	</object>
+        </value>
+      </field>
+    </object>
+  </prototype>
+  <prototype name="WestTruckShippingFleetObject">
+  	<object class="org.cougaar.tutorial.booksonline.assets.ShippingFleetAsset" id = "object-proto">
+  		<field name="TypeIdentificationPG" type="object">
+        <value>
+          <object class="org.cougaar.planning.ldm.asset.NewTypeIdentificationPG">
+          <field name="TypeIdentification" type="java.lang.String">
+            <value>WestTruckShippingFleetObject</value>
+          </field>
+          <field name="Nomenclature" type="java.lang.String">
+            <value>WestTruckShippingFleetObject</value>
+          </field>
+          <field name="AlternateTypeIdentification" type="java.lang.String">
+            <value>WestTruckShippingFleetObject</value>
+          </field>
+          </object>
+        </value>
+      </field>
+      <field name="VehiclePG" type="object">
+      <value>
+      	<object class="org.cougaar.tutorial.booksonline.assets.NewVehiclePG">
+      	<field name="Capacity" type="int">
+      		<value>2000</value>
+      	</field>
+      	<field name="Region" type="java.lang.String">
+      		<value>West</value>
+      	</field>
+      	<field name="Free" type="boolean">
+      		<value>true</value>
+      	</field>
+      	<field name="Vid" type="java.lang.String">
+      		<value>TW1</value>
+      	</field>
+      	<field name="Containers" type="int">
+      		<value>0</value>
+      	</field>
+      	<field name="Type" type="java.lang.String">
+      		<value>Truck</value>
+      	</field>
+      	</object>
+        </value>
+      </field>
+    </object>
+  </prototype>
+  <prototype name="SouthTruckShippingFleetObject">
+  	<object class="org.cougaar.tutorial.booksonline.assets.ShippingFleetAsset" id = "object-proto">
+  		<field name="TypeIdentificationPG" type="object">
+        <value>
+          <object class="org.cougaar.planning.ldm.asset.NewTypeIdentificationPG">
+          <field name="TypeIdentification" type="java.lang.String">
+            <value>SouthTruckShippingFleetObject</value>
+          </field>
+          <field name="Nomenclature" type="java.lang.String">
+            <value>SouthTruckShippingFleetObject</value>
+          </field>
+          <field name="AlternateTypeIdentification" type="java.lang.String">
+            <value>SouthTruckShippingFleetObject</value>
+          </field>
+          </object>
+        </value>
+      </field>
+      <field name="VehiclePG" type="object">
+      <value>
+      	<object class="org.cougaar.tutorial.booksonline.assets.NewVehiclePG">
+      	<field name="Capacity" type="int">
+      		<value>2000</value>
+      	</field>
+      	<field name="Region" type="java.lang.String">
+      		<value>South</value>
+      	</field>
+      	<field name="Free" type="boolean">
+      		<value>true</value>
+      	</field>
+      	<field name="Vid" type="java.lang.String">
+      		<value>TS1</value>
+      	</field>
+      	<field name="Containers" type="int">
+      		<value>0</value>
+      	</field>
+      	<field name="Type" type="java.lang.String">
+      		<value>Truck</value>
+      	</field>
+      	</object>
+        </value>
+      </field>
+    </object>
+  </prototype>
+</AssetList>
+<!--
+<prototypes>
+	<prototype assetclass="org.cougaar.tutorial.booksonline.assets.ShippingReqAsset" cachename="ShippinReqObject"/>	
+	<prototype assetclass="org.cougaar.tutorial.booksonline.assets.ShippingFleetAsset" cachename="North">
+		<instance itemIdentification="TN1">
+			<propertygroup class="org.cougaar.tutorial.booksonline.assets.VehiclePG">
+				<attribute name="capacity" value="2000"/>
+				<attribute name="region" value="North"/>
+				<attribute name="type" value="Truck"/>
+				<attribute name="free" value="true"/>
+				<attribute name="vid" value="TN1"/>
+				<attribute name="containers" value="0"/>
+			</propertygroup>
+		</instance>
+		<instance itemIdentification="AN1">
+			<propertygroup class="org.cougaar.tutorial.booksonline.assets.VehiclePG">
+				<attribute name="capacity" value="2000"/>
+				<attribute name="region" value="North"/>
+				<attribute name="type" value="Plane"/>
+				<attribute name="free" value="true"/>
+				<attribute name="vid" value="AN1"/>
+				<attribute name="containers" value="0"/>
+			</propertygroup>
+		</instance>
+	</prototype>		
+	<prototype assetclass="org.cougaar.tutorial.booksonline.assets.ShippingFleetAsset" cachename="South">
+		<instance itemIdentification="TS1">
+			<propertygroup class="org.cougaar.tutorial.booksonline.assets.VehiclePG">
+				<attribute name="capacity" value="2000"/>
+				<attribute name="region" value="South"/>
+				<attribute name="type" value="Truck"/>
+				<attribute name="free" value="true"/>
+				<attribute name="vid" value="TS1"/>
+				<attribute name="containers" value="0"/>
+			</propertygroup>
+		</instance>
+		<instance itemIdentification="AS1">
+			<propertygroup class="org.cougaar.tutorial.booksonline.assets.VehiclePG">
+				<attribute name="capacity" value="2000"/>
+				<attribute name="region" value="South"/>
+				<attribute name="type" value="Plane"/>
+				<attribute name="free" value="true"/>
+				<attribute name="vid" value="AS1"/>
+				<attribute name="containers" value="0"/>
+			</propertygroup>
+		</instance>
+	</prototype>
+	<prototype assetclass="org.cougaar.tutorial.booksonline.assets.ShippingFleetAsset" cachename="West">
+		<instance itemIdentification="TW1">
+			<propertygroup class="org.cougaar.tutorial.booksonline.assets.VehiclePG">
+				<attribute name="capacity" value="2000"/>
+				<attribute name="region" value="West"/>
+				<attribute name="type" value="Truck"/>
+				<attribute name="free" value="true"/>
+				<attribute name="vid" value="TW1"/>
+				<attribute name="containers" value="0"/>
+			</propertygroup>
+		</instance>
+		<instance itemIdentification="AW1">
+			<propertygroup class="org.cougaar.tutorial.booksonline.assets.VehiclePG">
+				<attribute name="capacity" value="2000"/>
+				<attribute name="region" value="West"/>
+				<attribute name="type" value="Plane"/>
+				<attribute name="free" value="true"/>
+				<attribute name="vid" value="AW1"/>
+				<attribute name="containers" value="0"/>
+			</propertygroup>
+		</instance>
+	</prototype>
+	<prototype assetclass="org.cougaar.tutorial.booksonline.assets.ShippingFleetAsset" cachename="East">
+		<instance itemIdentification="TE1">
+			<propertygroup class="org.cougaar.tutorial.booksonline.assets.VehiclePG">
+				<attribute name="capacity" value="2000"/>
+				<attribute name="region" value="East"/>
+				<attribute name="type" value="Truck"/>
+				<attribute name="free" value="true"/>
+				<attribute name="vid" value="TE1"/>
+				<attribute name="containers" value="0"/>
+			</propertygroup>
+		</instance>
+		<instance itemIdentification="AE1">
+			<propertygroup class="org.cougaar.tutorial.booksonline.assets.VehiclePG">
+				<attribute name="capacity" value="2000"/>
+				<attribute name="region" value="East"/>
+				<attribute name="type" value="Plane"/>
+				<attribute name="free" value="true"/>
+				<attribute name="vid" value="AE1"/>
+				<attribute name="containers" value="0"/>
+			</propertygroup>
+		</instance>
+	</prototype>
+</prototypes>-->

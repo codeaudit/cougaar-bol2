@@ -1,0 +1,20 @@
+[Prototype]			Organization
+
+[UniqueId]      "UTC/CivilianOrg"
+
+[UIC]           "UIC/Publisher"
+
+[Relationship]
+Supporting      "Warehouse"              "PublishingHouse"
+Supporting      "Warehouse2"              "PublishingHouse"
+
+[TypeIdentificationPG]                      
+TypeIdentification          String  "UTC/RTOrg"
+Nomenclature                String  "Publisher"
+AlternateTypeIdentification String  "SRC/Publisher"
+
+[ClusterPG]
+MessageAddress MessageAddress "Publisher"
+
+[OrganizationPG]
+Roles                Collection<Role>   "PublishingHouse"

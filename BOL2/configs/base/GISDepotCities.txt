@@ -1,0 +1,36 @@
+Dayton		
+	Riverside	
+	Kettering	
+	Centerville	
+	Beavercreek	
+	Bellbrook	
+
+Cincinnati		
+	Waynesville	
+	Middletown	
+	Deer Park	
+	Milford	
+	Covington	KY
+
+Chicago		
+	Joliet	
+	Gary	IN
+	Aurora	
+	Wheeling	
+
+Detroit	Troy	
+	Southfield	
+	Berkely	
+	Warren	
+	Grosse Pointe	
+
+Tampa		
+	Lakeland	
+	Clearwater	
+	Plant City	
+
+Boston	
+	Cambridge
+	Newton
+	Brookline
+	Waltham
