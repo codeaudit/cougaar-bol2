@@ -216,7 +216,7 @@ public class bookdetails extends HttpJspBase {
                 out.print(book.getTOC());
             // end
             // HTML // begin [file="/org/cougaar/tutorial/booksonline/web/orders/bookdetails.jsp";from=(40,25);to=(50,1)]
-                out.write("</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td colspan=\"2\">\r\n\t\t\t\t<input type=\"submit\" value=\"Add To Card\">\r\n\t\t\t\t<input type=\"button\" value=\"Back to Results\" onclick=\"javascript:history.back();\">\r\n\t\t\t</td>\r\n\t\t</tr>\t\r\n\t\t\r\n\t</table>\r\n\t");
+                out.write("</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td colspan=\"2\">\r\n\t\t\t\t<input type=\"submit\" value=\"Add To Cart\">\r\n\t\t\t\t<input type=\"button\" value=\"Back to Results\" onclick=\"javascript:history.back();\">\r\n\t\t\t</td>\r\n\t\t</tr>\t\r\n\t\t\r\n\t</table>\r\n\t");
 
             // end
             // begin [file="/org/cougaar/tutorial/booksonline/web/orders/bookdetails.jsp";from=(50,3);to=(50,4)]
