@@ -19,7 +19,7 @@
  * </copyright>
  */
 
-/* @generated Fri Jul 25 10:24:44 EDT 2003 from bol_assets.def - DO NOT HAND EDIT */
+/* @generated Tue Jun 15 07:45:54 EDT 2004 from bol_assets.def - DO NOT HAND EDIT */
 package org.cougaar.tutorial.booksonline.assets;
 import org.cougaar.planning.ldm.asset.EssentialAssetFactory;
 

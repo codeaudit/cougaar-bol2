@@ -19,7 +19,7 @@
  * </copyright>
  */
 
-/* @generated Fri Jul 25 10:24:45 EDT 2003 from properties.def - DO NOT HAND EDIT */
+/* @generated Tue Jun 15 07:45:54 EDT 2004 from properties.def - DO NOT HAND EDIT */
 /** Implementation of PackTimePG.
  *  @see PackTimePG
  *  @see NewPackTimePG
@@ -27,14 +27,18 @@
 
 package org.cougaar.tutorial.booksonline.assets;
 
-import java.beans.PropertyDescriptor;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import org.cougaar.planning.ldm.measure.*;
+import org.cougaar.planning.ldm.asset.*;
+import org.cougaar.planning.ldm.plan.*;
+import java.util.*;
 
-import org.cougaar.planning.ldm.asset.LockedPG;
-import org.cougaar.planning.ldm.asset.NewPropertyGroup;
-import org.cougaar.planning.ldm.asset.PropertyGroup;
+
+
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.IOException;
+import java.beans.PropertyDescriptor;
+import java.beans.IndexedPropertyDescriptor;
 
 public class PackTimePGImpl extends java.beans.SimpleBeanInfo
   implements NewPackTimePG, Cloneable

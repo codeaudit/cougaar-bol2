@@ -19,7 +19,7 @@
  * </copyright>
  */
 
-/* @generated Fri Jul 25 10:24:45 EDT 2003 from properties.def - DO NOT HAND EDIT */
+/* @generated Tue Jun 15 07:45:54 EDT 2004 from properties.def - DO NOT HAND EDIT */
 /** AbstractFactory implementation for Properties.
  * Prevents clients from needing to know the implementation
  * class(es) of any of the properties.
@@ -27,6 +27,10 @@
 
 package org.cougaar.tutorial.booksonline.assets;
 
+import org.cougaar.planning.ldm.measure.*;
+import org.cougaar.planning.ldm.asset.*;
+import org.cougaar.planning.ldm.plan.*;
+import java.util.*;
 
 
 

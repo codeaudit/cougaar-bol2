@@ -19,7 +19,7 @@
  * </copyright>
  */
 
-/* @generated Fri Jul 25 10:24:45 EDT 2003 from properties.def - DO NOT HAND EDIT */
+/* @generated Tue Jun 15 07:45:54 EDT 2004 from properties.def - DO NOT HAND EDIT */
 /** Implementation of PublisherPG.
  *  @see PublisherPG
  *  @see NewPublisherPG
@@ -27,14 +27,18 @@
 
 package org.cougaar.tutorial.booksonline.assets;
 
-import java.beans.PropertyDescriptor;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import org.cougaar.planning.ldm.measure.*;
+import org.cougaar.planning.ldm.asset.*;
+import org.cougaar.planning.ldm.plan.*;
+import java.util.*;
 
-import org.cougaar.planning.ldm.asset.LockedPG;
-import org.cougaar.planning.ldm.asset.NewPropertyGroup;
-import org.cougaar.planning.ldm.asset.PropertyGroup;
+
+
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.IOException;
+import java.beans.PropertyDescriptor;
+import java.beans.IndexedPropertyDescriptor;
 
 public class PublisherPGImpl extends java.beans.SimpleBeanInfo
   implements NewPublisherPG, Cloneable
@@ -47,25 +51,21 @@ public class PublisherPGImpl extends java.beans.SimpleBeanInfo
   private String theName;
   public String getName(){ return theName; }
   public void setName(String name) {
-    if (name!=null) name=name.intern();
     theName=name;
   }
   private String theAddress;
   public String getAddress(){ return theAddress; }
   public void setAddress(String address) {
-    if (address!=null) address=address.intern();
     theAddress=address;
   }
   private String theCity;
   public String getCity(){ return theCity; }
   public void setCity(String city) {
-    if (city!=null) city=city.intern();
     theCity=city;
   }
   private String theState;
   public String getState(){ return theState; }
   public void setState(String state) {
-    if (state!=null) state=state.intern();
     theState=state;
   }
 
@@ -143,14 +143,6 @@ public class PublisherPGImpl extends java.beans.SimpleBeanInfo
   }
   public String getAssetSetMethod() {
     return assetSetter;
-  }
-
-  private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
-    in.defaultReadObject();
-    if (theName!= null) theName=theName.intern();
-    if (theAddress!= null) theAddress=theAddress.intern();
-    if (theCity!= null) theCity=theCity.intern();
-    if (theState!= null) theState=theState.intern();
   }
 
   private final static PropertyDescriptor properties[] = new PropertyDescriptor[4];

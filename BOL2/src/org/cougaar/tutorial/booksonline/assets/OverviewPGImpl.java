@@ -19,7 +19,7 @@
  * </copyright>
  */
 
-/* @generated Fri Jul 25 10:24:45 EDT 2003 from properties.def - DO NOT HAND EDIT */
+/* @generated Tue Jun 15 07:45:54 EDT 2004 from properties.def - DO NOT HAND EDIT */
 /** Implementation of OverviewPG.
  *  @see OverviewPG
  *  @see NewOverviewPG
@@ -27,14 +27,18 @@
 
 package org.cougaar.tutorial.booksonline.assets;
 
-import java.beans.PropertyDescriptor;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import org.cougaar.planning.ldm.measure.*;
+import org.cougaar.planning.ldm.asset.*;
+import org.cougaar.planning.ldm.plan.*;
+import java.util.*;
 
-import org.cougaar.planning.ldm.asset.LockedPG;
-import org.cougaar.planning.ldm.asset.NewPropertyGroup;
-import org.cougaar.planning.ldm.asset.PropertyGroup;
+
+
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.IOException;
+import java.beans.PropertyDescriptor;
+import java.beans.IndexedPropertyDescriptor;
 
 public class OverviewPGImpl extends java.beans.SimpleBeanInfo
   implements NewOverviewPG, Cloneable
@@ -47,13 +51,11 @@ public class OverviewPGImpl extends java.beans.SimpleBeanInfo
   private String theTitle;
   public String getTitle(){ return theTitle; }
   public void setTitle(String title) {
-    if (title!=null) title=title.intern();
     theTitle=title;
   }
   private String theTableOfContents;
   public String getTableOfContents(){ return theTableOfContents; }
   public void setTableOfContents(String tableOfContents) {
-    if (tableOfContents!=null) tableOfContents=tableOfContents.intern();
     theTableOfContents=tableOfContents;
   }
   private int theSalesRank;
@@ -64,19 +66,16 @@ public class OverviewPGImpl extends java.beans.SimpleBeanInfo
   private String thePublisherNotes;
   public String getPublisherNotes(){ return thePublisherNotes; }
   public void setPublisherNotes(String publisherNotes) {
-    if (publisherNotes!=null) publisherNotes=publisherNotes.intern();
     thePublisherNotes=publisherNotes;
   }
   private String theSubjectKeywords;
   public String getSubjectKeywords(){ return theSubjectKeywords; }
   public void setSubjectKeywords(String subjectKeywords) {
-    if (subjectKeywords!=null) subjectKeywords=subjectKeywords.intern();
     theSubjectKeywords=subjectKeywords;
   }
   private String theSearchableTitle;
   public String getSearchableTitle(){ return theSearchableTitle; }
   public void setSearchableTitle(String searchableTitle) {
-    if (searchableTitle!=null) searchableTitle=searchableTitle.intern();
     theSearchableTitle=searchableTitle;
   }
 
@@ -156,15 +155,6 @@ public class OverviewPGImpl extends java.beans.SimpleBeanInfo
   }
   public String getAssetSetMethod() {
     return assetSetter;
-  }
-
-  private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
-    in.defaultReadObject();
-    if (theTitle!= null) theTitle=theTitle.intern();
-    if (theTableOfContents!= null) theTableOfContents=theTableOfContents.intern();
-    if (thePublisherNotes!= null) thePublisherNotes=thePublisherNotes.intern();
-    if (theSubjectKeywords!= null) theSubjectKeywords=theSubjectKeywords.intern();
-    if (theSearchableTitle!= null) theSearchableTitle=theSearchableTitle.intern();
   }
 
   private final static PropertyDescriptor properties[] = new PropertyDescriptor[6];

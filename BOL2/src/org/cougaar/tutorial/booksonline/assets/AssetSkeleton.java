@@ -19,7 +19,7 @@
  * </copyright>
  */
 
-/* @generated Fri Jul 25 10:24:45 EDT 2003 from properties.def - DO NOT HAND EDIT */
+/* @generated Tue Jun 15 07:45:54 EDT 2004 from properties.def - DO NOT HAND EDIT */
 /** Abstract Asset Skeleton implementation
  * Implements default property getters, and additional property
  * lists.
@@ -28,7 +28,15 @@
 
 package org.cougaar.tutorial.booksonline.assets;
 
-import org.cougaar.planning.ldm.asset.PropertyGroup;
+import org.cougaar.planning.ldm.measure.*;
+import org.cougaar.planning.ldm.asset.*;
+import org.cougaar.planning.ldm.plan.*;
+import java.util.*;
+
+
+import java.io.Serializable;
+import java.beans.PropertyDescriptor;
+import java.beans.IndexedPropertyDescriptor;
 
 public abstract class AssetSkeleton extends org.cougaar.planning.ldm.asset.Asset {
 

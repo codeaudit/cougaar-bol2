@@ -19,7 +19,7 @@
  * </copyright>
  */
 
-/* @generated Fri Jul 25 10:24:45 EDT 2003 from properties.def - DO NOT HAND EDIT */
+/* @generated Tue Jun 15 07:45:54 EDT 2004 from properties.def - DO NOT HAND EDIT */
 /** Implementation of VehiclePG.
  *  @see VehiclePG
  *  @see NewVehiclePG
@@ -27,14 +27,18 @@
 
 package org.cougaar.tutorial.booksonline.assets;
 
-import java.beans.PropertyDescriptor;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import org.cougaar.planning.ldm.measure.*;
+import org.cougaar.planning.ldm.asset.*;
+import org.cougaar.planning.ldm.plan.*;
+import java.util.*;
 
-import org.cougaar.planning.ldm.asset.LockedPG;
-import org.cougaar.planning.ldm.asset.NewPropertyGroup;
-import org.cougaar.planning.ldm.asset.PropertyGroup;
+
+
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.IOException;
+import java.beans.PropertyDescriptor;
+import java.beans.IndexedPropertyDescriptor;
 
 public class VehiclePGImpl extends java.beans.SimpleBeanInfo
   implements NewVehiclePG, Cloneable
@@ -47,7 +51,6 @@ public class VehiclePGImpl extends java.beans.SimpleBeanInfo
   private String theType;
   public String getType(){ return theType; }
   public void setType(String type) {
-    if (type!=null) type=type.intern();
     theType=type;
   }
   private int theCapacity;
@@ -58,7 +61,6 @@ public class VehiclePGImpl extends java.beans.SimpleBeanInfo
   private String theRegion;
   public String getRegion(){ return theRegion; }
   public void setRegion(String region) {
-    if (region!=null) region=region.intern();
     theRegion=region;
   }
   private int theLoad;
@@ -69,7 +71,6 @@ public class VehiclePGImpl extends java.beans.SimpleBeanInfo
   private String theVid;
   public String getVid(){ return theVid; }
   public void setVid(String vid) {
-    if (vid!=null) vid=vid.intern();
     theVid=vid;
   }
   private boolean theFree;
@@ -160,13 +161,6 @@ public class VehiclePGImpl extends java.beans.SimpleBeanInfo
   }
   public String getAssetSetMethod() {
     return assetSetter;
-  }
-
-  private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
-    in.defaultReadObject();
-    if (theType!= null) theType=theType.intern();
-    if (theRegion!= null) theRegion=theRegion.intern();
-    if (theVid!= null) theVid=theVid.intern();
   }
 
   private final static PropertyDescriptor properties[] = new PropertyDescriptor[7];

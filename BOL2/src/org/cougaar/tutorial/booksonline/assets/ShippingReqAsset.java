@@ -19,20 +19,16 @@
  * </copyright>
  */
 
-/* @generated Fri Jul 25 10:24:44 EDT 2003 from bol_assets.def - DO NOT HAND EDIT */
+/* @generated Tue Jun 15 07:45:54 EDT 2004 from bol_assets.def - DO NOT HAND EDIT */
 package org.cougaar.tutorial.booksonline.assets;
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import org.cougaar.planning.ldm.asset.*;
 import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.IOException;
 import java.util.Vector;
-
-import org.cougaar.planning.ldm.asset.Asset;
-import org.cougaar.planning.ldm.asset.Future_PG;
-import org.cougaar.planning.ldm.asset.Null_PG;
-import org.cougaar.planning.ldm.asset.PropertyGroup;
-import org.cougaar.planning.ldm.asset.PropertyGroupSchedule;
+import java.beans.PropertyDescriptor;
+import java.beans.IndexedPropertyDescriptor;
+import java.beans.IntrospectionException;
 /** Simple representation of shipping assignment **/
 
 public class ShippingReqAsset extends Asset {

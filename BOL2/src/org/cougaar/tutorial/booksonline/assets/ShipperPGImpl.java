@@ -19,7 +19,7 @@
  * </copyright>
  */
 
-/* @generated Fri Jul 25 10:24:45 EDT 2003 from properties.def - DO NOT HAND EDIT */
+/* @generated Tue Jun 15 07:45:54 EDT 2004 from properties.def - DO NOT HAND EDIT */
 /** Implementation of ShipperPG.
  *  @see ShipperPG
  *  @see NewShipperPG
@@ -27,14 +27,18 @@
 
 package org.cougaar.tutorial.booksonline.assets;
 
-import java.beans.PropertyDescriptor;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import org.cougaar.planning.ldm.measure.*;
+import org.cougaar.planning.ldm.asset.*;
+import org.cougaar.planning.ldm.plan.*;
+import java.util.*;
 
-import org.cougaar.planning.ldm.asset.LockedPG;
-import org.cougaar.planning.ldm.asset.NewPropertyGroup;
-import org.cougaar.planning.ldm.asset.PropertyGroup;
+
+
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.IOException;
+import java.beans.PropertyDescriptor;
+import java.beans.IndexedPropertyDescriptor;
 
 public class ShipperPGImpl extends java.beans.SimpleBeanInfo
   implements NewShipperPG, Cloneable
@@ -47,19 +51,16 @@ public class ShipperPGImpl extends java.beans.SimpleBeanInfo
   private String theShipperName;
   public String getShipperName(){ return theShipperName; }
   public void setShipperName(String shipperName) {
-    if (shipperName!=null) shipperName=shipperName.intern();
     theShipperName=shipperName;
   }
   private String theDestinationAddress;
   public String getDestinationAddress(){ return theDestinationAddress; }
   public void setDestinationAddress(String destinationAddress) {
-    if (destinationAddress!=null) destinationAddress=destinationAddress.intern();
     theDestinationAddress=destinationAddress;
   }
   private String theMethod;
   public String getMethod(){ return theMethod; }
   public void setMethod(String method) {
-    if (method!=null) method=method.intern();
     theMethod=method;
   }
 
@@ -136,13 +137,6 @@ public class ShipperPGImpl extends java.beans.SimpleBeanInfo
   }
   public String getAssetSetMethod() {
     return assetSetter;
-  }
-
-  private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
-    in.defaultReadObject();
-    if (theShipperName!= null) theShipperName=theShipperName.intern();
-    if (theDestinationAddress!= null) theDestinationAddress=theDestinationAddress.intern();
-    if (theMethod!= null) theMethod=theMethod.intern();
   }
 
   private final static PropertyDescriptor properties[] = new PropertyDescriptor[3];

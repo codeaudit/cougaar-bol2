@@ -19,7 +19,7 @@
  * </copyright>
  */
 
-/* @generated Fri Jul 25 10:24:45 EDT 2003 from properties.def - DO NOT HAND EDIT */
+/* @generated Tue Jun 15 07:45:54 EDT 2004 from properties.def - DO NOT HAND EDIT */
 /** Primary client interface for SpecificsPG.
  * facts about this specific book, cd, dvd, or whatever
  *  @see NewSpecificsPG
@@ -28,11 +28,10 @@
 
 package org.cougaar.tutorial.booksonline.assets;
 
-import org.cougaar.planning.ldm.asset.Future_PG;
-import org.cougaar.planning.ldm.asset.NewPropertyGroup;
-import org.cougaar.planning.ldm.asset.Null_PG;
-import org.cougaar.planning.ldm.asset.PropertyGroup;
-import org.cougaar.planning.ldm.asset.UndefinedValueException;
+import org.cougaar.planning.ldm.measure.*;
+import org.cougaar.planning.ldm.asset.*;
+import org.cougaar.planning.ldm.plan.*;
+import java.util.*;
 
 
 

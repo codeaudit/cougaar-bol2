@@ -113,7 +113,7 @@ public class bookdetails extends HttpJspBase {
                 out.print(org.cougaar.tutorial.booksonline.web.WebConstants.MODE+"="+org.cougaar.tutorial.booksonline.web.WebConstants.MODE_VIEW_CART);
             // end
             // HTML // begin [file="/org/cougaar/tutorial/booksonline/web/orders/../includes/sidenav.html";from=(4,144);to=(6,16)]
-                out.write("\">View cart</a><br><br>\r\n\t\t\t<a href=\"\">Check orders Status</a>(Coming Soon)<br>\r\n\t\t\t<a href=\"bol?");
+                out.write("\">View cart</a><br><br>\r\n\t\t\tCheck orders Status(Coming Soon)<br>\r\n\t\t\t<a href=\"bol?");
 
             // end
             // begin [file="/org/cougaar/tutorial/booksonline/web/orders/../includes/sidenav.html";from=(6,19);to=(6,36)]

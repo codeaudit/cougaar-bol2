@@ -19,7 +19,7 @@
  * </copyright>
  */
 
-/* @generated Fri Jul 25 10:24:45 EDT 2003 from properties.def - DO NOT HAND EDIT */
+/* @generated Tue Jun 15 07:45:54 EDT 2004 from properties.def - DO NOT HAND EDIT */
 /** Implementation of WareHouseDescriptionPG.
  *  @see WareHouseDescriptionPG
  *  @see NewWareHouseDescriptionPG
@@ -27,14 +27,18 @@
 
 package org.cougaar.tutorial.booksonline.assets;
 
-import java.beans.PropertyDescriptor;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import org.cougaar.planning.ldm.measure.*;
+import org.cougaar.planning.ldm.asset.*;
+import org.cougaar.planning.ldm.plan.*;
+import java.util.*;
 
-import org.cougaar.planning.ldm.asset.LockedPG;
-import org.cougaar.planning.ldm.asset.NewPropertyGroup;
-import org.cougaar.planning.ldm.asset.PropertyGroup;
+
+
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.IOException;
+import java.beans.PropertyDescriptor;
+import java.beans.IndexedPropertyDescriptor;
 
 public class WareHouseDescriptionPGImpl extends java.beans.SimpleBeanInfo
   implements NewWareHouseDescriptionPG, Cloneable
@@ -47,43 +51,36 @@ public class WareHouseDescriptionPGImpl extends java.beans.SimpleBeanInfo
   private String theName;
   public String getName(){ return theName; }
   public void setName(String name) {
-    if (name!=null) name=name.intern();
     theName=name;
   }
   private String theAddress1;
   public String getAddress1(){ return theAddress1; }
   public void setAddress1(String address1) {
-    if (address1!=null) address1=address1.intern();
     theAddress1=address1;
   }
   private String theAddress2;
   public String getAddress2(){ return theAddress2; }
   public void setAddress2(String address2) {
-    if (address2!=null) address2=address2.intern();
     theAddress2=address2;
   }
   private String theCity;
   public String getCity(){ return theCity; }
   public void setCity(String city) {
-    if (city!=null) city=city.intern();
     theCity=city;
   }
   private String theState;
   public String getState(){ return theState; }
   public void setState(String state) {
-    if (state!=null) state=state.intern();
     theState=state;
   }
   private String theZipCode;
   public String getZipCode(){ return theZipCode; }
   public void setZipCode(String zipCode) {
-    if (zipCode!=null) zipCode=zipCode.intern();
     theZipCode=zipCode;
   }
   private String theCcExpDate;
   public String getCcExpDate(){ return theCcExpDate; }
   public void setCcExpDate(String ccExpDate) {
-    if (ccExpDate!=null) ccExpDate=ccExpDate.intern();
     theCcExpDate=ccExpDate;
   }
   private long theCcNumber;
@@ -170,17 +167,6 @@ public class WareHouseDescriptionPGImpl extends java.beans.SimpleBeanInfo
   }
   public String getAssetSetMethod() {
     return assetSetter;
-  }
-
-  private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
-    in.defaultReadObject();
-    if (theName!= null) theName=theName.intern();
-    if (theAddress1!= null) theAddress1=theAddress1.intern();
-    if (theAddress2!= null) theAddress2=theAddress2.intern();
-    if (theCity!= null) theCity=theCity.intern();
-    if (theState!= null) theState=theState.intern();
-    if (theZipCode!= null) theZipCode=theZipCode.intern();
-    if (theCcExpDate!= null) theCcExpDate=theCcExpDate.intern();
   }
 
   private final static PropertyDescriptor properties[] = new PropertyDescriptor[8];

@@ -19,7 +19,7 @@
  * </copyright>
  */
 
-/* @generated Fri Jul 25 10:24:45 EDT 2003 from properties.def - DO NOT HAND EDIT */
+/* @generated Tue Jun 15 07:45:54 EDT 2004 from properties.def - DO NOT HAND EDIT */
 /** Implementation of AccountPG.
  *  @see AccountPG
  *  @see NewAccountPG
@@ -27,14 +27,18 @@
 
 package org.cougaar.tutorial.booksonline.assets;
 
-import java.beans.PropertyDescriptor;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import org.cougaar.planning.ldm.measure.*;
+import org.cougaar.planning.ldm.asset.*;
+import org.cougaar.planning.ldm.plan.*;
+import java.util.*;
 
-import org.cougaar.planning.ldm.asset.LockedPG;
-import org.cougaar.planning.ldm.asset.NewPropertyGroup;
-import org.cougaar.planning.ldm.asset.PropertyGroup;
+
+
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.IOException;
+import java.beans.PropertyDescriptor;
+import java.beans.IndexedPropertyDescriptor;
 
 public class AccountPGImpl extends java.beans.SimpleBeanInfo
   implements NewAccountPG, Cloneable
@@ -47,19 +51,16 @@ public class AccountPGImpl extends java.beans.SimpleBeanInfo
   private String theCustomeraccount;
   public String getCustomeraccount(){ return theCustomeraccount; }
   public void setCustomeraccount(String customeraccount) {
-    if (customeraccount!=null) customeraccount=customeraccount.intern();
     theCustomeraccount=customeraccount;
   }
   private String theCustomername;
   public String getCustomername(){ return theCustomername; }
   public void setCustomername(String customername) {
-    if (customername!=null) customername=customername.intern();
     theCustomername=customername;
   }
   private String theCustomeraddress;
   public String getCustomeraddress(){ return theCustomeraddress; }
   public void setCustomeraddress(String customeraddress) {
-    if (customeraddress!=null) customeraddress=customeraddress.intern();
     theCustomeraddress=customeraddress;
   }
   private double theCustomerbalance;
@@ -148,13 +149,6 @@ public class AccountPGImpl extends java.beans.SimpleBeanInfo
   }
   public String getAssetSetMethod() {
     return assetSetter;
-  }
-
-  private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
-    in.defaultReadObject();
-    if (theCustomeraccount!= null) theCustomeraccount=theCustomeraccount.intern();
-    if (theCustomername!= null) theCustomername=theCustomername.intern();
-    if (theCustomeraddress!= null) theCustomeraddress=theCustomeraddress.intern();
   }
 
   private final static PropertyDescriptor properties[] = new PropertyDescriptor[5];

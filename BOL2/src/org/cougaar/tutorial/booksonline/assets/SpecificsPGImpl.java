@@ -19,7 +19,7 @@
  * </copyright>
  */
 
-/* @generated Fri Jul 25 10:24:45 EDT 2003 from properties.def - DO NOT HAND EDIT */
+/* @generated Tue Jun 15 07:45:54 EDT 2004 from properties.def - DO NOT HAND EDIT */
 /** Implementation of SpecificsPG.
  *  @see SpecificsPG
  *  @see NewSpecificsPG
@@ -27,14 +27,18 @@
 
 package org.cougaar.tutorial.booksonline.assets;
 
-import java.beans.PropertyDescriptor;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import org.cougaar.planning.ldm.measure.*;
+import org.cougaar.planning.ldm.asset.*;
+import org.cougaar.planning.ldm.plan.*;
+import java.util.*;
 
-import org.cougaar.planning.ldm.asset.LockedPG;
-import org.cougaar.planning.ldm.asset.NewPropertyGroup;
-import org.cougaar.planning.ldm.asset.PropertyGroup;
+
+
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.IOException;
+import java.beans.PropertyDescriptor;
+import java.beans.IndexedPropertyDescriptor;
 
 public class SpecificsPGImpl extends java.beans.SimpleBeanInfo
   implements NewSpecificsPG, Cloneable
@@ -47,7 +51,6 @@ public class SpecificsPGImpl extends java.beans.SimpleBeanInfo
   private String theShipMessage;
   public String getShipMessage(){ return theShipMessage; }
   public void setShipMessage(String shipMessage) {
-    if (shipMessage!=null) shipMessage=shipMessage.intern();
     theShipMessage=shipMessage;
   }
   private int thePhotoIndex;
@@ -73,13 +76,11 @@ public class SpecificsPGImpl extends java.beans.SimpleBeanInfo
   private String theISBNASIN;
   public String getISBNASIN(){ return theISBNASIN; }
   public void setISBNASIN(String ISBNASIN) {
-    if (ISBNASIN!=null) ISBNASIN=ISBNASIN.intern();
     theISBNASIN=ISBNASIN;
   }
   private String theDimension;
   public String getDimension(){ return theDimension; }
   public void setDimension(String dimension) {
-    if (dimension!=null) dimension=dimension.intern();
     theDimension=dimension;
   }
 
@@ -160,13 +161,6 @@ public class SpecificsPGImpl extends java.beans.SimpleBeanInfo
   }
   public String getAssetSetMethod() {
     return assetSetter;
-  }
-
-  private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
-    in.defaultReadObject();
-    if (theShipMessage!= null) theShipMessage=theShipMessage.intern();
-    if (theISBNASIN!= null) theISBNASIN=theISBNASIN.intern();
-    if (theDimension!= null) theDimension=theDimension.intern();
   }
 
   private final static PropertyDescriptor properties[] = new PropertyDescriptor[7];

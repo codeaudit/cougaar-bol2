@@ -19,7 +19,7 @@
  * </copyright>
  */
 
-/* @generated Fri Jul 25 10:24:45 EDT 2003 from properties.def - DO NOT HAND EDIT */
+/* @generated Tue Jun 15 07:45:54 EDT 2004 from properties.def - DO NOT HAND EDIT */
 /** Implementation of AuthorPG.
  *  @see AuthorPG
  *  @see NewAuthorPG
@@ -27,14 +27,18 @@
 
 package org.cougaar.tutorial.booksonline.assets;
 
-import java.beans.PropertyDescriptor;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import org.cougaar.planning.ldm.measure.*;
+import org.cougaar.planning.ldm.asset.*;
+import org.cougaar.planning.ldm.plan.*;
+import java.util.*;
 
-import org.cougaar.planning.ldm.asset.LockedPG;
-import org.cougaar.planning.ldm.asset.NewPropertyGroup;
-import org.cougaar.planning.ldm.asset.PropertyGroup;
+
+
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.IOException;
+import java.beans.PropertyDescriptor;
+import java.beans.IndexedPropertyDescriptor;
 
 public class AuthorPGImpl extends java.beans.SimpleBeanInfo
   implements NewAuthorPG, Cloneable
@@ -47,25 +51,21 @@ public class AuthorPGImpl extends java.beans.SimpleBeanInfo
   private String theDisplayName;
   public String getDisplayName(){ return theDisplayName; }
   public void setDisplayName(String displayName) {
-    if (displayName!=null) displayName=displayName.intern();
     theDisplayName=displayName;
   }
   private String theAffiliation;
   public String getAffiliation(){ return theAffiliation; }
   public void setAffiliation(String affiliation) {
-    if (affiliation!=null) affiliation=affiliation.intern();
     theAffiliation=affiliation;
   }
   private String theInterview;
   public String getInterview(){ return theInterview; }
   public void setInterview(String interview) {
-    if (interview!=null) interview=interview.intern();
     theInterview=interview;
   }
   private String theSearchableName;
   public String getSearchableName(){ return theSearchableName; }
   public void setSearchableName(String searchableName) {
-    if (searchableName!=null) searchableName=searchableName.intern();
     theSearchableName=searchableName;
   }
 
@@ -143,14 +143,6 @@ public class AuthorPGImpl extends java.beans.SimpleBeanInfo
   }
   public String getAssetSetMethod() {
     return assetSetter;
-  }
-
-  private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
-    in.defaultReadObject();
-    if (theDisplayName!= null) theDisplayName=theDisplayName.intern();
-    if (theAffiliation!= null) theAffiliation=theAffiliation.intern();
-    if (theInterview!= null) theInterview=theInterview.intern();
-    if (theSearchableName!= null) theSearchableName=theSearchableName.intern();
   }
 
   private final static PropertyDescriptor properties[] = new PropertyDescriptor[4];

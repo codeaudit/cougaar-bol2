@@ -19,7 +19,7 @@
  * </copyright>
  */
 
-/* @generated Fri Jul 25 10:24:45 EDT 2003 from properties.def - DO NOT HAND EDIT */
+/* @generated Tue Jun 15 07:45:54 EDT 2004 from properties.def - DO NOT HAND EDIT */
 /** Implementation of ReviewPG.
  *  @see ReviewPG
  *  @see NewReviewPG
@@ -27,14 +27,18 @@
 
 package org.cougaar.tutorial.booksonline.assets;
 
-import java.beans.PropertyDescriptor;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import org.cougaar.planning.ldm.measure.*;
+import org.cougaar.planning.ldm.asset.*;
+import org.cougaar.planning.ldm.plan.*;
+import java.util.*;
 
-import org.cougaar.planning.ldm.asset.LockedPG;
-import org.cougaar.planning.ldm.asset.NewPropertyGroup;
-import org.cougaar.planning.ldm.asset.PropertyGroup;
+
+
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.IOException;
+import java.beans.PropertyDescriptor;
+import java.beans.IndexedPropertyDescriptor;
 
 public class ReviewPGImpl extends java.beans.SimpleBeanInfo
   implements NewReviewPG, Cloneable
@@ -47,7 +51,6 @@ public class ReviewPGImpl extends java.beans.SimpleBeanInfo
   private String theReview;
   public String getReview(){ return theReview; }
   public void setReview(String review) {
-    if (review!=null) review=review.intern();
     theReview=review;
   }
   private float theAvgRating;
@@ -134,11 +137,6 @@ public class ReviewPGImpl extends java.beans.SimpleBeanInfo
   }
   public String getAssetSetMethod() {
     return assetSetter;
-  }
-
-  private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
-    in.defaultReadObject();
-    if (theReview!= null) theReview=theReview.intern();
   }
 
   private final static PropertyDescriptor properties[] = new PropertyDescriptor[3];
