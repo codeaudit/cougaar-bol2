@@ -146,8 +146,8 @@ public class OrderManagerExpanderPlugin extends BOLComponentPlugin {
                     logging.debug(
                         "****************************************************Received order complete notification...");
                 }
-
-                getBlackboardService().publishRemove(orderTask);
+				//Leave task worflow, exp on blackboard for viewing purposes.
+                //getBlackboardService().publishRemove(orderTask);
             }
         }
     }
