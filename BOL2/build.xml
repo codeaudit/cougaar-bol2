@@ -23,6 +23,7 @@
    
     <property name="clib.dir" value="${cougaar.dir}/lib"/>
     <property name="csys.dir" value="${cougaar.dir}/sys"/>
+    <property name="cbuild.dir" value="${cougaar.dir}/clib"/>
 	<property name="javadoc.dir" value="${basedir}/javadocs"/>
 	<property name="doc.dir" value="${basedir}/docs"/>
     <property name="build.dir" value="${basedir}/build"/>
@@ -52,6 +53,9 @@
         <fileset dir="${csys.dir}">
             <include name="**/*.jar"/>
         </fileset>
+        <fileset dir="${cbuild.dir}">
+        	<include name="**/*.jar"/>
+        </fileset>
         <!--
         <fileset dir="${clib.dir}">
             <include name="core.jar"/>
@@ -69,7 +73,7 @@
     </path>
     -->
 	<!-- Define paths and paths-style properties for use elsewhere -->
-    <property name="build.classpath.property" refid="build.classpath"/>
+   <!-- <property name="build.classpath.property" refid="build.classpath"/>-->
     <!-- <property name="libs.classpath.property" refid="libs.classpath"/>
     <path id="lib.path" path="${lib.dir}"/>
     <property name="lib.path.property" refid="lib.path"/> -->
@@ -107,7 +111,7 @@
 		<zip destfile="${basedir}/bol2.zip">
 			<zipfileset dir="${basedir}/src" includes="**/*" prefix="src"/>
 			<zipfileset dir="${basedir}/lib" includes="**/*" prefix="lib"/>
-			<zipfileset dir="${basedir}/releasedocs" includes="**/*" prefix="docs"/>
+			<!--<zipfileset dir="${basedir}/releasedocs" includes="**/*" prefix="docs"/>-->
 			<zipfileset dir="${basedir}/configs" includes="base/*" prefix="configs"/>
 			<zipfileset dir="${basedir}/build" includes="**/*" prefix="build"/>
 			<zipfileset dir="${basedir}" includes="*.xml"/>
@@ -118,7 +122,7 @@
     <!-- ============================================================== -->
     <!-- Builds the Env                                                 -->
     <!-- ============================================================== -->
-    <target name="all" description="Builds the entire application" depends="prepare,compile"/>
+    <target name="all" description="Builds the entire application" depends="prepare,assets,compile-jsps,compile,jar,javadoc,release"/>
 	
 	<target name="compile-jsps">
         <jspc srcdir="${src.dir}"
@@ -135,12 +139,13 @@
 		
 		<echo message="Creating Assets"/>
 		<echo message="${cougaar.dir}"/>
+		<echo message="${cbuild.dir}/build.jar"/>
 		<java classname="org.cougaar.tools.build.AssetWriter" fork="true"
 			dir="${src.dir}/org/cougaar/tutorial/booksonline/assets">
 			<classpath>
 				<pathelement location="${clib.dir}/core.jar"/>
-				<pathelement location="${clib.dir}/build.jar"/>
 				<pathelement location="${clib.dir}/glm.jar"/>
+				<pathelement location="${cbuild.dir}/build.jar"/>
 			</classpath>
 			<arg value="-Porg.cougaar.tutorial.booksonline.assets"/>
 			<arg value="bol_assets.def"/>
@@ -151,7 +156,7 @@
 			dir="${src.dir}/org/cougaar/tutorial/booksonline/assets">
 			<classpath>
 				<pathelement location="${clib.dir}/core.jar"/>
-				<pathelement location="${clib.dir}/build.jar"/>
+				<pathelement location="${cbuild.dir}/build.jar"/>
 			</classpath>
 			<arg value="properties.def"/>
 		</java>
