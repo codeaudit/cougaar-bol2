@@ -1,0 +1,42 @@
+
+<style type="text/css">
+<!--
+/* GENERIC */
+span.wrapper { font-size: 13px; font-family: Verdana, Arial, Helvetica, sans-serif }
+span.title { color: #000000; font-size: 20px; font-weight: bold; font-family: verdana, sans-serif }
+span.body, td, dd { color: #000000; font-size: 13px; font-family: verdana, sans-serif }
+ul, ol, blockquote, p { color: #000000; font-size: 13px; font-family: verdana, sans-serif }
+h1 { color: #000000; font-weight: bold; font-size: 20px; font-family: verdana, sans-serif }
+h2 { color: #000000; font-weight: bold; font-size: 18px; font-family: verdana, sans-serif }
+h3 { color: #000000; font-weight: bold; font-size: 16px; font-family: verdana, sans-serif }
+h4 { color: #000000; font-weight: bold; font-size: 14px; font-family: verdana, sans-serif }
+h5 { color: #000000; font-weight: bold; font-size: 12px; font-family: verdana, sans-serif }
+dt { color: #000000; font-size: 13px; font-family: verdana, sans-serif; font-weight:bold; padding-top:5px }
+
+a:link { color:#0000ff }
+a:visited { color:#660066 }
+a:active { color:#000000 }
+
+a.tab:link { text-decoration: none; color: #333366; font-size: 14px; font-family: verdana, sans-serif; font-weight:bold }
+a.tab:active { text-decoration: none; color: #000000; font-size: 14px; font-family: verdana, sans-serif; font-weight:bold }
+a.tab:visited { text-decoration: none; color: #333366; font-size: 14px; font-family: verdana, sans-serif; font-weight:bold }
+
+a.tab2:link { text-decoration: none; color: #ffffff; font-size: 14px; font-family: verdana, sans-serif; font-weight:bold}
+a.tab2:active { text-decoration: none; color: #000000; font-size: 14px; font-family: verdana, sans-serif; font-weight:bold }
+a.tab2:visited { text-decoration: none; color: #ffffff; font-size: 14px; font-family: verdana, sans-serif; font-weight:bold }
+
+a.footer:link    { font-size: 10px; font-family: verdana, sans-serif; color:#0000ff }
+a.footer:visited { font-size: 10px; font-family: verdana, sans-serif; color:#660066 }
+a.footer:active  { font-size: 10px; font-family: verdana, sans-serif; color:#000000 }
+
+span.copyright { color: #000000; font-size: 10px; font-family: verdana, sans-serif }
+span.date      { color: #cccccc; font-size: 10px; font-family: verdana, sans-serif }
+span.byline { color: #000000; font-size: 13px; font-family: verdana, sans-serif }
+
+code,tt,pre { font-family: courier, "courier new", monaco; font-size: 12px; color: #000000 }
+
+td.dkgray { background:#999999 }
+td.white { background:#ffffff }
+td.yellow { background:#ffffcc }
+-->
+</style>
