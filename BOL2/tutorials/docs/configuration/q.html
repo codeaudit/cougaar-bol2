@@ -6,16 +6,59 @@
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
 <BODY BGCOLOR="#FFFFFF">
-<a href="index.html">Configuration Trail</a>&nbsp;&nbsp;<a href="../index.html">TOC</a>
+<a class="blackLinkBold" href="index.html">Configuration Trail</a>&nbsp;&nbsp;<a class="blackLinkBold" href="../index.html">TOC</a>
 <table>
 	<tr>
 		<td>
 			The q.xml file used in the BOL Society is used to configure the database and identify the SQL used within the application.  The q.xml file is parsed by the DatabaseService (com.cougaarsoftware.common.service.DatabaseService).  The service provides an easy way for Cougaar Plugins to execute SQL queries and Statements. 
 			Here is an example of a q.xml file:
 			<br>
+		</td>
+	</tr>
+	<tr>
+		<td class="codeHead">
+		
 			<pre>
+&#60;?xml version="1.0"?>
+&#60;queryfile>
+	&#60;database
+		url="jdbc:mysql://localhost/bol"
+		driver="org.gjt.mm.mysql.Driver"
+		username="root"
+		password="">
+		&#60;query name="getAllBooks">
+			&#60;![CDATA[Select * from books]]>
+		&#60;/query>
+		&#60;query name="FindByAuthor">
+			&#60;![CDATA[Select * from books where author like'%:search:%']]>		
+		&#60;/query>
+		&#60;query name="FindByTitle">
+			&#60;![CDATA[Select * from books where title like '%:search:%']]>
+		&#60;/query>
+		&#60;query name="FindBySubject">
+			&#60;![CDATA[Select * from books where keywords like '%:search:%']]>
+		&#60;/query>
+		&#60;query name="GetBookByIsbn">
+			&#60;![CDATA[Select * from books where isbn=':isbn:']]>
+		&#60;/query>
+		&#60;query name="updateInventory">
+			&#60;![CDATA[Update books set shelf=:inventoryLevel: where isbn=':isbn:']]>
+		&#60;/query>
+		&#60;query name="PublisherGetBookByIsbn">
+			&#60;![CDATA[Select * from publisherbooks where isbn=':isbn:']]>
+		&#60;/query>
+		&#60;query name="PublisherUpdateInventory">
+			&#60;![CDATA[Update publisherbooks set shelf=:inventoryLevel: where isbn=':isbn:']]>
+		&#60;/query>
+	&#60;/database>
+&#60;/queryfile>
+			
 			</pre> 
 			<br><br>
+		</td>
+	</tr>
+	<tr>
+		<td>
 			Having review how to setup the Database configuration, it is now time to setup the <a href="bol/index.html">configuration for the BOL Society.</a>
 		</td>
 	</tr>
