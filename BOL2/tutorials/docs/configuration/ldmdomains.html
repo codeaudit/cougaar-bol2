@@ -2,7 +2,7 @@
 <HTML>
 <HEAD>
 <link rel="stylesheet" href="../includes/style.css" type="text/css"></link>
-<TITLE>LDM Domains</TITLE>
+<TITLE>Lesson 1:Cougaar Configuration:LDM Domains</TITLE>
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
 <BODY BGCOLOR="#FFFFFF">
@@ -10,13 +10,15 @@
 <table>
 	<tr>
 		<td>
-			The LDMDomain.ini file describes the Domains to be used in the BOL Node. Here is the <a href="">LDMDomains.ini</a> file used in Books Online:
-				<br>
-				<pre>
-					glm=org.cougaar.glm.ldm.GLMDomain
-					BOLDomain=org.cougaar.tutorial.booksonline.domain.BOLDomain
-				</pre>
-				The Planning Domain is added to a Cougaar Node by default.  The format of this file is a DOMAIN_NAME=DOMAIN_IMPLEMENTATION_CLASS format. So in this example the BOL Domain is implemented in the BOLDomain class and can be referenced within cougaar by the name "BOL".
+			Domains (implementations of org.cougaar.core.Domain) can be loaded into a Cougaar Society.  The configuration identifying the Domains to load into the Node is located in the <b><i>LDMDomains.ini</i></b> file.  This is a very simple configuration file containing a list of domain name, domain implementation class pairs.  By default the PlanningDomain is loaded into every Node, so no line needs to be added to the LDMDomain.ini file.  Here is an example LDMDomain file:
+			<br>
+			<pre>
+				glm=org.cougaar.glm.ldm.GLMDomain
+				mydomain=com.test.domain.MyDomain
+			</pre>
+			This LDMDomain configuration file identifies 2 Domains to be loaded into the node: the org.cougaar.glm.ldm.GLMDomain and the com.test.domain.MyDomain Domain.  The name of the domain is important because this is how you get a reference to a domain factory from most Cougaar Components.  This is usually done by using the DomainService.getFactory(domainName) method.
+			<br><br>
+			Having covered the basics to configuring the domains of a Node, the next step is <a href="agentconfiguration.html">configuring an agent</a>.
 		</td>
 	</tr>
 </table>

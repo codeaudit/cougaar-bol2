@@ -1,0 +1,738 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<link rel="stylesheet" href="../includes/style.css" type="text/css"></link>
+<TITLE>Lesson 2: Web tier</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+	<BODY BGCOLOR="#FFFFFF">
+<a href="../index.html">TOC</a>
+<h2>BOL Web tier</h2>
+<br>
+
+
+
+
+<table border="0" cellspacing="2" cellpadding="4" width="100%" valign="top">
+	<tr>
+		<td>The goal of this lesson is to create the web tier of the BOL Application and demonstrate using Servlets within Cougaar.  The starter source for this tutorial is located <a href="../../src/lesson2/src/starter/org/cougaar/tutorial/booksonline/web/BOLServlet.java">here</a>  
+		</td>
+	</tr>
+	<tr>       
+		<td>In order to make web development easier, the Web-tier will use JSPs for the presentation layer and Serlvets for the Business Logic.  The OrderManager Agent will host the JSPs, Servlets necessary to handle order processing and the Warehouse Agent will host Servlets needed to search the Warehouse for books.  The OrderManager Agent will have the following screens:
+			<ul><a name="0"></a>
+				<li>The main BOL page</li>
+				<li>A checkout page</li>
+				<li>A order verification page</li>
+				<li>A view shopping cart page</li>
+				<li>A search results page</li>
+				<li>A book details page</li>
+			</ul>
+		 	Also, we will need a Controller Servlet for the OrderManager; the OrderManagerServlet.  Also a AbstractServlet will be created to provide some common functionality needed by the other Servlets withing BOL.  The URL parameters and values will be created in an Interface to prevent miss spellings.  
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<a href="#1">Step 1: Creating the AbstractServlet and Web Constants Interface</a><br>
+			<a href="#2">Step 2: Creating the OrderManagerServlet</a><br>
+			<a href="#3">Step 3: Adding the JSP Presentation Layer</a><br>
+			<a href="#4">Step 4: Creating the CatalogSearchServlet on the Warehouse Agent</a><br>
+			<a href="#5">Step 5: Adding the business logic to the OrderManagerServlet</a><br>
+			<a href="#6">Step 6: Running the Society</a>
+		</td>
+	</tr>
+	<tr>
+		<td><b>Step 1: Creating the AbstractServlet and Web Constants Interface</b></td>
+	</tr>
+	<tr>
+		<td>
+			<ul>
+				<li>The WebConstants interface has already been created <a href="../src/lesson2/src/org/cougaar/tutorial/booksonline/web/WebConstants.java">here</a>, this file contains all of the URL parameters needed for the 6 screens needed for the web tier.</li>
+				<li>Create the BOLServlet in the web package.  The core Cougaar API provides a convenient base class, <i>org.cougaar.core.servlet.BaseServletComponent</i> for developing Servlets within Cougaar. Create the BOLServlet and extend the org.cougaar.core.servlet.BaseServletComponent class:
+				<br>
+				<pre>
+import org.cougaar.core.servlet.BaseServletComponent;
+				
+public class BOLServlet extends BaseServletComponent{
+				
+}
+				</pre>
+				
+				The BaseServletComponent class has two abstract methods which need to be impelmented:
+					<ul>
+						<li>public String getPath() : returns the path to this servlet</li>
+						<li>public Servlet createServlet() : return the Servlet to handle requests</li>
+					</ul>
+				Implement the abstract methods:
+				<pre><font color="navy">
+/**Make implementation classes specify the path to the servlet*/
+protected abstract String getPath();
+				    
+protected Servlet createServlet() {
+	componentServlet = new ComponentServlet();
+	return (Servlet) componentServlet;
+}
+    			</font></pre>
+    			Now, create the ComponentServlet to service the HTTPRequests:
+    			<pre><font color="navy">	
+/**
+* Out HTTPServlet
+*
+*/
+private class ComponentServlet extends HttpServlet {
+	public ComponentServlet() {
+    	if (JspFactory.getDefaultFactory() == null) {
+        	JspFactory.setDefaultFactory(new org.apache.jasper.runtime.JspFactoryImpl());
+        }
+    }
+
+    public void init(ServletConfig config) {
+    	try {
+        	super.init(config);
+            initServlet(config);
+        } catch (Exception e) {
+        	if (logging.isErrorEnabled()) {
+        		logging.error("Errot initializing sevlet", e);
+     		}
+ 		}
+	}
+
+
+    public void service(HttpServletRequest request,
+       			HttpServletResponse response) {
+    	try {
+        	if(logging.isDebugEnabled()){
+        		logging.debug("Servicing request");
+        	}
+            
+        	serviceRequest(request, response);
+        } catch (Exception e) {
+            if (logging.isErrorEnabled()) {
+            	logging.error("Error servicing request", e);
+        	}
+    	}
+	}
+}
+				</font></pre>
+				All of the Serlet Requests will now be handled by the abstract method serviceRequest:
+				<pre><font color="navy">
+protected abstract void serviceRequest(HttpServletRequest request,
+		HttpServletResponse response) throws ServletException, IOException;
+				</font></pre>
+				and all of the service requests to the BOLServlet will be forwarded to the abstract initServelt Method:
+				<pre><font color="navy">
+protected abstract void initServlet(ServletConfig config)
+        				throws ServletException;
+				</font></pre>
+				Now, all implementation servlets need to do is implement the getPath(), serviceRequest() and initServlet() methods.  Now, lets make some Cougaar Services available to the servlet.  The load() method of the BaseServletComponent is called when the ServletComponent is loaded.  This is a good place to get access to some of Cougaar's services. Add these member variables:
+				<pre><font color="navy">
+/** Cougaar NodeIdentificationService */
+protected NodeIdentificationService nodeIdService;
+/** Cougaar AgentContainmentService */
+protected AgentContainmentService agentContainmentService;
+/** Cougaar ServiceBroker */
+protected ServiceBroker serviceBroker;
+/** Cougaar BlackboardService */
+protected BlackboardService blackboardService;
+/** Cougaar DomainService */
+protected DomainService domainService;
+/** Cougaar  NamingService */
+protected NamingService namingService;
+/** Cougaar UIDService */
+protected UIDService uidService;
+/** Cougaar Logging Service */
+protected LoggingService logging;
+				</font></pre>
+				Now override the load() method:
+				<pre><font color="navy">
+public void load() {
+	this.serviceBroker = this.bindingSite.getServiceBroker();
+    this.domainService = (DomainService) serviceBroker.getService(this,
+            DomainService.class, null);
+    this.blackboardService = (BlackboardService) serviceBroker.getService(this,
+        	BlackboardService.class, null);
+    this.agentContainmentService = (AgentContainmentService) serviceBroker
+            .getService(this, AgentContainmentService.class, null);
+    this.namingService = (NamingService) serviceBroker.getService(this,
+            NamingService.class, null);
+    this.uidService = (UIDService) serviceBroker.getService(this,
+            UIDService.class, null);
+    this.nodeIdService = (NodeIdentificationService) serviceBroker
+    		.getService(this, NodeIdentificationService.class, null);
+    this.logging = (LoggingService) serviceBroker.getService(this,
+       		LoggingService.class, null);
+
+    super.load();
+}
+				</font></pre>
+				Since we are getting the BlackboardService here, the BOLServlet needs to implement the BlackboardClient interface.  This interface requires the implementation of the getBlackboardClientName() and currentTimeMillis() methods:
+				<pre><font color="navy">
+public String getBlackboardClientName() {
+  return this.getClass().getName();
+}
+
+
+   
+public long currentTimeMillis() {
+  return 0;
+}
+				</font></pre>
+				Now the BOLServlet is ready to be useded throughout BOL.  
+				</li>
+			</ul>
+		 </td>
+	</tr>		
+	<tr>
+		<td><a href="#0">top</a>-<a name="2"></a><b>Step 2: Creating the OrderManagerServlet</b></td>
+	</tr>
+	<tr>
+		<td>
+			Now we create the OrderManagerServlet to process all of the logic on the OrderManager Agent, which will host the Booksonline web site.
+			<ul>
+				<li>Create the OrderManagerServlet and extend the BOLServlet:
+				<pre><font color="navy">
+public class OrderManagerServlet extends BOLServlet implements WebConstants {
+   
+    /**
+     * Get Servlet Path
+     *
+     * @return Path to this servlet
+     */
+    protected String getPath() {
+        return "/bol";
+    }
+
+
+    /**
+     * Service request implementation.  Do appropriate action based on the mode
+     * request parameter
+     *
+     * @param request Servlet Request
+     * @param response Servlet Response
+     *
+     * @throws ServletException Servlet Exception
+     * @throws IOException IO Exception
+     */
+    protected void serviceRequest(HttpServletRequest request,
+        HttpServletResponse response) throws ServletException, IOException {
+        String modeStr = request.getParameter("mode");
+        if (logging.isDebugEnabled()) {
+            logging.debug("Mode:" + modeStr);
+        }
+
+        
+    }
+
+
+    /**
+     * Initialize Servlet, initialize jsps
+     *
+     * @param config Servlet Config
+     *
+     * @throws ServletException Servlet Exception
+     */
+    protected void initServlet(ServletConfig config)
+        throws ServletException {
+       
+    }
+}
+</font>				</pre>
+				This servlet can be accessed from the web using the /bol path (identified in the getPath() method) from the OrderManager Agent.  Also, in the serviceRequest method, the ground work has been laid to get the mode of the ServletRequest to identify what has to be done with the ServletRequest.
+				<br>
+				</li><br>
+				<li>Add the OrderManagerServlet to the OrderManager Agent
+					In the OrderManager.ini file add the OrderManagerServlet:
+				<pre><font color="navy">
+plugin=org.cougaar.tutorials.booksonline.web.orders.OrderManagerServlet
+				</font></pre>
+				</li>
+			</ul>	
+		Now that the base of the OrderManagerServlet is in place, lets add the JSP Presentation Layer and integerate the JSPs with the OrderManagerServlet
+		</td>
+	</tr>
+	<tr>
+		<td><a href="#0">top</a>-<a name="3"></a><b>Step 3: Adding the JSP Presentation Layer</b></td>
+	</tr>
+	<tr>
+		<td>
+			<ul>
+				<li>
+				  The HTML include files are located in the web/includes folder.  These just enable the overall look and feel of the site.
+				</li>
+				<li>Add the main BOL page
+					<br>
+					The index.jsp file is in the same package as the OrderManagerServlet (org.cougaar.tutorials.booksonline.web.orders).  The Jasper Compiler will be used to compile the JSPs into Servlets, which are then used by the OrderManagerServlet to service the ServletRequests.  Using the compile-jsps ANT target will create Servlets from the .jsp files.  Now, integrate the index.jsp into the OrderManagerServlet. First add a member variable to the OrderManagerServlet:
+					<pre><font color="navy">
+HttpServlet _index = new index();					
+					</font></pre>
+					Next, add the following to the initServlet method of the OrderManagerServlet to initialize the init servlet:
+					<pre><font color="navy">
+_index.init(config);					
+					</font></pre> 
+					Where index is the Java class created as a result of the compile-jsps Ant target.
+					<br>
+					Next, add the following to the serviceRequest method of the OrderManagerServlet to forward the request to index.jsp when their is no mode:
+					<pre><font color="navy">
+if (modeStr == null) {
+            //send to default page
+            _index.service(request, response);
+}					
+					</font></pre>
+					At this point when browing to the /bol path on the OrderManager, you will be forwarded to the index.jsp page.
+				</li>
+				<li>
+					Integrate the other jsp pages into the OrderManagerServlet:
+					<ul>
+					  <li>bookdetails.jsp</li>
+					  <li>cart.jsp</li>
+					  <li>checkout.jsp</li>
+					  <li>ordercomplete.jsp</li>
+					  <li>searchresults.jsp</li>
+					</ul>
+					Add the following variables to the OrderManagerServlet:
+					<pre><font color="navy">
+HttpServlet _searchresults = new searchresults();
+HttpServlet _cart = new cart();
+HttpServlet _bookdetails = new bookdetails();
+HttpServlet _checkout = new checkout();
+HttpServlet _ordercomplete = new ordercomplete();					
+					</font></pre>
+					<br>
+					and add the following to the initServlet method:
+					<pre><font color="navy">
+ _searchresults.init(config);
+_cart.init(config);
+_bookdetails.init(config);
+_checkout.init(config);
+_ordercomplete.init(config);
+        </font></pre>
+				</li>
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<td><a href="#0">top</a>-<a name="4"></a><b>Step 4: Creating the CatalogSearchServlet on the Warehouse Agent</b></td>
+	</tr>
+	<tr>
+		<td>
+			At this point, the OrderManagerServlet has the framework to forward a request to a number of jsp pages depending on the mode.  However, some of the work cannot be done on the OrderManager Agent because it does not have access to the Warehouse's database.  So we need to create a CatalogSearchServlet on the Warehouse Agent to enable the searching and retrieval of book data from the OrderManager's web interface.
+			<ul>
+			  <li>Create the CatalogSearchServlet in the web.warehouse package (starter template <a href="../../src/lesson2/src/starter/org/cougaar/tutorial/booksonline/web/warehouse/CatalogSearchServlet.java">here</a>):
+<pre><font color="navy">
+public class CatalogSearchServlet extends BOLServlet implements WebConstants {
+   /**
+   * Get Path to this servlet
+   *
+   * @return Get Servlet Path
+   */
+  protected String getPath() {
+    return CATALOG_SEARCH;
+  }
+
+
+ 
+
+
+  /**
+   * Service HTTP Request
+   *
+   * @param request Servlet REquest
+   * @param response Servlet Response
+   *
+   * @throws ServletException Exception
+   * @throws IOException Exception
+   */
+  protected void serviceRequest(HttpServletRequest request,
+    HttpServletResponse response) throws ServletException, IOException {
+   
+  }
+
+
+  /**
+   *Initialize this servlet (blank impl)
+   */
+  protected void initServlet(ServletConfig config)
+    throws ServletException {
+  }
+
+
+  
+}
+</font></pre>			  
+			
+			  </li>
+			<li>
+			Implement the search functionality in the CatalogSearchServlet. First we need to search the database, so add the DatabaseService and get access to by overriding the load method:
+<pre><font color="navy">
+DatabaseService dbService = null;
+
+ public void load() {
+    super.load();
+    DatabaseServiceProvider dbServiceProvider = new DatabaseServiceProvider(bindingSite
+        .getServiceBroker());
+    this.bindingSite.getServiceBroker().addService(DatabaseService.class,
+      dbServiceProvider);
+    dbService = (DatabaseService) this.bindingSite.getServiceBroker()
+                                                  .getService(this,
+        DatabaseService.class, null);
+
+  }
+</font>
+</pre>
+		Now with the database servive available add functionality to parse the ServletRequest and then to retrieve book data:
+<pre><font color="navy">
+public void doGet(HttpServletRequest request, HttpServletResponse response) {
+    try {
+      String modeStr = request.getParameter(MODE);
+      int mode = Integer.parseInt(modeStr);
+
+
+      switch (mode) {
+        case MODE_BOOK_SEARCH:
+          bookSearch(request, response);
+          break;
+        case MODE_GET_CATALOG:
+          getCatalog(response);
+          break;
+        case MODE_VIEW_DETAILS:
+          getBook(request, response);
+          break;
+        default:
+          if (logging.isDebugEnabled()) {
+            logging.debug("Wrong mode for book search");
+          }
+      }
+    } catch (Exception e) {
+      if (logging.isErrorEnabled()) {
+        logging.error("Error searching for books", e);
+      }
+    }
+    
+private void getBook(HttpServletRequest request, HttpServletResponse response) {
+    String isbn = request.getParameter(BOOK_ISBN_NAME);
+    try {
+      PrintWriter out = response.getWriter();
+      Map parameters = new HashMap();
+      parameters.put(BolSocietyUtils.Database.BOOK_ISBN_PARAMETER, isbn);
+      ArrayList results = (ArrayList) dbService.executeQuery(BolSocietyUtils.Database.GET_BOOK_BY_ISBN_QUERY_NAME,
+          parameters);
+      if (results.size() > 0) {
+        Object[] objects = (Object[]) results.get(0);
+        BookModel book = BookUtil.getBookModelFromDatabase(objects);
+        outputBookDetails(out, book);
+      }
+    } catch (SQLException sqlex) {
+      if (logging.isErrorEnabled()) {
+        logging.error("Error querying database for book", sqlex);
+      }
+    } catch (IOException io) {
+      if (logging.isErrorEnabled()) {
+        logging.error("Error outputing results:", io);
+      }
+    }
+  }
+ private void bookSearch(HttpServletRequest request,
+    HttpServletResponse response) {
+    String keyword = request.getParameter(KEYWORD_NAME);
+    String searchType = request.getParameter(SEARCH_TYPE_NAME);
+    if (keyword == null) {
+      getCatalog(response);
+    } else {
+      try {
+        PrintWriter out = response.getWriter();
+
+        if (logging.isDebugEnabled()) {
+          logging.debug("Searching for books by:" + searchType + "/" + keyword);
+        }
+
+        ArrayList results = new ArrayList();
+        Map parameters = new HashMap();
+        parameters.put(BolSocietyUtils.Database.BOOK_SEARCH_PARAMETER, keyword);
+        try {
+          if (searchType.equals("Title")) {
+            results = (ArrayList) dbService.executeQuery(BolSocietyUtils.Database.SEARCH_BOOK_BY_TITLE_QUERY_NAME,
+                parameters);
+          } else if (searchType.equals("Author")) {
+            results = (ArrayList) dbService.executeQuery(BolSocietyUtils.Database.SEARCH_BOOK_BY_AUTHOR_QUERY_NAME,
+                parameters);
+
+          } else if (searchType.equals("Subject")) {
+            results = (ArrayList) dbService.executeQuery(BolSocietyUtils.Database.SEARCH_BOOK_BY_SUBJECT_QUERY_NAME,
+                parameters);
+
+          }
+
+          for (int i = 0; i < results.size(); i++) {
+            Object[] objects = (Object[]) results.get(i);
+            BookModel book = BookUtil.getBookModelFromDatabase(objects);
+            outputBookDetails(out, book);
+
+          }
+        } catch (SQLException sqlex) {
+          if (logging.isErrorEnabled()) {
+            logging.error("Error searching for books", sqlex);
+
+          }
+        }
+
+        out.flush();
+      } catch (IOException io) {
+        if (logging.isErrorEnabled()) {
+          logging.error("Error outputing results:", io);
+        }
+      }
+    }
+  }
+
+
+  private void outputBookDetails(PrintWriter out, BookModel book) {
+    boolean inStock = book.getShelf() > 0;
+
+    out.println(book.getIsbn() + ";" + book.getTitle() + ";" + book.getAuthor()
+      + ";" + book.getEndPrice() + ";" + book.getListPrice() + ";"
+      + book.getOurPrice() + ";" + inStock + ";" + book.getPublisher() + ";"
+      + book.getPublisherNotes() + ";" + book.getLength() + ";" + book.getTOC());
+
+  }      		
+</font>
+</pre>
+			Now just link the following to the serviceRequest method to call the doGet method:
+<pre><font color="navy">
+doGet(request, response);
+</font></pre>
+			</li>  
+			These methods parse the ServletRequest for URL parameters and retrieve data from the database accordingly. The results are then written back to the client using the outputBookDetailsMethod. 
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<td><a href="#0">top</a>-<a name="5"></a><b>Step 5: Adding the business logic to the OrderManagerServlet</b></td>
+	</tr>
+	<tr>
+		<td>
+			<ul>
+				<li>Create a switch statement for all of the possible web modes by modifying the serviceRequest method as follows:
+				<pre><font color="navy">
+if (modeStr == null) {
+     //send to default page
+	_index.service(request, response);
+} else {
+    int mode = Integer.parseInt(modeStr);
+    switch (mode) {
+    	case WebConstants.MODE_BOOK_SEARCH:
+        	searchBooks(request, response);
+            break;
+        case WebConstants.MODE_VIEW_CART:
+           viewCart(request, response);
+           break;
+        case WebConstants.MODE_VIEW_DETAILS:
+           viewBookDetails(request, response);
+           break;
+        case WebConstants.MODE_ADD_TO_CART:
+           addToCart(request, response);
+           break;
+        case WebConstants.MODE_CHECK_OUT:
+           checkout(request, response);
+           break;
+        case WebConstants.MODE_SUBMIT_ORDER:
+            submitOrder(request, response);
+            break;
+        case WebConstants.MODE_UPDATE_CART:
+            updateCart(request, response);
+            break;
+        }
+ }				
+				</font></pre>
+				The submitOrder method of the code block above is the only block we will cover here because it is the only method that interacts with Cougaar.  This submitOrder method is the method which creates the order and publishes it to the Blackboard.  Here is the source of the submitOrder method: 
+				<pre><font color="navy">
+private void submitOrder(HttpServletRequest request,
+        HttpServletResponse response) throws ServletException, IOException {
+        if (logging.isDebugEnabled()) {
+            logging.debug("submit order");
+        }
+
+        this.blackboardService.openTransaction();
+        Vector bookOrderVec = new Vector();
+        ShoppingCart cart = (ShoppingCart) request.getSession().getAttribute("cart");
+        ArrayList items = (ArrayList) cart.getItems();
+        for (int i = 0; i < items.size(); i++) {
+            ShoppingCartItem item = (ShoppingCartItem) items.get(i);
+            BolBookOrder bookOrder = new BolBookOrder(item.getIsbn(),
+                    item.getTitle(), item.getQuantity(),
+                    item.getQuantity() * item.getPrice());
+            bookOrderVec.add(bookOrder);
+        }
+
+        String shippingMethod = request.getParameter(WebConstants.SHIPPING_METHOD);
+
+        UserDetails userDetails = new UserDetails();
+        userDetails.address1 = request.getParameter(WebConstants.PAYMENT_ADDRESS_1);
+        userDetails.address2 = request.getParameter(WebConstants.PAYMENT_ADDRESS_2);
+        userDetails.ccExpDate = request.getParameter(WebConstants.PAYMENT_CARD_EXPIRATION);
+        userDetails.ccNumber = request.getParameter(WebConstants.PAYMENT_CARD_NUMBER);
+        userDetails.ccType = request.getParameter(WebConstants.PAYMENT_TYPE_NAME);
+        userDetails.city = request.getParameter(WebConstants.CITY);
+        userDetails.state = request.getParameter(WebConstants.STATE);
+        userDetails.zip = request.getParameter(WebConstants.ZIP);
+        Task task = BolSocietyUtils.createOrderTask((PlanningFactory) this.domainService
+                .getFactory("planning"), bookOrderVec, userDetails.ccNumber,
+                userDetails, shippingMethod, BolSocietyUtils.ORDER_VERB);
+        this.blackboardService.publishAdd(task);
+        this.blackboardService.closeTransaction();
+        cart = null;
+        request.getSession().setAttribute("cart", cart);
+        request.setAttribute("UID", task.getUID());
+        _ordercomplete.service(request, response);
+    }				
+				</font></pre>
+				As you can see in the above code fragement, the BolSocietyUtils.createOrderTask method is called to create a Cougaar Task, which is then published to the Blackboard.
+				</li>
+				<li>Creating the Order Task
+				<br>
+				The BolSocietyUtils.createOrderTask method creates and populates a Cougaar Task to contain Order information.  First the prepositionalphrases of the Order's task are populated:  
+				<pre><font color="navy">
+public static void setOrderPrepPhrases(NewTask task, Vector bo,
+    UserDetails ud, String ccInfo, String shipMethod,
+    ClusterObjectFactory theCOF) {
+    Vector preps = new Vector(0);
+
+    NewPrepositionalPhrase npp = theCOF.newPrepositionalPhrase();
+    npp.setPreposition(ISBN_PREPOSITION);
+
+    String isbnString = "";
+
+    for (int i = 0; i < bo.size(); i++) {
+      if (bo.get(i) instanceof BolBookOrder) {
+        BolBookOrder bolbo = (BolBookOrder) bo.get(i);
+
+        if (isbnString.length() > 0) {
+          isbnString += ";";
+        }
+
+        isbnString += bolbo.toString();
+      }
+    }
+
+    npp.setIndirectObject(isbnString);
+    preps.add(npp);
+
+    npp = theCOF.newPrepositionalPhrase();
+    npp.setPreposition("WITHINGENERICWORKFLOW");
+    preps.add(npp);
+
+    // Add the book order details vector as a preposition
+    npp = theCOF.newPrepositionalPhrase();
+    npp.setPreposition(ORDERDETAILS_PREPOSITION);
+    npp.setIndirectObject(bo);
+    preps.add(npp);
+
+    npp = theCOF.newPrepositionalPhrase();
+    npp.setPreposition(USERDETAIL_PREPOSITION);
+    npp.setIndirectObject(ud);
+    preps.add(npp);
+
+    npp = theCOF.newPrepositionalPhrase();
+    npp.setPreposition(SHIPMETHOD_PREPOSITION);
+    npp.setIndirectObject(shipMethod);
+    preps.add(npp);
+
+    npp = theCOF.newPrepositionalPhrase();
+    npp.setPreposition(CCINFO_PREPOSITION);
+    npp.setIndirectObject(ccInfo);
+    preps.add(npp);
+
+    task.setPrepositionalPhrases(preps.elements());
+  }				
+				</font></pre> 
+				PrepositionalPhrases are created to hold the credit card info, shipping method, user data, order details, isbn(s)/quantity of the orderd books, and a phrase marking this task as being part of a workflow.  The Task preferences are created in the setOrderPreferences method:
+				<pre><font color="navy">
+public static void setOrderPreferences(NewTask task, Vector boVec,
+    ClusterObjectFactory theCOF) {
+    Vector newPreferences = new Vector();
+
+    int totalOrderCount = 0;
+    float totalPrice = (float) 0.0;
+
+    // we score on the total for the order and the total for the price
+    for (int ii = 0; ii < boVec.size(); ii++) {
+      totalOrderCount += ((BolBookOrder) boVec.get(ii)).count;
+      totalPrice += (((BolBookOrder) boVec.get(ii)).price * ((BolBookOrder) boVec
+      .get(ii)).count);
+
+    }
+
+    ScoringFunction scorefcn = ScoringFunction.createPreferredAtValue(AspectValue
+        .newAspectValue(AspectType.QUANTITY, totalOrderCount), .95);
+
+    // this counts 50% towards the total preference score
+    Preference pref = theCOF.newPreference(AspectType.QUANTITY, scorefcn, 0.5);
+
+    newPreferences.addElement(pref);
+
+
+    // lose 95% for every dollar we can't hold, if he hits his credit limit in
+    // the middle of this transaction, even if only by a dollar, it's "no sale"
+    ScoringFunction priceScorefcn = ScoringFunction.createNearOrBelow(AspectValue
+        .newAspectValue(AspectType.COST, (double) totalPrice), .95);
+
+    // this counts 50% towards the total preference score
+    Preference pricePref = theCOF.newPreference(AspectType.COST, priceScorefcn,
+        0.5);
+
+    newPreferences.addElement(pricePref);
+
+    // every part of the book order task has an indication to show final completion (i.e. the performance task is now in the past)
+    ScoringFunction complScorefcn = ScoringFunction.createPreferredAtValue(AspectValue
+        .newAspectValue(BolSocietyUtils.COMPLETED_ASPECT,
+          BolSocietyUtils.ISCOMPLETED), 1.0);
+
+
+    // this counts 0 against the preference score, since it indicates final completion of the task
+    // it isn't used to show how well planned the task is
+    Preference complPref = theCOF.newPreference(BolSocietyUtils.COMPLETED_ASPECT,
+        complScorefcn, 0.0);
+
+    newPreferences.addElement(complPref);
+
+
+    task.setPreferences(newPreferences.elements());
+
+
+  }				
+				</font></pre>
+				The 3 preferences created on the order task are for completed, cost, and quantity aspect types.
+				<br>
+				And finally the createOrderTask method :
+				<pre><font color="navy">
+ public static Task createOrderTask(PlanningFactory pf, Vector bo,
+    String ccInfo, UserDetails ud, String shipMethod, String verb) {
+    NewTask task = pf.newTask();
+    task.setDirectObject(null);
+    task.setVerb(new Verb(verb));
+    setOrderPrepPhrases(task, bo, ud, ccInfo, shipMethod, pf);
+    setOrderPreferences(task, bo, pf);
+    task.setPlan(pf.getRealityPlan());
+
+    return (task);
+  }				
+				</font></pre>
+				</li>
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<td><a href="#0">top</a>-<a name="6"></a><b>Step 6: Running the Society</b></td>
+	</tr>
+	<tr>
+		<td>
+			You can now run the society and browse to the /bol servlet to purchase some books and to create an order task.  At this point nothing happens when the OrderTask is published on the Blackboard, but you can view the OrderTask using the Cougaar Task Servlet. To Run:
+			<ul>
+				<li>Run the snode</li>
+			</ul>
+		</td>
+	</tr>
+</table>
+
+
+</body>
+</html>

@@ -2,7 +2,7 @@
 <HTML>
 <HEAD>
 <link rel="stylesheet" href="../includes/style.css" type="text/css"></link>
-<TITLE>Node Configuration</TITLE>
+<TITLE>Lesson 1:Cougaar Configuration:Node Configuration</TITLE>
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
 <BODY BGCOLOR="#FFFFFF">
@@ -10,28 +10,20 @@
 <table>
 	<tr>
 		<td>
-			The <a href="">BOLNode.ini</a> file contains the configuration for the BOLNode.
-			<br>
-			This is the file:
+		    The Node configuration file contains the agents which make up the node, as well as components which are part of the NodeAgent.<br>
+		    Below is an example Node Configuration file named TestNode.ini:
 			<br><pre>
-			# $id$
 			[ Clusters ]
-			cluster = OrderManager
-			cluster = Payment
-			cluster = Warehouse
-			cluster = Shipper
-			cluster = Publisher
+			cluster = AgentA
+			cluster = AgentB
+			cluster = AgentC
+			
 
-			[ AlpProcess ]
-
-			[ Policies ]
-
-			[ Permission ]
-
-			[ AuthorizedOperation ]
 			</pre>
-			The node configuration file is where the agents that make up the node are identified.  Each agent is assigned to the node using the cluster=AGENT_NAME syntax.  There most be an Agent Configuration file following the AGENT_NAME.ini file in the Cougaar Configs directory path.
-		
+			In this example the <i>TestNode</i> Node configuration file identifies three agents to be loaded into the TestNode Node: AgentA, AgentB, and AgentC.
+			When the node is being loaded, it looks for agent configuration files following the naming covention [AGENT_NAME].ini.  Therefore, for our TestNode Node, there also needs to be a corresponding agent configuration file for AgentA named AgentA.ini, AgentB called AgentB.ini and AgentC called AgentC.ini
+			<br><br>
+			Now that we have covered the basics to Configuring a Node, the next step is to <a href="ldmdomains.html">configure the Domains</a>.	
 		</td>
 	</tr>
 </table>

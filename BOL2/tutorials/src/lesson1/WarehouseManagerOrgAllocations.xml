@@ -1,0 +1,16 @@
+<commands>
+
+  <command>
+		<task verb="SHIPBOOKS"/>
+		<allocate>
+			<role name="ShipmentVendor"/>
+		</allocate>
+  </command>
+  <command>
+		<task verb="PUBLISHERORDER"/>
+		<allocate>
+			<role name="PublishingHouse"/>
+		</allocate>
+  </command>
+  
+</commands>

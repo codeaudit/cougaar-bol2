@@ -2,7 +2,7 @@
 <HTML>
 <HEAD>
 <link rel="stylesheet" href="../includes/style.css" type="text/css"></link>
-<TITLE>LDM XML</TITLE>
+<TITLE>Lesson 1:Cougaar Configuration:LDM XML</TITLE>
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
 <BODY BGCOLOR="#FFFFFF">
@@ -10,125 +10,48 @@
 <table>
 	<tr>
 <td>
-			The LDM XML File is used to create prototypes and to also create instances of Assets on an Agent's Blackboard.
-			The LDM XML file is parsed by the org.cougaar.lib.plugin.UTILLdmXMLPlugin plugin.  When this plugin is added to an Agent's Configuration file, the plugin will look for a file called AGENT_NAME.ldm.xml to parse.  Here is an example ldm.xml file for the Warehouse Agent from BooksOnline:
+			The LDM XML File is used to create prototypes and to also create instances of Assets on an Agent's Blackboard during the starup of a Cougaar Agent. The <i>org.cougaar.lib.plugin.UTILLdmXMLPlugin</i> plugin is a utility plugin that, when placed in an agent, will try to parse a ldm.xml file named with the following naming convention: [AGENT_NAME].ldm.xml.
+			<br>Below is a sample LDM XML file for the Foo agent called Foo.ldm.xml:
 			<br>
 			<pre>
 			&#60;?xml version="1.0"  encoding="US-ASCII"?&#62;
-&#60;!DOCTYPE ClusterAssets SYSTEM "AssetList.ldm.dtd" []&#62;
+			&#60;!DOCTYPE ClusterAssets SYSTEM "AssetList.ldm.dtd" []&#62;
 
-&#60;AssetList&#62;
-  &#60;prototype name="ObjectAsset"&#62;
-  	&#60;object class="org.cougaar.tutorial.booksonline.assets.BookAsset" id = "object-proto"&#62;
-  		&#60;field name="TypeIdentificationPG" type="object"&#62;
-        &#60;value&#62;
-          &#60;object class="org.cougaar.planning.ldm.asset.NewTypeIdentificationPG"&#62;
-          &#60;field name="TypeIdentification" type="String"&#62;
-            &#60;value&#62;ObjectAsset&#60;/value&#62;
-          &#60;/field&#62;
-          &#60;field name="Nomenclature" type="String"&#62;
-            &#60;value&#62;ObjectAsset&#60;/value&#62;
-          &#60;/field&#62;
-          &#60;field name="AlternateTypeIdentification" type="String"&#62;
-            &#60;value&#62;ObjectAsset&#60;/value&#62;
-          &#60;/field&#62;
-          &#60;/object&#62;
-        &#60;/value&#62;
-      &#60;/field&#62;
-  	&#60;/object&#62;
-  &#60;/prototype&#62;
-  &#60;prototype name="PackerAsset"&#62;
-    &#60;object class="org.cougaar.tutorial.booksonline.assets.PackerAsset" id="PackerProto-001"&#62;
-      &#60;field name="TypeIdentificationPG" type="object"&#62;
-        &#60;value&#62;
-          &#60;object class="org.cougaar.planning.ldm.asset.NewTypeIdentificationPG"&#62;
-          &#60;field name="TypeIdentification" type="String"&#62;
-            &#60;value&#62;PackerAsset&#60;/value&#62;
-          &#60;/field&#62;
-          &#60;field name="Nomenclature" type="String"&#62;
-            &#60;value&#62;PackerAsset&#60;/value&#62;
-          &#60;/field&#62;
-          &#60;field name="AlternateTypeIdentification" type="String"&#62;
-            &#60;value&#62;PackerAsset&#60;/value&#62;
-          &#60;/field&#62;
-          &#60;/object&#62;
-        &#60;/value&#62;
-      &#60;/field&#62;
-      
-    &#60;/object&#62;
-  &#60;/prototype&#62;
-  &#60;prototype name="WarehouseAsset"&#62;
-    &#60;object class="org.cougaar.tutorial.booksonline.assets.WarehouseAsset" id="protowarehouse-001"&#62;
-      &#60;field name="TypeIdentificationPG" type="object"&#62;
-        &#60;value&#62;
-          &#60;object class="org.cougaar.planning.ldm.asset.NewTypeIdentificationPG"&#62;
-          &#60;field name="TypeIdentification" type="String"&#62;
-            &#60;value&#62;WarehouseAsset&#60;/value&#62;
-          &#60;/field&#62;
-          &#60;field name="Nomenclature" type="String"&#62;
-            &#60;value&#62;WarehouseAsset&#60;/value&#62;
-          &#60;/field&#62;
-          &#60;field name="AlternateTypeIdentification" type="String"&#62;
-            &#60;value&#62;WarehouseAsset&#60;/value&#62;
-          &#60;/field&#62;
-          &#60;/object&#62;
-        &#60;/value&#62;
-      &#60;/field&#62;
-      &#60;field name="WarehouseDescriptionPG" type="object"&#62;
-      	&#60;value&#62;
-      		&#60;object class="org.cougaar.tutorial.booksonline.assets.NewWareHouseDescriptionPG"&#62;
-      		&#60;field name="Address1" type="java.lang.String"&#62;
-      			&#60;value&#62;123 Main St.&#60;/value&#62;
-      		&#60;/field&#62;
-      		&#60;field name="Address2" type="java.lang.String"&#62;
-      			&#60;value&#62;Suite 3433&#60;/value&#62;
-      		&#60;/field&#62;
-      		&#60;field name="City" type="java.lang.String"&#62;
-      			&#60;value&#62;Washington&#60;/value&#62;
-      		&#60;/field&#62;
-      		&#60;field name="State" type="java.lang.String"&#62;
-      			&#60;value&#62;DC&#60;/value&#62;
-      		&#60;/field&#62;
-      		&#60;field name="ZipCode" type="java.lang.String"&#62;
-      			&#60;value&#62;20045&#60;/value&#62;
-      		&#60;/field&#62;
-      		&#60;field name="CcExpDate" type="java.lang.String"&#62;
-      			&#60;value&#62;01/2006&#60;/value&#62;
-      		&#60;/field&#62;
-      		&#60;field name="CcNumber" type="long"&#62;
-      			&#60;value&#62;5105105105105100&#60;/value&#62;
-      		&#60;/field&#62;
-      		&#60;/object&#62;
-      	&#60;/value&#62;
-      &#60;/field&#62;
-    &#60;/object&#62;
-  &#60;/prototype&#62;
- &#60;instance prototype="PackerAsset" id="Bob"&#62;
-  	&#60;schedule end="01/05/11" start="06/11/03"/&#62;
-  &#60;/instance&#62;
-   &#60;instance prototype="PackerAsset" id="Bill"&#62;
-  	&#60;schedule end="01/05/11" start="06/11/03"/&#62;
-  &#60;/instance&#62;
-   &#60;instance prototype="PackerAsset" id="Joe"&#62;
-  	&#60;schedule end="01/05/11" start="06/11/03"/&#62;
-  &#60;/instance&#62;
-   &#60;instance prototype="PackerAsset" id="Matt"&#62;
-  	&#60;schedule end="01/05/11" start="06/11/03"/&#62;
-  &#60;/instance&#62;
-   &#60;instance prototype="PackerAsset" id="Scott"&#62;
-  	&#60;schedule end="01/05/11" start="06/11/03"/&#62;
-  &#60;/instance&#62;
-  &#60;instance prototype="WarehouseAsset" id="Warehouse"&#62;
-  	&#60;schedule end="01/05/11" start="06/11/03"/&#62;
-  &#60;/instance&#62;
-&#60;/AssetList&#62;
+			&#60;AssetList&#62;
+			  &#60;prototype name="FooAsset"&#62;
+			  	&#60;object class="com.foo.asset.FooAsset" id = "foo-proto"&#62;
+			  		&#60;field name="TypeIdentificationPG" type="object"&#62;
+				        &#60;value&#62;
+				          	&#60;object class="org.cougaar.planning.ldm.asset.NewTypeIdentificationPG"&#62;
+					          &#60;field name="TypeIdentification" type="String"&#62;
+					            &#60;value&#62;ObjectAsset&#60;/value&#62;
+					            &#60;/field&#62;
+					          &#60;field name="Nomenclature" type="String"&#62;
+            					&#60;value&#62;ObjectAsset&#60;/value&#62;
+          					  &#60;/field&#62;
+					          &#60;field name="AlternateTypeIdentification" type="String"&#62;
+					            &#60;value&#62;ObjectAsset&#60;/value&#62;
+					          &#60;/field&#62;
+			          		&#60;/object&#62;
+			        	&#60;/value&#62;
+			      	&#60;/field&#62;
+			  	&#60;/object&#62;
+			  &#60;/prototype&#62;
+		 
+			 &#60;instance prototype="FooAsset" id="Foo Asset 1"&#62;
+  				 &#60;schedule end="01/05/11" start="06/11/03"/&#62;
+			 &#60;/instance&#62;
+		   	&#60;instance prototype="PackerAsset" id="Foo Asset 2"&#62;
+			  	&#60;schedule end="01/05/11" start="06/11/03"/&#62;
+			  &#60;/instance&#62;
+   			&#60;/AssetList&#62;
 	
 			
 			</pre> 
-			Here is the DTD for the ldm.xml file <a href="AssetList.ldm.dtd">AssetList.ldm.dtd</a><br>
-			The ldm.xml file identifies the prototypes to be cached in the Prototype Registry service for later use within a Plugin. The <i>prototype</i> element has a <i>name</i> attribute that will be the name used to cache the prototype in the PrototypeRegistry Servivce.  The prototype element contains the <i>object<i> element that identifies the class of the Asset to be prototypes using the <i>class</i> attribute.
-			
-				</td>
+			This example will cache a prototype of the FooAsset in the PrototypeRegistry Service under the name FooAsset (The name attribute of the prototype element).  The LDM Plugin will also create two instances of the FooAsset prototype and set their ItemIdentifications to "FooAsset1" and "FooAsset2". The <a href="../../configs/base/AssetList.ldm.dtd">AssetList.ldm.dtd</a> supports identifying prototypes, instances of prototypes and populating the Asset Property Groups using the <field>,<object>, and <value> elements.  In the above example the TypeIdentificationPG has the TypeIdentification, Nomenclature and AlternativeTypeIdentification identified.
+			<br><br>
+			Now that you have a brief understanding of the LDM XML plugin, the next step is to <a href="q.html">configure the database and SQL properties</a> to use in an application.
+			</td>
 	</tr>
 </table>
 </body>

@@ -1,0 +1,19 @@
+[Prototype]			Organization
+
+[UniqueId]      "UTC/CivilianOrg"
+
+[UIC]           "UIC/Warehouse"
+
+[Relationship]
+Supporting      "OrderManager"              "WarehouseControl, ReviewUpdateControl"
+
+[TypeIdentificationPG]                      
+TypeIdentification          String  "UTC/RTOrg"
+Nomenclature                String  "Warehouse"
+AlternateTypeIdentification String  "SRC/Warehouse"
+
+[ClusterPG]
+MessageAddress	MessageAddress "Warehouse"
+
+[OrganizationPG]
+Roles                Collection<Role>   "WarehouseControl, ReviewUpdateControl"

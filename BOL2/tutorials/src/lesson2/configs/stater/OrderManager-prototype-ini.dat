@@ -1,0 +1,19 @@
+[Prototype]			Organization
+
+[UniqueId]      "UTC/CivilianOrg"
+
+[UIC]           "UIC/OrderManager"
+
+[Relationship]
+Supporting      "ScaleTester"              "OrderManager"
+
+[TypeIdentificationPG]                      
+TypeIdentification          String  "UTC/RTOrg"
+Nomenclature                String  "OrderManager"
+AlternateTypeIdentification String  "SRC/OrderManager"
+
+[ClusterPG]
+MessageAddress MessageAddress "OrderManager"
+
+[OrganizationPG]
+Roles                Collection<Role>   "OrderManager"

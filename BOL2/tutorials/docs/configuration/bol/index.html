@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<link rel="stylesheet" href="../../includes/style.css" type="text/css"></link>
+<TITLE>Lesson 1: Cougaar Configuration: Configuring the BOL Society</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+	<BODY BGCOLOR="#FFFFFF">
+<a href="../index.html">Configuration tutorial</a>&nbsp;<a href="../../index.html">TOC</a>	
+<h2>BOL Configuration</h2>
+
+
+
+
+<table border="0" cellspacing="2" cellpadding="4" width="100%" valign="top">
+	<tr>
+		<td>A step by step guide to configuring the BOL Society.
+		</td>
+	</tr>
+	<tr>
+	<td>
+    	<table border="0" cellspacing="2" cellpadding="4" width="100%" valign="top">
+    	    <tr>
+			    <td>&nbsp;</td>
+            	<td><a href="#Step1">Step 1. Create the Node Configuration file</a></td>
+		    </tr>	
+		   	<tr>
+		   		<td>&nbsp;</td>
+            	<td><a href="#Step2">Step 2. Create the Society's Domain Configuration file</a></td>
+		   	</tr>
+		   	<tr>
+		   		<td>&nbsp;</td>
+		   		<td><a href="#Step3">Step 3: Create the Agent Configuration files and their associated Prototype-ini.dat Configuration files</a></td>
+		   	</tr>
+		   	<tr>
+		   		<td>&nbsp;</td>
+		   		<td><a href="#Step4">Step 4: Run the society</a></td>
+		   	</tr>
+		   	<tr>
+		   		<td>&nbsp;</td>
+		   		<td><a name="Step1"></a>
+		   			<b>Step 1. Create the Node Configuration file</b><br>
+		   			The BOL Society consists of five seperate logical clusters: OrderManager, Payment, Warehouse, Publisher, and Shipper.  Since, the BOL Society will consist of only one Node, all of these agents must be represented in the Node configuration file.  Update the BOLNode.ini file to include entries for all five agents.<br>
+		   			<a href="../../src/lesson1/src/BOLNode.ini">Starter BOLNode.ini file</a>
+		   			<br>
+		   			<a href="../../src/lesson1/solutions/BOLNode.ini">Solution</a>
+		   		</td>
+		   	</tr>
+		   	<tr>
+		   		<td>&nbsp;</td>
+		   		<td><a name="Step2"></a>
+		   			<b>Step 2: Create the Society's Domain Configuration file</b><br>
+		   			BOL needs to have access to three domains: The PlanningDomain, BOLDomain and the GLMDomain.  By default, the PlanningDomain is added to a Cougaar Society for you, so the BOLDomain and GLMDomain need to be added to the LDMDomains.ini file.<br>
+		   			<a href="../../../src/lesson1/src/LDMDomains.ini">Starter LDMDomains.ini file</a><br>
+		   			<a href="../../../src/lesson1/solution/LDMDomains.ini">Solution</a>
+		   		</td>
+		   	</tr>
+		   	<tr>
+		   		<td>&nbsp;</td>
+		   		<td><a name="Step3"></a>
+		   			<b>Step 3: Create the Agent Configuration files and their associated Prototype-ini.dat Configuration files</b><br>
+		   			Now we must create an Agent Configuration file and a corresponding prototype-ini.dat configuration file for each agent.  For each agent use the org.cougaar.core.agent.SimpleAgent class as your Agent Implemententation and be sure the MessageAddress of each agent matches the name of the cluster int the Node Configuration file (BOLNode.ini).  Also, for each agent
+		   			we will add two common debugging components: The org.cougaar.planning.servlet.PlanViewServlet Servlet and the org.cougaar.planning.servlet.CompletionServlet.
+		   			<br>
+		   			In the OrderManager.ini file add the class=org.cougaar.core.agent.SimpleAgent entry and the MessageAddress = OrderManager. Then add the two plugin components using the plugin class org.cougaar.core.servlet.SimpleServletComponent and passing in the following parameters:<br>
+		   			For the PlanViewServlet : org.cougaar.planning.servlet.PlanViewServlet, /tasks <br>
+		   			For the CompletionViewServlet: org.cougaar.planning.servlet.CompletionServlet, /completion<br>
+		   			
+		   			<br>Starter files:<br>
+		   			<a href="../../src/lesson1/src/OrderManager.ini">OrderManager</a><br>
+		   			<a href="../../src/lesson1/src/Publisher.ini">Publisher</a><br>
+		   			<a href="../../src/lesson1/src/Payment.ini">Payment</a><br>
+		   			<a href="../../src/lesson1/src/Warehouse.ini">Warehouse</a><br>
+		   			<a href="../../src/lesson1/src/Shipper.ini">Shipper</a>
+		   			<br><br>Solutions:<br>
+		   			<a href="../../src/lesson1/solution/OrderManager.ini">OrderManager</a><br>
+		   			<a href="../../src/lesson1/solution/Publisher.ini">Publisher</a><br>
+		   			<a href="../../src/lesson1/solution/Payment.ini">Payment</a><br>
+		   			<a href="../../src/lesson1/solution/Warehouse.ini">Warehouse</a><br>
+		   			<a href="../../src/lesson1/solution/Shipper.ini">Shipper</a>
+		   			
+		   			<br><br>
+		   			At this point you should have the LDMDomains.ini, BOLNode.ini and the Agent .ini files completed.  The next step is to define replationships between the Organizations within the BOLSociety so Tasks can be allocated from one organization to another. The prototype-ini.dat will identify the relationships each agent has with other agents within the BOLSociety.  Lets take the Shipper agent as an example.  The shipper organization supports the Publisher and Warehouse Organizations by providing a shipping service. Therefore in the Shipper agent's prototype-ini.dat file, it must be identified that the Shipper agent supports the "ShipmentVendor" to the Payment and Warehouse Agents.  Doing this will enable plugins on the Publisher and Payment agents to find an organization that fullfills the role of "ShipmentVendor" and will find  the Shipper Agent's Organization. Now that the Organization can be found on the Blackboard, Tasks can be allocated to the Shipper.  Here is the Shipper's prototype-ini.dat file:
+		   			<pre>
+		   			[Prototype]			Organization
+
+					[UniqueId]      "UTC/CivilianOrg"
+
+					[UIC]           "UIC/Shipper"
+
+					[Relationship]
+					Supporting      "Warehouse"              "ShipmentVendor"
+					Supporting      "Warehouse2"              "ShipmentVendor"
+					Supporting      "Publisher"              "ShipmentVendor"
+
+					[TypeIdentificationPG]                      
+					TypeIdentification          String  "UTC/RTOrg"
+					Nomenclature                String  "Shipper"
+					AlternateTypeIdentification String  "SRC/Shipper"
+
+					[ClusterPG]
+					MessageAddress MessageAddress "Shipper"
+
+					[OrganizationPG]
+					Roles                Collection<Role>   "ShipmentVendor"
+		   			</pre>
+		   			<br>
+		   			In order for the Organzation Assets to be successfully created and propagated to the correct agents, two plugins must be added to each agent:
+		   			<br>
+		   			 1. org.cougaar.mlm.plugin.organization.OrgRTDataPlugin<br>
+		   			 2. org.cougaar.mlm.plugin.organization.OrgReportPlugin
+		   			<br>Add these two plugins to each agent's ini file (if you fail to do this, no Organization Assets will show up on the Blackboard)
+		   			<br>
+		   			For a more details about the prototype-ini.dat file see <a href="../prototype.html">The prototype lesson</a><br>
+		   			<br><br>
+		   			Next, complete the OrderManager Agent's prototype-ini.dat file, it does not support any other Organzation.
+		   			<br>
+		   			Next, complete the Payment Agent's prototype-ini.dat file, it provides the supporting Role of "PaymentAuthority"  to the OrderManager Agent.
+		   			<br>
+		   			Next, complete the Publisher Agent's prototype-ini.dat file, it provide the supporting Role of "PublishingHouse" to the Warehouse Agent.
+		   			<br>
+		   			Finally, complete the Warehouse Agent's prototype-ini.data file, it provides the supporting Role of "WarehouseControl" to the OrderManager Agent.
+		   			<br><br>
+		   			br>Starter files:<br>
+		   			<a href="../../src/lesson1/src/OrderManager-prototype-ini.dat">OrderManager</a><br>
+		   			<a href="../../src/lesson1/src/Publisher-prototype-ini.dat">Publisher</a><br>
+		   			<a href="../../src/lesson1/src/Payment-prototype-ini.dat">Payment</a><br>
+		   			<a href="../../src/lesson1/src/Warehouse-prototype-ini.dat">Warehouse</a><br>
+		   			<a href="../../src/lesson1/src/Shipper-prototype-ini.dat">Shipper</a>
+		   			<br><br>Solutions:<br>
+		   			<a href="../../src/lesson1/solution/OrderManager-prototype-ini.dat">OrderManager</a><br>
+		   			<a href="../../src/lesson1/solution/Publisher-prototype-ini.dat">Publisher</a><br>
+		   			<a href="../../src/lesson1/solution/Payment-prototype-ini.dat">Payment</a><br>
+		   			<a href="../../src/lesson1/solution/Warehouse-prototype-ini.dat">Warehouse</a><br>
+		   			<a href="../../src/lesson1/solution/Shipper-prototype-ini.dat">Shipper</a>
+		   			
+		   		</td>
+		   	</tr>
+		   	<tr>
+		   		<td>&nbsp;</td>
+		   		<td><a name="Step4"></a>
+		   			<b>Step 4: Run the society</b><br>
+		   			At this point all of the configuration files are ready, so lets run the BOL Society.  Run the <a href="../../src/lesson1/solution">snode.bat</a> or <a href="../../src/lesson1/solution">snode.sh</a> from the command line, passing in <i>BOLNode</i> as an argument to start the BOL society.  Once the society is started, browse to [host]:8800, and you should see all of the agents. Browse to an agent and click the /tasks link to see Assets and Tasks.  You should see Organization Assets on the blackboard of the agents as a result of the prototype-ini.dat files.
+		   			<br>
+		   			<br>
+		   			Now that the basic configuration of the BOL Society is completed, lets <a href="../../web/index.html">create the web tier of the BOL Society in lesson 2".</a>
+		   		</td>
+		   	</tr>
+    	</table>
+	</td>
+  </tr>    
+</table>
+
+
+</body>
+</html>
