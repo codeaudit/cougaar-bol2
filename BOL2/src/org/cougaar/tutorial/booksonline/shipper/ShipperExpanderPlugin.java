@@ -120,33 +120,48 @@ public class ShipperExpanderPlugin extends BOLComponentPlugin {
 
       GregorianCalendar today = new GregorianCalendar();
       today.add(Calendar.DATE, 3); // project ship date 3 days from now
-      double shipBy = (double) today.getTime().getTime();
-
+      //            double shipBy = (double) today.getTime().getTime();
       long yyyymmdd = today.get(Calendar.YEAR) * 10000;
       yyyymmdd += ((today.get(Calendar.MONTH) + 1) * 100);
       yyyymmdd += today.get(Calendar.DATE);
 
-      int[] aspect_types = {
-        AspectType.START_TIME, BolSocietyUtils.SHIP_DATE_ASPECT,
-        BolSocietyUtils.COMPLETED_ASPECT
-      };
 
-      double[] results = {
-        currentTimeMillis(), shipBy, BolSocietyUtils.ISCOMPLETED
-      };
+      //            int[] aspect_types = {
+      //                AspectType.START_TIME, BolSocietyUtils.SHIP_DATE_ASPECT,
+      //                BolSocietyUtils.COMPLETED_ASPECT
+      //            };
+      //
+      //            double[] results = {
+      //                currentTimeMillis(), shipBy, BolSocietyUtils.ISCOMPLETED
+      //            };
+      //if there are more than one truck can hold, break it up...
+      while (quantity > 2000) {
+        quantity = quantity - 2000;
+        Task routeTask = createRouteTask(getPlanningFactory(), ud, shipMethod,
+            quantity, gb);
+        ((NewTask) routeTask).setWorkflow(new_wf);
+        ((NewTask) routeTask).setParentTask(task);
+        new_wf.addTask(routeTask);
+        //  publish the "route" task
+        getBlackboardService().publishAdd(routeTask);
+      }
 
-      Task routeTask = createRouteTask(getPlanningFactory(), ud, shipMethod,
-          quantity, gb);
-      ((NewTask) routeTask).setWorkflow(new_wf);
-      ((NewTask) routeTask).setParentTask(task);
-      new_wf.addTask(routeTask);
+      if (quantity > 0) {
+        Task routeTask = createRouteTask(getPlanningFactory(), ud, shipMethod,
+            quantity, gb);
+        ((NewTask) routeTask).setWorkflow(new_wf);
+        ((NewTask) routeTask).setParentTask(task);
+        new_wf.addTask(routeTask);
+        //				publish the "route" task
+        getBlackboardService().publishAdd(routeTask);
+      }
+
 
       AllocationResult estAR = null;
       Expansion new_exp = getPlanningFactory().createExpansion(task.getPlan(),
           task, new_wf, estAR);
 
-      //  publish the "route" task
-      getBlackboardService().publishAdd(routeTask);
+
       getBlackboardService().publishAdd(new_wf);
       getBlackboardService().publishAdd(new_exp);
 
