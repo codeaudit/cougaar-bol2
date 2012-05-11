@@ -9,7 +9,6 @@ NODE_NAME=BOLNode
 
 
 for arg in \
-    -Xbootclasspath/p:${COUGAAR_INSTALL_PATH}/lib/javaiopatch.jar \
     -Dorg.cougaar.system.path=${COUGAAR_INSTALL_PATH}/sys \
     -Dorg.cougaar.core.node.InitializationComponent=XML \
     -Xoss256k \

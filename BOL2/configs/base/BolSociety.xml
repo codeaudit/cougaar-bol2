@@ -35,9 +35,6 @@
         -Xms=-Xms64m
       </vm_parameter>
       <vm_parameter>
-        -Xbootclasspath/p=-Xbootclasspath/p:COUGAAR_INSTALL_PATH/lib/javaiopatch.jar
-      </vm_parameter>
-      <vm_parameter>
         -Dorg.cougaar.core.agent.startTime=08/10/2005
       </vm_parameter>
       <vm_parameter>

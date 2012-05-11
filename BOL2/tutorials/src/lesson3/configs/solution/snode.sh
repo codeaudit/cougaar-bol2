@@ -17,7 +17,6 @@ DEVP=""
 if [ "$COUGAAR_DEV_PATH" != "" ]; then
     DEVP="-Dorg.cougaar.class.path=${COUGAAR_DEV_PATH}"
 fi
-BOOTPATH=$COUGAAR_INSTALL_PATH/lib/javaiopatch.jar
 if [ "$COUGAAR3RDPARTY" = "" ]; then
      COUGAAR3RDPARTY=$COUGAAR_INSTALL_PATH/lib
 fi
@@ -29,7 +28,7 @@ fi
 MYDOMAINS=""
 BOOTSTRAPPER=org.cougaar.bootstrap.Bootstrapper
 MYCLASSES=org.cougaar.core.node.Node
-MYPROPERTIES="-Xbootclasspath/p:$COUGAAR_INSTALL_PATH/lib/javaiopatch.jar $MYPROPERTIES $MYDOMAINS  -Dorg.cougaar.system.path=$COUGAAR3RDPARTY -Dorg.cougaar.install.path=$COUGAAR_INSTALL_PATH -Dorg.cougaar.workspace=$COUGAAR_WORKSPACE"
+MYPROPERTIES="$MYPROPERTIES $MYDOMAINS  -Dorg.cougaar.system.path=$COUGAAR3RDPARTY -Dorg.cougaar.install.path=$COUGAAR_INSTALL_PATH -Dorg.cougaar.workspace=$COUGAAR_WORKSPACE"
 MYPROPERTIES="$MYPROPERTIES -Duser.timezone=GMT  -Dorg.cougaar.core.agent.startTime=01/18/2008 -Dorg.cougaar.core.useBootstrapper=true -Dorg.cougaar.core.logging.config.filename=log.properties"
 MYMEMORY="-Xms100m -Xmx300m"
 
