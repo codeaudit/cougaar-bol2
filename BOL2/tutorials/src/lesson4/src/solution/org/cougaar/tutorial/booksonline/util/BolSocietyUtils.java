@@ -786,15 +786,15 @@ public class BolSocietyUtils {
    * @return A TaskScoreTable object for this workflow
    */
   public static TaskScoreTable buildTSTfromWF(Workflow wf) {
-    Enumeration enum = wf.getTasks();
+    Enumeration enm = wf.getTasks();
 
     // Hashtable myTSTHash = new Hashtable();
     List taskList = (List) new Vector();
     List arList = (List) new Vector();
 
     // first load the tasks so we can count them (I hate this solution!)
-    while (enum.hasMoreElements()) {
-      Task myTask = (Task) enum.nextElement();
+    while (enm.hasMoreElements()) {
+      Task myTask = (Task) enm.nextElement();
       taskList.add(myTask);
 
     }

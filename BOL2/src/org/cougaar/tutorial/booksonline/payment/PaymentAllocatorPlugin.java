@@ -146,9 +146,9 @@ public class PaymentAllocatorPlugin extends BOLComponentPlugin {
      * the final payment task to this asset.
      */
     private void processFinalPaymentTasks() {
-        Enumeration enum = finalPaymentSubs.getAddedList();
-        while (enum.hasMoreElements()) {
-            Task finalPaymentTask = (Task) enum.nextElement();
+        Enumeration enm = finalPaymentSubs.getAddedList();
+        while (enm.hasMoreElements()) {
+            Task finalPaymentTask = (Task) enm.nextElement();
             if (logging.isDebugEnabled()) {
                 logging.debug("Received final payment task");
             }
@@ -183,9 +183,9 @@ public class PaymentAllocatorPlugin extends BOLComponentPlugin {
      * the clear payment task to this asset.
      */
     private void processClearPaymentTasks() {
-        Enumeration enum = clearPaymentSubs.getAddedList();
-        while (enum.hasMoreElements()) {
-            Task clearPaymentTask = (Task) enum.nextElement();
+        Enumeration enm = clearPaymentSubs.getAddedList();
+        while (enm.hasMoreElements()) {
+            Task clearPaymentTask = (Task) enm.nextElement();
             try {
                 if (logging.isDebugEnabled()) {
                     logging.debug("Processing clear payment task");
