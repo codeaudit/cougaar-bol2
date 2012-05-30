@@ -1,25 +1,30 @@
 /*
  * <copyright>
- *  Copyright 1997-2003 BBNT Solutions, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
+ *  
+ *  Copyright 1997-2004 BBNT Solutions, LLC
+ *  under sponsorship of the Defense Advanced Research Projects
+ *  Agency (DARPA).
  * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
+ *  You can redistribute this software and/or modify it under the
+ *  terms of the Cougaar Open Source License as published on the
+ *  Cougaar Open Source Website (www.cougaar.org).
  * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  
  * </copyright>
  */
 
-/* @generated Tue Jun 15 07:45:54 EDT 2004 from properties.def - DO NOT HAND EDIT */
+/* @generated Tue May 29 19:40:18 EDT 2012 from properties.def - DO NOT HAND EDIT */
 /** Implementation of VehiclePG.
  *  @see VehiclePG
  *  @see NewVehiclePG
@@ -93,6 +98,57 @@ public class VehiclePGImpl extends java.beans.SimpleBeanInfo
     theVid = original.getVid();
     theFree = original.getFree();
     theContainers = original.getContainers();
+  }
+
+  public boolean equals(Object other) {
+
+    if (!(other instanceof VehiclePG)) {
+      return false;
+    }
+
+    VehiclePG otherVehiclePG = (VehiclePG) other;
+
+    if (getType() == null) {
+      if (otherVehiclePG.getType() != null) {
+        return false;
+      }
+    } else if (!(getType().equals(otherVehiclePG.getType()))) {
+      return false;
+    }
+
+    if (!(getCapacity() == otherVehiclePG.getCapacity())) {
+      return false;
+    }
+
+    if (getRegion() == null) {
+      if (otherVehiclePG.getRegion() != null) {
+        return false;
+      }
+    } else if (!(getRegion().equals(otherVehiclePG.getRegion()))) {
+      return false;
+    }
+
+    if (!(getLoad() == otherVehiclePG.getLoad())) {
+      return false;
+    }
+
+    if (getVid() == null) {
+      if (otherVehiclePG.getVid() != null) {
+        return false;
+      }
+    } else if (!(getVid().equals(otherVehiclePG.getVid()))) {
+      return false;
+    }
+
+    if (!(getFree() == otherVehiclePG.getFree())) {
+      return false;
+    }
+
+    if (!(getContainers() == otherVehiclePG.getContainers())) {
+      return false;
+    }
+
+    return true;
   }
 
   public boolean hasDataQuality() { return false; }
@@ -213,6 +269,7 @@ public class VehiclePGImpl extends java.beans.SimpleBeanInfo
       return new VehiclePGImpl(VehiclePGImpl.this);
     }
 
+    public boolean equals(Object object) { return VehiclePGImpl.this.equals(object); }
     public String getType() { return VehiclePGImpl.this.getType(); }
     public int getCapacity() { return VehiclePGImpl.this.getCapacity(); }
     public String getRegion() { return VehiclePGImpl.this.getRegion(); }

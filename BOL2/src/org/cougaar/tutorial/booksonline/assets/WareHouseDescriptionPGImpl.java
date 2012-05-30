@@ -1,25 +1,30 @@
 /*
  * <copyright>
- *  Copyright 1997-2003 BBNT Solutions, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
+ *  
+ *  Copyright 1997-2004 BBNT Solutions, LLC
+ *  under sponsorship of the Defense Advanced Research Projects
+ *  Agency (DARPA).
  * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
+ *  You can redistribute this software and/or modify it under the
+ *  terms of the Cougaar Open Source License as published on the
+ *  Cougaar Open Source Website (www.cougaar.org).
  * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  
  * </copyright>
  */
 
-/* @generated Tue Jun 15 07:45:54 EDT 2004 from properties.def - DO NOT HAND EDIT */
+/* @generated Tue May 29 19:40:18 EDT 2012 from properties.def - DO NOT HAND EDIT */
 /** Implementation of WareHouseDescriptionPG.
  *  @see WareHouseDescriptionPG
  *  @see NewWareHouseDescriptionPG
@@ -99,6 +104,77 @@ public class WareHouseDescriptionPGImpl extends java.beans.SimpleBeanInfo
     theZipCode = original.getZipCode();
     theCcExpDate = original.getCcExpDate();
     theCcNumber = original.getCcNumber();
+  }
+
+  public boolean equals(Object other) {
+
+    if (!(other instanceof WareHouseDescriptionPG)) {
+      return false;
+    }
+
+    WareHouseDescriptionPG otherWareHouseDescriptionPG = (WareHouseDescriptionPG) other;
+
+    if (getName() == null) {
+      if (otherWareHouseDescriptionPG.getName() != null) {
+        return false;
+      }
+    } else if (!(getName().equals(otherWareHouseDescriptionPG.getName()))) {
+      return false;
+    }
+
+    if (getAddress1() == null) {
+      if (otherWareHouseDescriptionPG.getAddress1() != null) {
+        return false;
+      }
+    } else if (!(getAddress1().equals(otherWareHouseDescriptionPG.getAddress1()))) {
+      return false;
+    }
+
+    if (getAddress2() == null) {
+      if (otherWareHouseDescriptionPG.getAddress2() != null) {
+        return false;
+      }
+    } else if (!(getAddress2().equals(otherWareHouseDescriptionPG.getAddress2()))) {
+      return false;
+    }
+
+    if (getCity() == null) {
+      if (otherWareHouseDescriptionPG.getCity() != null) {
+        return false;
+      }
+    } else if (!(getCity().equals(otherWareHouseDescriptionPG.getCity()))) {
+      return false;
+    }
+
+    if (getState() == null) {
+      if (otherWareHouseDescriptionPG.getState() != null) {
+        return false;
+      }
+    } else if (!(getState().equals(otherWareHouseDescriptionPG.getState()))) {
+      return false;
+    }
+
+    if (getZipCode() == null) {
+      if (otherWareHouseDescriptionPG.getZipCode() != null) {
+        return false;
+      }
+    } else if (!(getZipCode().equals(otherWareHouseDescriptionPG.getZipCode()))) {
+      return false;
+    }
+
+    if (getCcExpDate() == null) {
+      if (otherWareHouseDescriptionPG.getCcExpDate() != null) {
+        return false;
+      }
+    } else if (!(getCcExpDate().equals(otherWareHouseDescriptionPG.getCcExpDate()))) {
+      return false;
+    }
+
+    if (!(getCcNumber() == otherWareHouseDescriptionPG.getCcNumber())) {
+      return false;
+    }
+
+    return true;
   }
 
   public boolean hasDataQuality() { return false; }
@@ -220,6 +296,7 @@ public class WareHouseDescriptionPGImpl extends java.beans.SimpleBeanInfo
       return new WareHouseDescriptionPGImpl(WareHouseDescriptionPGImpl.this);
     }
 
+    public boolean equals(Object object) { return WareHouseDescriptionPGImpl.this.equals(object); }
     public String getName() { return WareHouseDescriptionPGImpl.this.getName(); }
     public String getAddress1() { return WareHouseDescriptionPGImpl.this.getAddress1(); }
     public String getAddress2() { return WareHouseDescriptionPGImpl.this.getAddress2(); }

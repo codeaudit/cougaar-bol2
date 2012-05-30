@@ -1,25 +1,30 @@
 /*
  * <copyright>
- *  Copyright 1997-2003 BBNT Solutions, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
+ *  
+ *  Copyright 1997-2004 BBNT Solutions, LLC
+ *  under sponsorship of the Defense Advanced Research Projects
+ *  Agency (DARPA).
  * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
+ *  You can redistribute this software and/or modify it under the
+ *  terms of the Cougaar Open Source License as published on the
+ *  Cougaar Open Source Website (www.cougaar.org).
  * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  
  * </copyright>
  */
 
-/* @generated Tue Jun 15 07:45:54 EDT 2004 from bol_assets.def - DO NOT HAND EDIT */
+/* @generated Tue May 29 19:40:17 EDT 2012 from bol_assets.def - DO NOT HAND EDIT */
 package org.cougaar.tutorial.booksonline.assets;
 import org.cougaar.planning.ldm.asset.*;
 import java.io.ObjectOutputStream;
@@ -238,65 +243,61 @@ public class BookAsset extends Asset {
     if (OverviewPG.class.equals(c)) {
       removed=myOverviewPG;
       myOverviewPG=null;
-    } else
-    if (AuthorPG.class.equals(c)) {
+    } else if (AuthorPG.class.equals(c)) {
       removed=myAuthorPG;
       myAuthorPG=null;
-    } else
-    if (SpecificsPG.class.equals(c)) {
+    } else if (SpecificsPG.class.equals(c)) {
       removed=mySpecificsPG;
       mySpecificsPG=null;
-    } else
-    if (PricePG.class.equals(c)) {
+    } else if (PricePG.class.equals(c)) {
       removed=myPricePG;
       myPricePG=null;
-    } else
-    if (ReviewPG.class.equals(c)) {
+    } else if (ReviewPG.class.equals(c)) {
       removed=myReviewPG;
       myReviewPG=null;
-    } else
-    if (PublisherPG.class.equals(c)) {
+    } else if (PublisherPG.class.equals(c)) {
       removed=myPublisherPG;
       myPublisherPG=null;
-    } else
+    } else {
       removed=super.removeLocalPG(c);
+    }
     return removed;
   }
 
   public PropertyGroup removeLocalPG(PropertyGroup pg) {
-    PropertyGroup removed = null;
     Class pgc = pg.getPrimaryClass();
     if (OverviewPG.class.equals(pgc)) {
-      removed=myOverviewPG;
+      PropertyGroup removed=myOverviewPG;
       myOverviewPG=null;
-    } else
-    if (AuthorPG.class.equals(pgc)) {
-      removed=myAuthorPG;
+      return removed;
+    } else if (AuthorPG.class.equals(pgc)) {
+      PropertyGroup removed=myAuthorPG;
       myAuthorPG=null;
-    } else
-    if (SpecificsPG.class.equals(pgc)) {
-      removed=mySpecificsPG;
+      return removed;
+    } else if (SpecificsPG.class.equals(pgc)) {
+      PropertyGroup removed=mySpecificsPG;
       mySpecificsPG=null;
-    } else
-    if (PricePG.class.equals(pgc)) {
-      removed=myPricePG;
+      return removed;
+    } else if (PricePG.class.equals(pgc)) {
+      PropertyGroup removed=myPricePG;
       myPricePG=null;
-    } else
-    if (ReviewPG.class.equals(pgc)) {
-      removed=myReviewPG;
+      return removed;
+    } else if (ReviewPG.class.equals(pgc)) {
+      PropertyGroup removed=myReviewPG;
       myReviewPG=null;
-    } else
-    if (PublisherPG.class.equals(pgc)) {
-      removed=myPublisherPG;
+      return removed;
+    } else if (PublisherPG.class.equals(pgc)) {
+      PropertyGroup removed=myPublisherPG;
       myPublisherPG=null;
-    } else
-      removed= super.removeLocalPG(pg);
-    return removed;
+      return removed;
+    } else {}
+    return super.removeLocalPG(pg);
   }
 
   public PropertyGroupSchedule removeLocalPGSchedule(Class c) {
-    PropertyGroupSchedule removed = null;
-    return removed;
+   {
+      return super.removeLocalPGSchedule(c);
+    }
   }
 
   public PropertyGroup generateDefaultPG(Class c) {
