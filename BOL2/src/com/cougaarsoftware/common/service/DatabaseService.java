@@ -19,6 +19,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import org.cougaar.core.component.Service;
+
 
 /**
  * A Service providing functionality to execute SQL statements and to
@@ -29,7 +31,7 @@ import java.util.Map;
  *         to Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and
  *         Comments
  */
-public interface DatabaseService {
+public interface DatabaseService extends Service {
     /**
      * Execute a SQL Statement
      *

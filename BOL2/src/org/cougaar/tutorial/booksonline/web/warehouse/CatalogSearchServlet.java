@@ -80,13 +80,8 @@ public class CatalogSearchServlet extends BOLServlet implements WebConstants {
    */
   public void load() {
     super.load();
-    DatabaseServiceProvider dbServiceProvider = new DatabaseServiceProvider(bindingSite
-        .getServiceBroker());
-    this.bindingSite.getServiceBroker().addService(DatabaseService.class,
-      dbServiceProvider);
-    dbService = (DatabaseService) this.bindingSite.getServiceBroker()
-                                                  .getService(this,
-        DatabaseService.class, null);
+
+    dbService = getService(this, DatabaseService.class, null);
 
   }
 
