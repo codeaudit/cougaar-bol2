@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspFactory;
 
 import org.cougaar.core.blackboard.BlackboardClient;
-import org.cougaar.core.component.ServiceBroker;
 import org.cougaar.core.node.NodeIdentificationService;
 import org.cougaar.core.service.AgentContainmentService;
 import org.cougaar.core.service.BlackboardService;
@@ -51,8 +50,6 @@ public abstract class BOLServlet extends BaseServletComponent
     /** Cougaar AgentContainmentService */
     protected AgentContainmentService agentContainmentService;
     /** Cougaar ServiceBroker */
-    protected ServiceBroker serviceBroker;
-    /** Cougaar BlackboardService */
     protected BlackboardService blackboardService;
     /** Cougaar DomainService */
     protected DomainService domainService;
@@ -102,20 +99,14 @@ public abstract class BOLServlet extends BaseServletComponent
      * Component load method, initializes Cougaar services
      */
     public void load() {
-        this.serviceBroker = this.bindingSite.getServiceBroker();
-        this.domainService = (DomainService) serviceBroker.getService(this,
-                DomainService.class, null);
-        this.blackboardService = (BlackboardService) serviceBroker.getService(this,
-                BlackboardService.class, null);
-        this.agentContainmentService = (AgentContainmentService) serviceBroker
-            .getService(this, AgentContainmentService.class, null);
         
-        this.uidService = (UIDService) serviceBroker.getService(this,
-                UIDService.class, null);
-        this.nodeIdService = (NodeIdentificationService) serviceBroker
-            .getService(this, NodeIdentificationService.class, null);
-        this.logging = (LoggingService) serviceBroker.getService(this,
-                LoggingService.class, null);
+        this.domainService = (DomainService) getService(this, DomainService.class, null);
+        this.blackboardService = (BlackboardService) getService(this, BlackboardService.class, null);
+        this.agentContainmentService = (AgentContainmentService) getService(this, AgentContainmentService.class, null);
+        
+        this.uidService = (UIDService) getService(this, UIDService.class, null);
+        this.nodeIdService = (NodeIdentificationService) getService(this, NodeIdentificationService.class, null);
+        this.logging = (LoggingService) getService(this, LoggingService.class, null);
 
         super.load();
     }
